@@ -5,6 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 
 import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
 import static android.app.Notification.FLAG_NO_CLEAR;
@@ -31,17 +34,30 @@ public class main implements IXposedHookLoadPackage {
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
                 int icon = 0x7f020099;
                 Context context = (Context) param.args[0];
-                Notification notification = new Notification.Builder(context)
+                Bitmap bitmap = (Bitmap) param.args[2];
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                         .setContentTitle((CharSequence) XposedHelpers.callMethod(param.args[1],"getName"))
                         .setContentText((CharSequence) XposedHelpers.callMethod(param.args[1],"getSinger"))
-                        .setLargeIcon((Bitmap)param.args[2])
+                        .setLargeIcon(bitmap)
                         .setSmallIcon(icon)
-                        .setStyle(new Notification.MediaStyle()
-                            //.setShowActionsInCompactView(0,1,2)
-                        )
-                        .build();
-                //notification.flags |= FLAG_FOREGROUND_SERVICE | FLAG_NO_CLEAR |  FLAG_ONLY_ALERT_ONCE | PRIORITY_MAX;
-                //notification.flags &= Notification.PRIORITY_MIN;
+                        .setOngoing(true)
+                        .setCategory(NotificationCompat.CATEGORY_STATUS)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                        .addAction(android.R.drawable.ic_media_previous,"后退",PendingIntent.getBroadcast(context, 0, new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_PREVIOUS_TASKBAR"), 0))
+                        .addAction(android.R.drawable.ic_media_pause,"播放",PendingIntent.getBroadcast(context, 0, new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_TOGGLEPAUSE_TASKBAR"), 0))
+                        .addAction(android.R.drawable.ic_media_next, "前进",PendingIntent.getBroadcast(context, 0, new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_NEXT_TASKBAR"), 0))
+                        .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                                //.setMediaSession(new MediaSessionCompat(context,null).getSessionToken())
+                                .setCancelButtonIntent(PendingIntent.getBroadcast(context,0,new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_CLOSE_TASKBAR"),0))
+                                .setShowActionsInCompactView(0,1,2)
+                                )
+                        .setColorized(true);
+                //builder.setColor(Color.GREEN);
+                int color = Color.BLACK;
+                if (bitmap!=null) color = ColorUtil.getColor(bitmap);
+                builder.setColor(color);
+                Notification notification = builder.build();
+                notification.flags = FLAG_FOREGROUND_SERVICE | FLAG_NO_CLEAR;
                 Intent intent = new Intent("android.intent.action.MAIN");
                 intent.addCategory("android.intent.category.LAUNCHER");
                 intent.setClassName(context,(String)XposedHelpers.callStaticMethod(clazz3,"d",context));
