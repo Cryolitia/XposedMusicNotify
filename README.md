@@ -6,4 +6,4 @@
 
 An xposed moudle trying to make QQMusicPlayer using standard notification（Not finish yet）
 
-通知取色方法来自https://github.com/Qiwu2542284182/MusicNotification
+![](https://user-images.githubusercontent.com/23723294/55279278-d1deb280-5351-11e9-934a-e427462176b8.PNG)
