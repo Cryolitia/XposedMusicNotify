@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="enableQT"
+        android:title="修改轻听通知"
+        android:defaultValue="true" />
+    <SwitchPreference
+        android:key="enableKG"
+        android:title="修改全民K歌通知"
+        android:defaultValue="true" />
+    <Preference
+        android:key="statue"
+        android:title="状态" />
+    <Preference
+        android:key="github"
+        android:title="项目地址"
+        android:summary="https://github.com/singleNeuron/QQMusicNotify" />
+    <Preference
+        android:key="version"
+        android:title="版本"
+        android:summary="1.0" />
+</PreferenceScreen>

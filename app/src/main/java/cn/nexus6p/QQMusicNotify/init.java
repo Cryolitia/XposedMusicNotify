@@ -10,6 +10,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -24,10 +25,15 @@ public class init implements IXposedHookLoadPackage {
             findAndHookMethod(HookStatue.class, "isEnabled", XC_MethodReplacement.returnConstant(true));
             return;
         }
-        if (lpparam.packageName.equals("com.tencent.qqmusiclocalplayer")) {
+        XSharedPreferences xSharedPreferences = new XSharedPreferences("cn.nexus6p.QQMusicNotify");
+        boolean enableQT = xSharedPreferences.getBoolean("enableQT",true);
+        boolean enableKG = xSharedPreferences.getBoolean("enableKG",true);
+
+        if (enableQT&&lpparam.packageName.equals("com.tencent.qqmusiclocalplayer")) {
             new QingtingHook(lpparam.classLoader).init();
+            return;
         }
-        if (lpparam.packageName.equals("com.tencent.karaoke")) {
+        if (enableKG&&lpparam.packageName.equals("com.tencent.karaoke")) {
             XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
