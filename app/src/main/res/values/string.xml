@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">QQMusicNotify</string>
-    <string name="description">Trying to make QQMusicPlayer using standard notification</string>
+    <string name="app_name">给播放器更好的系统音乐通知</string>
+    <string name="description">Trying to make MusicPlayer using standard notification</string>
+    <string name="version">1.1</string>
 </resources>

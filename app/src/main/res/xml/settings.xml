@@ -8,6 +8,14 @@
         android:key="enableKG"
         android:title="修改全民K歌通知"
         android:defaultValue="true" />
+    <SwitchPreference
+        android:key="enableKW"
+        android:title="修改酷我通知"
+        android:defaultValue="true" />
+    <SwitchPreference
+        android:key="enableKGou"
+        android:title="修改酷狗通知"
+        android:defaultValue="true" />
     <Preference
         android:key="statue"
         android:title="状态" />
@@ -18,5 +26,5 @@
     <Preference
         android:key="version"
         android:title="版本"
-        android:summary="1.0" />
+        android:summary="@string/version" />
 </PreferenceScreen>

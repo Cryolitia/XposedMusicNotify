@@ -1,17 +1,11 @@
 package cn.nexus6p.QQMusicNotify;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.SwitchPreference;
 import android.widget.Toast;
 
 public class MainActivity extends PreferenceActivity {
@@ -51,7 +45,7 @@ public class MainActivity extends PreferenceActivity {
             preference.setSummary("模块未激活");
             preference.setOnPreferenceClickListener(preference1 -> {
                 Intent t = new Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
-                t.setData(Uri.parse("package:" + "Your package name"));
+                t.setData(Uri.parse("package:" + "cn.nexus6p.QQMusicNotify"));
                 t.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
                     startActivity(t);

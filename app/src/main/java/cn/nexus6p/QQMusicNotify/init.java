@@ -2,19 +2,13 @@ package cn.nexus6p.QQMusicNotify;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.res.XModuleResources;
 import android.util.Log;
-
-import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class init implements IXposedHookLoadPackage {
@@ -22,12 +16,14 @@ public class init implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
-            findAndHookMethod(HookStatue.class, "isEnabled", XC_MethodReplacement.returnConstant(true));
+            findAndHookMethod("cn.nexus6p.QQMusicNotify.HookStatue",lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
             return;
         }
         XSharedPreferences xSharedPreferences = new XSharedPreferences("cn.nexus6p.QQMusicNotify");
         boolean enableQT = xSharedPreferences.getBoolean("enableQT",true);
         boolean enableKG = xSharedPreferences.getBoolean("enableKG",true);
+        boolean enableKW = xSharedPreferences.getBoolean("enableKW",true);
+        boolean enableKGou = xSharedPreferences.getBoolean("enableKGou",true);
 
         if (enableQT&&lpparam.packageName.equals("com.tencent.qqmusiclocalplayer")) {
             new QingtingHook(lpparam.classLoader).init();
@@ -44,6 +40,34 @@ public class init implements IXposedHookLoadPackage {
                         return;
                     }
                     new KaraokeHook(classLoader).init();
+                }
+            });
+        }
+        if (enableKW&&lpparam.packageName.equals("cn.kuwo.player")) {
+            XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    final ClassLoader classLoader = ((Context) param.args[0]).getClassLoader();
+                    if (classLoader == null) {
+                        Log.e("KuwoHook","Can't get ClassLoader!");
+                        return;
+                    }
+                    new KuwoHook(classLoader).init();
+                }
+            });
+        }
+        if (enableKGou&&lpparam.packageName.equals("com.kugou.android")) {
+            XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    final ClassLoader classLoader = ((Context) param.args[0]).getClassLoader();
+                    if (classLoader == null) {
+                        Log.e("KugouHook","Can't get ClassLoader!");
+                        return;
+                    }
+                    new KugouHook(classLoader).init();
                 }
             });
         }
