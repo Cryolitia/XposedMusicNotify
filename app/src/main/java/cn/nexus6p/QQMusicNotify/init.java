@@ -23,7 +23,6 @@ public class init implements IXposedHookLoadPackage {
         boolean enableQT = xSharedPreferences.getBoolean("enableQT",true);
         boolean enableKG = xSharedPreferences.getBoolean("enableKG",true);
         boolean enableKW = xSharedPreferences.getBoolean("enableKW",true);
-        boolean enableKGou = xSharedPreferences.getBoolean("enableKGou",true);
 
         if (enableQT&&lpparam.packageName.equals("com.tencent.qqmusiclocalplayer")) {
             new QingtingHook(lpparam.classLoader).init();
@@ -54,20 +53,6 @@ public class init implements IXposedHookLoadPackage {
                         return;
                     }
                     new KuwoHook(classLoader).init();
-                }
-            });
-        }
-        if (enableKGou&&lpparam.packageName.equals("com.kugou.android")) {
-            XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    final ClassLoader classLoader = ((Context) param.args[0]).getClassLoader();
-                    if (classLoader == null) {
-                        Log.e("KugouHook","Can't get ClassLoader!");
-                        return;
-                    }
-                    new KugouHook(classLoader).init();
                 }
             });
         }
