@@ -14,10 +14,11 @@ abstract class BasicViewNotification extends BasicNotification {
     int titleID;
     int textID;
     int bitmapID;
-
-
     BasicViewNotification(ClassLoader mClassLoader) {
         super(mClassLoader);
+    }
+
+    protected BasicViewNotification() {
     }
 
     Notification viewBuild () {

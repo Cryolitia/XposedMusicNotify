@@ -18,7 +18,7 @@ class QingtingHook extends BasicNotification {
         super(mClassLoader);
     }
 
-    void init() {
+    public void init() {
         final Class notifyClazz = XposedHelpers.findClass("com.tencent.qqmusiclocalplayer.business.k.s",classLoader);
         final Class infoClazz = XposedHelpers.findClass("com.tencent.qqmusiclocalplayer.c.e",classLoader);
         final Class clazz3 = XposedHelpers.findClass("com.tencent.a.d.t",classLoader);

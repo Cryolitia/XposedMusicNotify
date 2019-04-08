@@ -20,7 +20,7 @@ class KuwoHook extends BasicNotification {
         super(mClassLoader);
     }
 
-    void init() {
+    public void init() {
         final Class notifyClazz = XposedHelpers.findClass("cn.kuwo.mod.notification.manager.KwNotificationManager",classLoader);
         findAndHookMethod(notifyClazz, "getPlayNotification", Bitmap.class, String.class,String.class,String.class, new XC_MethodReplacement() {
             @Override

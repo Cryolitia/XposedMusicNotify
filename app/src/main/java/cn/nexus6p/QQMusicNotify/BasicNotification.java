@@ -14,7 +14,7 @@ import static android.app.Notification.FLAG_NO_CLEAR;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 
-abstract class BasicNotification {
+abstract class BasicNotification implements HookInterface {
 
     Context context;
     CharSequence titleString;
@@ -33,12 +33,21 @@ abstract class BasicNotification {
     Intent extraActionIntent;
     int extraActionIcon;
 
+    BasicNotification() {}
+
     BasicNotification(ClassLoader mClassLoader) {
         if (mClassLoader==null) {
             Log.e("QQMusicNotify","ClassLoader should not be null");
             return;
         }
         classLoader = mClassLoader;
+    }
+
+    public abstract void init();
+
+    public final BasicNotification setClassLoader(ClassLoader mClassLoader) {
+        classLoader = mClassLoader;
+        return this;
     }
 
     final Notification build() {

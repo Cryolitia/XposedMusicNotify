@@ -9,15 +9,16 @@ import android.os.Parcelable;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
-class KaraokeHook extends BasicViewNotification {
+class comtencentkaraokeHook extends BasicViewNotification {
 
     private static MediaSession.Token mTOKEN;
 
-    KaraokeHook(ClassLoader mClassLoader) {
+    comtencentkaraokeHook() {}
+    comtencentkaraokeHook(ClassLoader mClassLoader) {
         super(mClassLoader);
     }
 
-    void init() {
+    public void init() {
         Class playInfoClazz = XposedHelpers.findClass("com.tencent.karaoke.common.media.player.PlaySongInfo",classLoader);
         XposedHelpers.findAndHookMethod("com.tencent.karaoke.common.media.t", classLoader, "a", Context.class, playInfoClazz, int.class, new XC_MethodHook() {
             @Override
