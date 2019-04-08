@@ -4,11 +4,15 @@ import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.session.MediaSession;
+
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
 class QingtingHook extends BasicNotification {
+
+    private static MediaSession.Token mTOKEN;
 
     QingtingHook(ClassLoader mClassLoader) {
         super(mClassLoader);
@@ -27,8 +31,8 @@ class QingtingHook extends BasicNotification {
                 context = (Context) param.args[0];
                 bitmap = (Bitmap) param.args[2];
                 statue = (!(Boolean)XposedHelpers.callStaticMethod(clazzO,"a")&&((Boolean)XposedHelpers.callStaticMethod(clazzO,"e")||(Boolean)XposedHelpers.callStaticMethod(clazzO,"b")));
-                serverContext = (Context) XposedHelpers.callStaticMethod(serviceHelperClazz,"a");
-                mediaSessionTag = "mbr";
+                if (mTOKEN==null) mTOKEN = new MediaSession(context,"mbr").getSessionToken();
+                token = mTOKEN;
                 titleString = (CharSequence) XposedHelpers.callMethod(param.args[1],"getName");
                 textString = (CharSequence) XposedHelpers.callMethod(param.args[1],"getSinger");
                 preSongIntent = new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_PREVIOUS_TASKBAR");

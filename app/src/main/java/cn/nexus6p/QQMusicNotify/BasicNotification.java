@@ -14,27 +14,26 @@ import static android.app.Notification.FLAG_NO_CLEAR;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 
-class BasicNotification {
+abstract class BasicNotification {
 
     Context context;
     CharSequence titleString;
     CharSequence textString;
     int iconID;
     boolean statue = true;
-    String mediaSessionTag;
+    MediaSession.Token token;
     Intent preSongIntent;
     Intent nextSongIntent;
     Intent playIntent;
     Bitmap bitmap;
     Intent contentIntent;
-    Context serverContext;
     ClassLoader classLoader;
     int intentRequestID = 0;
     Boolean hasExtraAction = false;
     Intent extraActionIntent;
     int extraActionIcon;
 
-    BasicNotification (ClassLoader mClassLoader) {
+    BasicNotification(ClassLoader mClassLoader) {
         if (mClassLoader==null) {
             Log.e("QQMusicNotify","ClassLoader should not be null");
             return;
@@ -42,8 +41,7 @@ class BasicNotification {
         classLoader = mClassLoader;
     }
 
-    Notification build() {
-        MediaSession mediaSession = new MediaSession(serverContext==null?context:serverContext,mediaSessionTag);
+    final Notification build() {
         Notification.Builder builder = new Notification.Builder(context)
                 .setContentTitle(titleString)
                 .setContentText(textString)
@@ -55,7 +53,7 @@ class BasicNotification {
                 .addAction(statue?android.R.drawable.ic_media_pause:android.R.drawable.ic_media_play,statue?"暂停":"播放",PendingIntent.getBroadcast(context, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .addAction(android.R.drawable.ic_media_next, "前进",PendingIntent.getBroadcast(context, 0, nextSongIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .setStyle(new Notification.MediaStyle()
-                        .setMediaSession(mediaSession.getSessionToken())
+                        .setMediaSession(token)
                         .setShowActionsInCompactView(0, 1, 2)
                 )
                 .setLargeIcon(bitmap);

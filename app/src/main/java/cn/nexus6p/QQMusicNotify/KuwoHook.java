@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.session.MediaSession;
 import android.util.Log;
 
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -12,6 +13,8 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.getObjectField;
 
 class KuwoHook extends BasicNotification {
+
+    private static MediaSession.Token mTOKEN;
 
     KuwoHook(ClassLoader mClassLoader) {
         super(mClassLoader);
@@ -25,7 +28,8 @@ class KuwoHook extends BasicNotification {
                 iconID = 0x7f020dca;
                 context = (Context) getObjectField(param.thisObject,"mContext");
                 bitmap = (Bitmap) param.args[0];
-                mediaSessionTag = "MediaSessionHelper";
+                if (mTOKEN==null) mTOKEN = new MediaSession(context,"MediaSessionHelper").getSessionToken();
+                token = mTOKEN;
                 titleString = (CharSequence) param.args[1];
                 textString = (CharSequence) param.args[2];
                 preSongIntent = new Intent("kuwo.play.pre");
