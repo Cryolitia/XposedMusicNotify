@@ -23,6 +23,7 @@ public class cnkuwoplayer extends BasicNotification {
         findAndHookMethod(notifyClazz, "getPlayNotification", Bitmap.class, String.class,String.class,String.class, new XC_MethodReplacement() {
             @Override
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
                 iconID = 0x7f020dca;
                 context = (Context) getObjectField(param.thisObject,"mContext");
                 bitmap = (Bitmap) param.args[0];

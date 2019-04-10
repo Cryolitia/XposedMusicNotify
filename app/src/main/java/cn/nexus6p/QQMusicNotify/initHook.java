@@ -15,7 +15,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class initHook implements IXposedHookLoadPackage {
 
-    private final static List<String> packageList = Arrays.asList("com.tencent.karaoke","com.tencent.qqmusiclocalplayer","cn.kuwo.player");
+    private final static List<String> packageList = Arrays.asList("com.tencent.karaoke","com.tencent.qqmusiclocalplayer","cn.kuwo.player","com.sing.client");
     private XSharedPreferences xSharedPreferences;
 
     @Override

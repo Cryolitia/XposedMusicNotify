@@ -22,10 +22,10 @@ public class comtencentqqmusiclocalplayer extends BasicNotification {
         final Class infoClazz = XposedHelpers.findClass("com.tencent.qqmusiclocalplayer.c.e",classLoader);
         final Class clazz3 = XposedHelpers.findClass("com.tencent.a.d.t",classLoader);
         final Class clazzO = XposedHelpers.findClass("com.tencent.qqmusicsdk.a.o",classLoader);
-        final Class serviceHelperClazz = XposedHelpers.findClass("com.tencent.qqmusicsdk.service.l",classLoader);
         findAndHookMethod(notifyClazz, "b", Context.class, infoClazz, Bitmap.class, new XC_MethodReplacement() {
             @Override
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
                 iconID = 0x7f020099;
                 context = (Context) param.args[0];
                 bitmap = (Bitmap) param.args[2];

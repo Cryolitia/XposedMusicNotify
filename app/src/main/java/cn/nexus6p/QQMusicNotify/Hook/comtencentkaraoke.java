@@ -20,6 +20,7 @@ public class comtencentkaraoke extends BasicViewNotification {
         XposedHelpers.findAndHookMethod("com.tencent.karaoke.common.media.t", classLoader, "a", Context.class, playInfoClazz, int.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
                 context = (Context) param.args[0];
                 Parcelable playSongInfo = (Parcelable) param.args[1];
                 oldNotification = (Notification) param.getResult();
