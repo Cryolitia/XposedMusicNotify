@@ -15,7 +15,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class initHook implements IXposedHookLoadPackage {
 
-    private final static List<String> packageList = Arrays.asList("com.tencent.karaoke");
+    private final static List<String> packageList = Arrays.asList("com.tencent.karaoke","com.tencent.qqmusiclocalplayer","cn.kuwo.player");
     private XSharedPreferences xSharedPreferences;
 
     @Override
@@ -25,13 +25,6 @@ public class initHook implements IXposedHookLoadPackage {
             return;
         }
         xSharedPreferences = new XSharedPreferences("cn.nexus6p.QQMusicNotify");
-        boolean enableQT = xSharedPreferences.getBoolean("enableQT",true);
-        boolean enableKW = xSharedPreferences.getBoolean("enableKW",true);
-
-        if (enableQT&&lpparam.packageName.equals("com.tencent.qqmusiclocalplayer")) {
-            new QingtingHook(lpparam.classLoader).init();
-            return;
-        }
         if (isHookEnabled(lpparam.packageName)) {
             XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override
@@ -42,23 +35,9 @@ public class initHook implements IXposedHookLoadPackage {
                         Log.e(lpparam.packageName+"Hook","Can't get ClassLoader!");
                         return;
                     }
-                    Class c = Class.forName("cn.nexus6p.QQMusicNotify."+lpparam.packageName.replace(".","")+"Hook");
+                    Class c = Class.forName("cn.nexus6p.QQMusicNotify.Hook."+lpparam.packageName.replace(".",""));
                     HookInterface hookInterface = (HookInterface) c.newInstance();
                     hookInterface.setClassLoader(classLoader).init();
-                }
-            });
-        }
-        if (enableKW&&lpparam.packageName.equals("cn.kuwo.player")) {
-            XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    final ClassLoader classLoader = ((Context) param.args[0]).getClassLoader();
-                    if (classLoader == null) {
-                        Log.e("KuwoHook","Can't get ClassLoader!");
-                        return;
-                    }
-                    new KuwoHook(classLoader).init();
                 }
             });
         }

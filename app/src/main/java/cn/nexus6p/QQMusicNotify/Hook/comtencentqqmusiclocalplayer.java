@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Hook;
 
 import android.app.Notification;
 import android.content.Context;
@@ -7,17 +7,16 @@ import android.graphics.Bitmap;
 import android.media.session.MediaSession;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+
+import cn.nexus6p.QQMusicNotify.BasicNotification;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
-class QingtingHook extends BasicNotification {
+public class comtencentqqmusiclocalplayer extends BasicNotification {
 
     private static MediaSession.Token mTOKEN;
 
-    QingtingHook(ClassLoader mClassLoader) {
-        super(mClassLoader);
-    }
-
+    @Override
     public void init() {
         final Class notifyClazz = XposedHelpers.findClass("com.tencent.qqmusiclocalplayer.business.k.s",classLoader);
         final Class infoClazz = XposedHelpers.findClass("com.tencent.qqmusiclocalplayer.c.e",classLoader);

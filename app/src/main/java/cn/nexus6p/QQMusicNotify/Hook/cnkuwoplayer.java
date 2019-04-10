@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Hook;
 
 import android.app.Notification;
 import android.content.Context;
@@ -7,19 +7,17 @@ import android.graphics.Bitmap;
 import android.media.session.MediaSession;
 import android.util.Log;
 
+import cn.nexus6p.QQMusicNotify.BasicNotification;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.getObjectField;
 
-class KuwoHook extends BasicNotification {
+public class cnkuwoplayer extends BasicNotification {
 
     private static MediaSession.Token mTOKEN;
 
-    KuwoHook(ClassLoader mClassLoader) {
-        super(mClassLoader);
-    }
-
+    @Override
     public void init() {
         final Class notifyClazz = XposedHelpers.findClass("cn.kuwo.mod.notification.manager.KwNotificationManager",classLoader);
         findAndHookMethod(notifyClazz, "getPlayNotification", Bitmap.class, String.class,String.class,String.class, new XC_MethodReplacement() {

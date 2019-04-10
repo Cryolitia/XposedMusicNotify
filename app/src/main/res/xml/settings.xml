@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
-        android:key="enableQT"
+        android:key="com.tencent.qqmusiclocalplayer.enabled"
         android:title="修改轻听通知"
         android:defaultValue="true" />
     <SwitchPreference
-        android:key="enableKG"
+        android:key="com.tencent.karaoke.enabled"
         android:title="修改全民K歌通知"
         android:defaultValue="true" />
     <SwitchPreference
-        android:key="enableKW"
+        android:key="cn.kuwo.player.enabled"
         android:title="修改酷我通知"
         android:defaultValue="true" />
     <Preference

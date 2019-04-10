@@ -8,20 +8,15 @@ import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-abstract class BasicViewNotification extends BasicNotification {
+public abstract class BasicViewNotification extends BasicNotification {
 
-    Notification oldNotification;
-    int titleID;
-    int textID;
-    int bitmapID;
-    BasicViewNotification(ClassLoader mClassLoader) {
-        super(mClassLoader);
-    }
+    public Notification oldNotification;
+    public int titleID;
+    public int textID;
+    public int bitmapID;
+    protected BasicViewNotification() { }
 
-    protected BasicViewNotification() {
-    }
-
-    Notification viewBuild () {
+    public final Notification viewBuild () {
         if (oldNotification==null) {
             Log.e("QQMusicNotify","oldNotification should not be null!");
             return null;

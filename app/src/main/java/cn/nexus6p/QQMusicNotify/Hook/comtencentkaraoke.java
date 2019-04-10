@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Hook;
 
 import android.app.Notification;
 import android.content.Context;
@@ -6,18 +6,15 @@ import android.content.Intent;
 import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Parcelable;
+import cn.nexus6p.QQMusicNotify.BasicViewNotification;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
-class comtencentkaraokeHook extends BasicViewNotification {
+public class comtencentkaraoke extends BasicViewNotification {
 
     private static MediaSession.Token mTOKEN;
 
-    comtencentkaraokeHook() {}
-    comtencentkaraokeHook(ClassLoader mClassLoader) {
-        super(mClassLoader);
-    }
-
+    @Override
     public void init() {
         Class playInfoClazz = XposedHelpers.findClass("com.tencent.karaoke.common.media.player.PlaySongInfo",classLoader);
         XposedHelpers.findAndHookMethod("com.tencent.karaoke.common.media.t", classLoader, "a", Context.class, playInfoClazz, int.class, new XC_MethodHook() {

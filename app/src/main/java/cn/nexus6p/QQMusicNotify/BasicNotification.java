@@ -14,43 +14,34 @@ import static android.app.Notification.FLAG_NO_CLEAR;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 
-abstract class BasicNotification implements HookInterface {
+public abstract class BasicNotification implements HookInterface {
 
-    Context context;
-    CharSequence titleString;
-    CharSequence textString;
-    int iconID;
-    boolean statue = true;
-    MediaSession.Token token;
-    Intent preSongIntent;
-    Intent nextSongIntent;
-    Intent playIntent;
-    Bitmap bitmap;
-    Intent contentIntent;
-    ClassLoader classLoader;
-    int intentRequestID = 0;
-    Boolean hasExtraAction = false;
-    Intent extraActionIntent;
-    int extraActionIcon;
-
-    BasicNotification() {}
-
-    BasicNotification(ClassLoader mClassLoader) {
-        if (mClassLoader==null) {
-            Log.e("QQMusicNotify","ClassLoader should not be null");
-            return;
-        }
-        classLoader = mClassLoader;
-    }
+    public Context context;
+    public CharSequence titleString;
+    public CharSequence textString;
+    public int iconID;
+    public boolean statue = true;
+    public MediaSession.Token token;
+    public Intent preSongIntent;
+    public Intent nextSongIntent;
+    public Intent playIntent;
+    public Bitmap bitmap;
+    public Intent contentIntent;
+    public ClassLoader classLoader;
+    public int intentRequestID = 0;
+    public Boolean hasExtraAction = false;
+    public Intent extraActionIntent;
+    public int extraActionIcon;
 
     public abstract void init();
 
+    @Override
     public final BasicNotification setClassLoader(ClassLoader mClassLoader) {
         classLoader = mClassLoader;
         return this;
     }
 
-    final Notification build() {
+    public final Notification build() {
         Notification.Builder builder = new Notification.Builder(context)
                 .setContentTitle(titleString)
                 .setContentText(textString)
