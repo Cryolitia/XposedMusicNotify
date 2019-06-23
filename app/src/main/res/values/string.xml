@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">给播放器更好的系统音乐通知</string>
+    <string name="app_name">给播放器原生的音乐通知</string>
     <string name="description">Trying to make music players using standard notification</string>
 </resources>

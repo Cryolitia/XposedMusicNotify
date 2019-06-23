@@ -13,9 +13,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
 
 import static android.content.Context.MODE_WORLD_READABLE;
 
@@ -45,10 +56,35 @@ public class SettingsFragment extends PreferenceFragment {
             startActivity(intent);
             return true;
         });
+        findPreference("qiwu").setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent();
+            try {
+                //intent.setClassName("com.coolapk.market", "com.coolapk.market.view.AppLinkActivity");
+                intent.setAction("android.intent.action.VIEW");
+                intent.setData(Uri.parse("coolmarket://u/753785"));
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+            return true;
+        });
         Preference preference = findPreference("statue");
-        if (HookStatue.isEnabled()) preference.setSummary("模块已激活");
-        else if (HookStatue.isExpModuleActive(getActivity())) preference.setSummary("太极已激活");
-        else {
+        if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
+        else if (HookStatue.isExpModuleActive(getActivity())) {
+            try {
+                if (Objects.requireNonNull(System.getProperties().get("taichi_magisk")).toString().equals("1"))
+                    preference.setSummary("太极·阳 已激活");
+                else {
+                    preference.setSummary("太极·阴 已激活");
+                    findPreference("styleModify").setSummary("警告：当前模式可能为太极·阴，此功能不可用");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                preference.setSummary("太极·阴 已激活");
+                findPreference("styleModify").setSummary("警告：当前模式可能为太极·阴，此功能不可用");
+            }
+        } else {
             preference.setSummary("模块未激活");
             preference.setOnPreferenceClickListener(preference1 -> {
                 Intent t = new Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
@@ -63,12 +99,17 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             });
         }
-        PackageManager pm = getActivity().getPackageManager();
-        try {
-            PackageInfo packageInfo = pm.getPackageInfo(getActivity().getPackageName(), 0);
-            findPreference("version").setSummary(packageInfo.versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        boolean PMEnabled =((SwitchPreference) findPreference("pm")).isChecked();
+        if (PMEnabled) {
+            PackageManager pm = getActivity().getPackageManager();
+            try {
+                PackageInfo packageInfo = pm.getPackageInfo(getActivity().getPackageName(), 0);
+                findPreference("version").setSummary(packageInfo.versionName);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            findPreference("version").setSummary("已禁止读取软件包列表，功能不可用");
         }
         findPreference("qqqun").setOnPreferenceClickListener(preference1 -> {
             /*
@@ -101,6 +142,61 @@ public class SettingsFragment extends PreferenceFragment {
             getActivity().getPackageManager().setComponentEnabledSetting(getAlias(), getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             return true;
         });
+
+        try {
+            if (PMEnabled) {
+                PackageManager pm = getActivity().getPackageManager();
+            }
+            JSONArray jsonArray = new JSONArray(getAssetsString("packages.json"));
+            for (int i=0;i<jsonArray.length();i++) {
+                String packageName = jsonArray.getJSONObject(i).getString("app");
+                if (PMEnabled) {
+                    PackageInfo packageInfo;
+                    try {
+                        packageInfo = getActivity().getPackageManager().getPackageInfo(packageName, 0);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        packageInfo = null;
+                        e.printStackTrace();
+                    }
+                    if(packageInfo == null) continue;
+                }
+                SwitchPreference switchPreference = new SwitchPreference(getActivity(),null);
+                switchPreference.setChecked(true);
+                switchPreference.setTitle(jsonArray.getJSONObject(i).getString("name"));
+                switchPreference.setSummary(packageName);
+                switchPreference.setKey(packageName+".enabled");
+                ((PreferenceScreen) findPreference("app")).addPreference(switchPreference);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        findPreference("connect").setOnPreferenceClickListener(preference1 -> {
+            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SENDTO,Uri.parse("mailto:liziyuan0720@gmail.com")),"发送邮件"));
+            return true;
+        });
+
+        findPreference("github2").setOnPreferenceClickListener(preference1 -> {
+            Intent localIntent = new Intent("android.intent.action.VIEW");
+            localIntent.setData(Uri.parse("https://github.com/Qiwu2542284182/MusicNotification"));
+            startActivity(localIntent);
+            return true;
+        });
+
+        findPreference("alipay").setOnPreferenceClickListener(preference1 -> {
+            Intent localIntent = new Intent();
+            localIntent.setAction("android.intent.action.VIEW");
+            localIntent.setData(Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + "https://qr.alipay.com/fkx00337aktbgg6hgq64ae2?t=1542355035868"));
+            if (localIntent.resolveActivity(getActivity().getPackageManager()) != null)
+            {
+                startActivity(localIntent);
+                return true;
+            }
+            localIntent.setData(Uri.parse("https://qr.alipay.com/fkx00337aktbgg6hgq64ae2?t=1542355035868".toLowerCase()));
+            startActivity(localIntent);
+            return true;
+        });
+
     }
 
     private boolean getEnable() {
@@ -117,4 +213,20 @@ public class SettingsFragment extends PreferenceFragment {
     private ComponentName getAlias() {
         return new ComponentName(getActivity(), MainActivity.class.getName() + "Alias");
     }
+
+    private String getAssetsString(String fileName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            BufferedReader bf = new BufferedReader(new InputStreamReader(
+                    getActivity().getAssets().open(fileName), StandardCharsets.UTF_8) );
+            String line;
+            while ((line = bf.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
 }

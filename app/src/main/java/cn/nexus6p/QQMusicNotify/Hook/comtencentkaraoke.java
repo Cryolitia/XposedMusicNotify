@@ -17,17 +17,17 @@ public class comtencentkaraoke extends BasicViewNotification {
     @Override
     public void init() {
         Class playInfoClazz = XposedHelpers.findClass("com.tencent.karaoke.common.media.player.PlaySongInfo",classLoader);
-        XposedHelpers.findAndHookMethod("com.tencent.karaoke.common.media.t", classLoader, "a", Context.class, playInfoClazz, int.class, new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod("com.tencent.karaoke.common.media.n", classLoader, "a", Context.class, playInfoClazz, int.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 context = (Context) param.args[0];
                 Parcelable playSongInfo = (Parcelable) param.args[1];
                 oldNotification = (Notification) param.getResult();
-                titleID = 0x7f0f12a8;
-                textID = 0x7f0f12a9;
-                bitmapID = 0x7f0f12a7;
-                iconID = 0x7f0209e3;
+                titleID = 0x7f0914e1;
+                textID = 0x7f0914df;
+                bitmapID = 0x7f0914dc;
+                iconID = 0x7f080b4c;
                 statue = ((int)param.args[2])==8;
                 if (mTOKEN==null) mTOKEN = new MediaSession(context,"Karaoke media button").getSessionToken();
                 token = mTOKEN;

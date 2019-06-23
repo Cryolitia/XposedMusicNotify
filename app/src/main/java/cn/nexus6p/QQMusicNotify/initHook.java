@@ -11,6 +11,8 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import me.qiwu.MusicNotification.NotificationHook;
+
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class initHook implements IXposedHookLoadPackage {
@@ -40,6 +42,14 @@ public class initHook implements IXposedHookLoadPackage {
                     hookInterface.setClassLoader(classLoader).init();
                 }
             });
+            return;
+        }
+        if (xSharedPreferences.getBoolean("styleModify",false)) {
+            try {
+                new NotificationHook().init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
