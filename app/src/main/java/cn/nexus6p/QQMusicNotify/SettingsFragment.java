@@ -1,12 +1,12 @@
 package cn.nexus6p.QQMusicNotify;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,17 +15,18 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.util.Log;
 import android.widget.Toast;
+
+import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
+;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Objects;
 
 import static android.content.Context.MODE_WORLD_READABLE;
@@ -147,7 +148,7 @@ public class SettingsFragment extends PreferenceFragment {
             if (PMEnabled) {
                 PackageManager pm = getActivity().getPackageManager();
             }
-            JSONArray jsonArray = new JSONArray(getAssetsString("packages.json"));
+            JSONArray jsonArray = GeneralTools.getSupportPackages(getContext());
             for (int i=0;i<jsonArray.length();i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
                 if (PMEnabled) {
@@ -166,6 +167,26 @@ public class SettingsFragment extends PreferenceFragment {
                 switchPreference.setSummary(packageName);
                 switchPreference.setKey(packageName+".enabled");
                 ((PreferenceScreen) findPreference("app")).addPreference(switchPreference);
+            }
+            boolean showNetease = false;
+            try {
+                showNetease = !PMEnabled || getActivity().getPackageManager().getPackageInfo("com.netease.cloudmusic", 0)!=null;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (showNetease) {
+                Preference Preference = new Preference(getActivity(),null);
+                Preference.setTitle("网易云音乐");
+                Preference.setSummary("com.netease.cloudmusic");
+                Preference.setOnPreferenceClickListener(preference1 -> {
+                    Shell.Result result = Shell.su("am start -n com.netease.cloudmusic/com.netease.cloudmusic.activity.SettingActivity").exec();
+                    if (result.isSuccess()) Toast.makeText(getContext(),"请在设置中通知栏样式设置为系统样式",Toast.LENGTH_LONG).show();
+                    else {
+                        Toast.makeText(getContext(),"请检查root权限："+result.getErr().toString(),Toast.LENGTH_LONG).show();
+                    }
+                    return true;
+                });
+                ((PreferenceScreen) findPreference("app")).addPreference(Preference);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,6 +218,11 @@ public class SettingsFragment extends PreferenceFragment {
             return true;
         });
 
+        findPreference("version").setOnPreferenceClickListener(preference1 -> {
+            getJsonFromInternet();
+            return true;
+        });
+        getJsonFromInternet();
     }
 
     private boolean getEnable() {
@@ -214,19 +240,71 @@ public class SettingsFragment extends PreferenceFragment {
         return new ComponentName(getActivity(), MainActivity.class.getName() + "Alias");
     }
 
-    private String getAssetsString(String fileName) {
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            BufferedReader bf = new BufferedReader(new InputStreamReader(
-                    getActivity().getAssets().open(fileName), StandardCharsets.UTF_8) );
-            String line;
-            while ((line = bf.readLine()) != null) {
-                stringBuilder.append(line);
+    //抄的https://www.jianshu.com/p/4e12da9866a0
+    private void getJsonFromInternet () {
+        final String url = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/version.json";
+        if (!((SwitchPreference)findPreference("network")).isChecked()) {
+            Toast.makeText(getContext(),"联网已禁用，无法检查新版本",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new Thread(() -> {
+            try {
+                HttpURLConnection conn=(HttpURLConnection) new URL(url).openConnection();
+                conn.setConnectTimeout(3000);
+                conn.setRequestMethod("GET");
+                if (conn.getResponseCode()==200) {
+                    InputStream inputStream=conn.getInputStream();
+                    byte[]jsonBytes=convertIsToByteArray(inputStream);
+                    String json=new String(jsonBytes);
+                    if (json.length()>0) {
+                        getActivity().runOnUiThread(() -> {
+                            try {
+                                JSONObject jsonObject = new JSONObject(json);
+                                int versionCode = jsonObject.optInt("code");
+                                int nowCode = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionCode;
+                                if (versionCode>nowCode) {
+                                    new AlertDialog.Builder(getContext())
+                                            .setTitle("发现新版本")
+                                            .setMessage(jsonObject.optString("name"))
+                                            .setNegativeButton("取消",null)
+                                            .setPositiveButton("下载", (dialogInterface, i) -> {
+                                                Intent localIntent = new Intent("android.intent.action.VIEW");
+                                                localIntent.setData(Uri.parse("https://github.com/singleNeuron/XposedMusicNotify/releases"));
+                                                startActivity(localIntent);
+                                            })
+                                            .create()
+                                            .show();
+                                } else getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"检查更新成功，当前已是最新版本",Toast.LENGTH_SHORT).show());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        return;
+                    }
+                }
+                getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错",Toast.LENGTH_SHORT).show());
+            } catch (Exception e) {
+                e.printStackTrace();
+                getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错："+e.getMessage(),Toast.LENGTH_LONG).show());
             }
+        }).start();
+
+    }
+
+    private byte[] convertIsToByteArray (InputStream inputStream) {
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length=0;
+        try {
+            while ((length=inputStream.read(buffer))!=-1) {
+                baos.write(buffer, 0, length);
+            }
+            inputStream.close();
+            baos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return stringBuilder.toString();
+        return baos.toByteArray();
     }
 
 }

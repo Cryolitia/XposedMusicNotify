@@ -39,10 +39,9 @@
             android:summary="开启后可提供更好的体验与适配，不会上传至服务器"
             android:title="允许读取已安装的应用" />
         <SwitchPreference
-            android:defaultValue="false"
-            android:enabled="false"
+            android:defaultValue="true"
             android:key="network"
-            android:summary="自动获取最新的适配文件...（功能建设中）"
+            android:summary="自动获取最新的适配文件"
             android:title="允许联网" />
     </PreferenceCategory>
     <PreferenceCategory android:title="更多">

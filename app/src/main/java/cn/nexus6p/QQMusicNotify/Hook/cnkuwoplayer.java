@@ -1,18 +1,25 @@
 package cn.nexus6p.QQMusicNotify.Hook;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.session.MediaSession;
-import android.util.Log;
+
+import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.BasicNotification;
+import cn.nexus6p.QQMusicNotify.GeneralTools;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.getObjectField;
 
+@Keep
 public class cnkuwoplayer extends BasicNotification {
 
     private static MediaSession.Token mTOKEN;
@@ -24,6 +31,11 @@ public class cnkuwoplayer extends BasicNotification {
             @Override
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    channelID = "music";
+                    NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_DEFAULT);
+                    ((NotificationManager) GeneralTools.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+                }
                 iconID = 0x7f020dca;
                 context = (Context) getObjectField(param.thisObject,"mContext");
                 bitmap = (Bitmap) param.args[0];

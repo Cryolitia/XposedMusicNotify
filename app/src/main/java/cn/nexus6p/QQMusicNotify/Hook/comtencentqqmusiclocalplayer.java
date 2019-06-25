@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.session.MediaSession;
 
+import androidx.annotation.Keep;
+
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import cn.nexus6p.QQMusicNotify.BasicNotification;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
+@Keep
 public class comtencentqqmusiclocalplayer extends BasicNotification {
 
     private static MediaSession.Token mTOKEN;

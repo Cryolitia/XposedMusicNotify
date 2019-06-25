@@ -3,23 +3,19 @@ package cn.nexus6p.QQMusicNotify.Hook;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.session.MediaSession;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.BasicViewNotification;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
+@Keep
 public class comsingclient extends BasicViewNotification {
 
     private static MediaSession.Token mTOKEN;

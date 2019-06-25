@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Parcelable;
+
+import androidx.annotation.Keep;
+
 import cn.nexus6p.QQMusicNotify.BasicViewNotification;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
+@Keep
 public class comtencentkaraoke extends BasicViewNotification {
 
     private static MediaSession.Token mTOKEN;

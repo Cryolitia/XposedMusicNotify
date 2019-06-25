@@ -34,6 +34,7 @@ import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
 import static android.app.Notification.FLAG_NO_CLEAR;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
+import static cn.nexus6p.QQMusicNotify.GeneralTools.getMoudleContext;
 
 public abstract class BasicNotification implements HookInterface {
 
@@ -53,6 +54,7 @@ public abstract class BasicNotification implements HookInterface {
     public Boolean hasExtraAction = false;
     public Intent extraActionIntent;
     public int extraActionIcon;
+    public String channelID;
     private List<Notification.Action> actions = new ArrayList<>();
 
     public abstract void init();
@@ -83,32 +85,7 @@ public abstract class BasicNotification implements HookInterface {
         }
         if (new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("styleModify",false)) {
             RemoteViews remoteViews = getContentView(titleString.toString(),textString.toString());
-            if (Build.VERSION.SDK_INT >= 26 ) {
-                Notification.Builder builder = new Notification.Builder(context)
-                        .setSmallIcon(iconID)
-                        .setContentTitle(titleString)
-                        .setContentText(textString)
-                        .setCategory(NotificationCompat.CATEGORY_STATUS)
-                        .setVisibility(Notification.VISIBILITY_PUBLIC)
-                        .setOngoing(statue)
-                        .setCustomContentView(remoteViews)
-                        .setCustomBigContentView(remoteViews)
-                        .setContentIntent(PendingIntent.getActivity(context, intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-                return builder.build();
-            }
-            NotificationCompat.Builder builder= new NotificationCompat.Builder(context)
-                    .setSmallIcon(iconID)
-                    .setContentTitle(titleString)
-                    .setContentText(textString)
-                    .setCategory(NotificationCompat.CATEGORY_STATUS)
-                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                    .setOngoing(statue)
-                    .setPriority(Notification.PRIORITY_MAX)
-                    .setContent(remoteViews)
-                    .setCustomBigContentView(remoteViews)
-                    .setCustomContentView(remoteViews)
-                    .setContentIntent(PendingIntent.getActivity(context, intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-            return builder.build();
+            return GeneralTools.buildMusicNotificationWithoutAction(context,iconID,titleString,textString,statue,remoteViews,PendingIntent.getActivity(context, intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
         } else {
             Notification.Builder builder = new Notification.Builder(context)
                     .setContentTitle(titleString)
@@ -144,7 +121,7 @@ public abstract class BasicNotification implements HookInterface {
             backgroundColor = colors[0];
             textColor = colors[1];
         }
-        RemoteViews remoteViews = new RemoteViews(getMoudleContext().getPackageName(),R.layout.notifition_layout);
+        RemoteViews remoteViews = new RemoteViews(getMoudleContext(context).getPackageName(),R.layout.notifition_layout);
 
         remoteViews.setTextViewText(R.id.appName,context.getPackageManager().getApplicationLabel(AndroidAppHelper.currentApplicationInfo()));
         remoteViews.setTextViewText(R.id.title,title);
@@ -156,7 +133,7 @@ public abstract class BasicNotification implements HookInterface {
                 R.id.smallIcon,iconID != -1
                         ? getBitmap(context.getDrawable(iconID))
                         //        :null
-                        : getBitmap(getMoudleContext().getDrawable(R.drawable.ic_music))
+                        : getBitmap(getMoudleContext(context).getDrawable(R.drawable.ic_music))
         );
 
         remoteViews.setTextColor(R.id.appName,textColor);
@@ -182,7 +159,7 @@ public abstract class BasicNotification implements HookInterface {
                     actionIconID = android.R.drawable.ic_media_next;
                     break;
             }
-            int id = getMoudleContext().getResources().getIdentifier("ic_" + String.valueOf(i), "id", BuildConfig.APPLICATION_ID);
+            int id = getMoudleContext(context).getResources().getIdentifier("ic_" + String.valueOf(i), "id", BuildConfig.APPLICATION_ID);
             Notification.Action action = actions.get(i);
             remoteViews.setViewVisibility(id, View.VISIBLE);
             remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(context.getResources(), actionIconID));
@@ -192,7 +169,7 @@ public abstract class BasicNotification implements HookInterface {
             // XposedBridge.log("资源："+action.getIcon());
         }
         if (hasExtraAction) {
-            int id = getMoudleContext().getResources().getIdentifier("ic_" + String.valueOf(3), "id", BuildConfig.APPLICATION_ID);
+            int id = getMoudleContext(context).getResources().getIdentifier("ic_" + String.valueOf(3), "id", BuildConfig.APPLICATION_ID);
             Notification.Action action = actions.get(3);
             remoteViews.setViewVisibility(id, View.VISIBLE);
             remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(context.getResources(), extraActionIcon));
@@ -201,16 +178,6 @@ public abstract class BasicNotification implements HookInterface {
             remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
         }
         return remoteViews;
-    }
-
-    private Context getMoudleContext(){
-        Context moudleContext = null;
-        try {
-            moudleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
-        } catch (PackageManager.NameNotFoundException e) {
-            XposedBridge.log(e);
-        }
-        return moudleContext;
     }
 
     private Bitmap getBitmap(Drawable vectorDrawable){

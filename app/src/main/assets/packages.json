@@ -8,11 +8,11 @@
         "name": "轻听"
     },
     {
-        "app": "cn.kuwo.player",
-        "name": "酷我音乐"
-    },
-    {
         "app": "com.sing.client",
         "name": "5Sing"
+    },
+    {
+        "app": "com.tencent.qqmusic",
+        "name": "QQ音乐"
     }
 ]

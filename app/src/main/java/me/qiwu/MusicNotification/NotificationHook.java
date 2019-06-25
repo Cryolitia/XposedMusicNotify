@@ -18,12 +18,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.GeneralTools;
 import cn.nexus6p.QQMusicNotify.R;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
+import static cn.nexus6p.QQMusicNotify.GeneralTools.getContext;
+import static cn.nexus6p.QQMusicNotify.GeneralTools.getMoudleContext;
 
 
 /**
@@ -48,39 +51,10 @@ public class NotificationHook {
                     String subtitle = extras.getString(NotificationCompat.EXTRA_TEXT, "未知艺术家");
                     RemoteViews remoteViews = getContentView(title,subtitle,notification);
                     int resId = getIconId(notification.getSmallIcon()) != -1 ? getIconId(notification.getSmallIcon()) : android.R.drawable.ic_dialog_info;
-
-                    if (Build.VERSION.SDK_INT >= 26 ) {
-                        Notification.Builder builder = new Notification.Builder(getContext(),notification.getChannelId())
-                                .setSmallIcon(notification.getSmallIcon())
-                                .setContentTitle(title)
-                                .setContentText(subtitle)
-                                .setCategory(NotificationCompat.CATEGORY_STATUS)
-                                .setVisibility(Notification.VISIBILITY_PUBLIC)
-                                .setOngoing((new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false))||(notification.flags == Notification.FLAG_ONGOING_EVENT))
-                                .setCustomContentView(remoteViews)
-                                .setCustomBigContentView(remoteViews)
-                                .setContentIntent(notification.contentIntent)
-                                .setDeleteIntent(notification.deleteIntent);
-                        Notification newNotification = builder.build();
-                        param.setResult(newNotification);
-                        return;
-                    }
-                    NotificationCompat.Builder builder= new NotificationCompat.Builder(getContext())
-                            .setSmallIcon(resId)
-                            .setContentTitle(title)
-                            .setContentText(subtitle)
-                            .setCategory(NotificationCompat.CATEGORY_STATUS)
-                            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                            .setOngoing(notification.flags == Notification.FLAG_ONGOING_EVENT)
-                            .setPriority(Notification.PRIORITY_MAX)
-                            .setContent(remoteViews)
-                            .setCustomBigContentView(remoteViews)
-                            .setCustomContentView(remoteViews)
-                            .setContentIntent(notification.contentIntent)
-                            .setDeleteIntent(notification.deleteIntent);
-                    Notification newNotification = builder.build();
-                    param.setResult(newNotification);
-
+                    param.setResult(GeneralTools.buildMusicNotificationWithoutAction(
+                            getContext(),resId,title,subtitle
+                            ,new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT)
+                            ,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent));
                 }
             }
         });
@@ -123,7 +97,7 @@ public class NotificationHook {
         typedArray.recycle();
         if (NotificationCompat.getActionCount(notification)>0){
             for (int i = 0;i<NotificationCompat.getActionCount(notification);i++){
-                int id = getMoudleContext(getContext()).getResources().getIdentifier("ic_"+String.valueOf(i),"id",BuildConfig.APPLICATION_ID);
+                int id = getMoudleContext().getResources().getIdentifier("ic_"+String.valueOf(i),"id",BuildConfig.APPLICATION_ID);
                 NotificationCompat.Action action = NotificationCompat.getAction(notification,i);
                 remoteViews.setViewVisibility(id, View.VISIBLE);
 
@@ -140,20 +114,6 @@ public class NotificationHook {
             XposedBridge.log("没有Action");
         }
         return remoteViews;
-    }
-
-    private Context getMoudleContext(Context context){
-        Context moudleContext = null;
-        try {
-            moudleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
-        } catch (PackageManager.NameNotFoundException e) {
-            XposedBridge.log(e);
-        }
-        return moudleContext;
-    }
-
-    private Context getContext(){
-        return AndroidAppHelper.currentApplication().getApplicationContext();
     }
 
     private int getIconId(Icon icon){

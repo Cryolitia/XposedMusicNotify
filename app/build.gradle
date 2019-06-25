@@ -10,9 +10,13 @@ android {
         targetSdkVersion 23
     }
 
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         compileOptions {
@@ -26,4 +30,5 @@ dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.palette:palette:1.0.0'
+    implementation "com.github.topjohnwu.libsu:core:2.5.0"
 }

@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.Keep;
+
+@Keep
 class HookStatue {
     static Boolean isEnabled() {
         Log.d("QQNotify","模块未激活");
