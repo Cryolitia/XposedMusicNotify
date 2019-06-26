@@ -3,15 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.nexus6p.QQMusicNotify"
     android:installLocation="internalOnly"
-    android:versionCode="10"
-    android:versionName="2.1">
+    android:versionCode="11"
+    android:versionName="2.2">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="@string/app_name"
         tools:ignore="GoogleAppIndexingWarning"
         android:allowBackup="false"
         android:icon="@drawable/icon">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
@@ -35,5 +36,8 @@
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
     </application>
 </manifest>

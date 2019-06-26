@@ -5,30 +5,20 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.media.session.MediaSession;
-import android.os.Build;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
-
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import me.qiwu.MusicNotification.ColorUtil;
-import me.qiwu.MusicNotification.NotificationHook;
 
 import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
 import static android.app.Notification.FLAG_NO_CLEAR;
@@ -159,7 +149,7 @@ public abstract class BasicNotification implements HookInterface {
                     actionIconID = android.R.drawable.ic_media_next;
                     break;
             }
-            int id = getMoudleContext(context).getResources().getIdentifier("ic_" + String.valueOf(i), "id", BuildConfig.APPLICATION_ID);
+            int id = getMoudleContext(context).getResources().getIdentifier("ic_" + i, "id", BuildConfig.APPLICATION_ID);
             Notification.Action action = actions.get(i);
             remoteViews.setViewVisibility(id, View.VISIBLE);
             remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(context.getResources(), actionIconID));

@@ -2,8 +2,6 @@ package me.qiwu.MusicNotification;
 
 import android.app.AndroidAppHelper;
 import android.app.Notification;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -97,7 +95,7 @@ public class NotificationHook {
         typedArray.recycle();
         if (NotificationCompat.getActionCount(notification)>0){
             for (int i = 0;i<NotificationCompat.getActionCount(notification);i++){
-                int id = getMoudleContext().getResources().getIdentifier("ic_"+String.valueOf(i),"id",BuildConfig.APPLICATION_ID);
+                int id = getMoudleContext().getResources().getIdentifier("ic_"+ i,"id",BuildConfig.APPLICATION_ID);
                 NotificationCompat.Action action = NotificationCompat.getAction(notification,i);
                 remoteViews.setViewVisibility(id, View.VISIBLE);
 

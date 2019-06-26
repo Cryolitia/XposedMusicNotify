@@ -29,6 +29,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
+import de.psdev.licensesdialog.licenses.License;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
+
 import static android.content.Context.MODE_WORLD_READABLE;
 
 public class SettingsFragment extends PreferenceFragment {
@@ -145,9 +152,6 @@ public class SettingsFragment extends PreferenceFragment {
         });
 
         try {
-            if (PMEnabled) {
-                PackageManager pm = getActivity().getPackageManager();
-            }
             JSONArray jsonArray = GeneralTools.getSupportPackages(getContext());
             for (int i=0;i<jsonArray.length();i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
@@ -222,6 +226,58 @@ public class SettingsFragment extends PreferenceFragment {
             getJsonFromInternet();
             return true;
         });
+
+        findPreference("sdcard").setOnPreferenceChangeListener((preference1, o) -> {
+            findPreference("locate").setEnabled((boolean)o);
+            return true;
+        });
+
+        findPreference("locate").setEnabled(((SwitchPreference)findPreference("sdcard")).isChecked());
+
+        findPreference("styleModify").setOnPreferenceChangeListener((preference1, o) -> {
+            findPreference("always_show").setEnabled((boolean)o);
+            return true;
+        });
+
+        findPreference("always_show").setEnabled(((SwitchPreference)findPreference("styleModify")).isChecked());
+
+        findPreference("openSource").setOnPreferenceClickListener(preference1 -> {
+            final Notices notices = new Notices();
+            notices.addNotice(new Notice("给播放器原生的音乐通知","https://github.com/singleNeuron/XposedMusicNotify","Copyright 2019 神经元",new GnuLesserGeneralPublicLicense3()));
+            notices.addNotice(new Notice("AOSP","https://source.android.com/license","AOSP",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("XposedBridge","https://github.com/rovo89/XposedBridge","Copyright 2013 rovo89, Tungstwenty",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("MusicNotification", "https://github.com/Qiwu2542284182/MusicNotification", "祈无", new License() {
+                @Override
+                public String getName() {
+                    return "PY License";
+                }
+                @Override
+                public String readSummaryTextFromResources(Context context) {
+                    return "PY License\n已和原作者py并获得使用授权";
+                }
+                @Override
+                public String readFullTextFromResources(Context context) {
+                    return "null";
+                }
+                @Override
+                public String getVersion() {
+                    return null;
+                }
+                @Override
+                public String getUrl() {
+                    return null;
+                }
+            }));
+            notices.addNotice(new Notice("MediaNotification","https://github.com/Soptq/MediaNotification/tree/Coolapk","Soptq",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("QQ净化","https://github.com/zpp0196/QQPurify","zpp0196",new ApacheSoftwareLicense20()));
+            new LicensesDialog.Builder(Objects.requireNonNull(getContext()))
+                    .setNotices(notices)
+                    .setIncludeOwnLicense(true)
+                    .build()
+                    .show();
+            return true;
+        });
+
         getJsonFromInternet();
     }
 
@@ -294,7 +350,7 @@ public class SettingsFragment extends PreferenceFragment {
     private byte[] convertIsToByteArray (InputStream inputStream) {
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
-        int length=0;
+        int length;
         try {
             while ((length=inputStream.read(buffer))!=-1) {
                 baos.write(buffer, 0, length);

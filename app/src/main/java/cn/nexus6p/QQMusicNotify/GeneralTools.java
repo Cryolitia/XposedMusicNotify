@@ -4,7 +4,6 @@ import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.widget.RemoteViews;
@@ -70,10 +69,6 @@ final public class GeneralTools {
                 .setContentIntent(contentIntent)
                 .setDeleteIntent(deleteIntent);
         return builder.build();
-    }
-
-    public static Notification buildMusicNotificationWithoutAction (Context context, int iconID, CharSequence titleString, CharSequence textString, boolean statue, RemoteViews remoteViews, PendingIntent contentIntent) {
-        return GeneralTools.buildMusicNotificationWithoutAction(context,iconID,titleString,textString,statue,remoteViews,contentIntent,null,null);
     }
 
     public static JSONArray getSupportPackages (Context context) {

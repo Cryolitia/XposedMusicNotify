@@ -24,7 +24,7 @@ public class initHook implements IXposedHookLoadPackage {
     private XSharedPreferences xSharedPreferences;
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
         if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
             findAndHookMethod("cn.nexus6p.QQMusicNotify.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
             return;

@@ -8,8 +8,6 @@
                 android:title="在这里对每个播放器进行个性化设置"/>
         </PreferenceScreen>
         <PreferenceScreen
-            android:defaultValue="false"
-            android:key="styleModify"
             android:summary="适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用"
             android:title="全局样式修改">
             <PreferenceCategory android:title="模块设置">
@@ -27,6 +25,11 @@
                 <Preference android:title="支持我" android:key="alipay" />
             </PreferenceCategory>
         </PreferenceScreen>
+        <EditTextPreference
+            android:defaultValue="/sdcard/MusicNotification"
+            android:key="locate"
+            android:summary="/sdcard/MusicNotification"
+            android:title="配置文件存储路径（请确保路径对所有应用可读！）" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="showIcon"
@@ -43,6 +46,11 @@
             android:key="network"
             android:summary="自动获取最新的适配文件"
             android:title="允许联网" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="sdcard"
+            android:summary="在本地存储配置文件"
+            android:title="允许访问外部存储" />
     </PreferenceCategory>
     <PreferenceCategory android:title="更多">
         <Preference
@@ -71,5 +79,8 @@
             android:key="github"
             android:summary="https://github.com/singleNeuron/QQMusicNotify"
             android:title="项目地址" />
+        <Preference
+            android:key="openSource"
+            android:title="开放源代码许可" />
     </PreferenceCategory>
 </PreferenceScreen>
