@@ -10,7 +10,7 @@ import androidx.annotation.Keep;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
-import cn.nexus6p.QQMusicNotify.BasicNotification;
+import cn.nexus6p.QQMusicNotify.Base.BasicNotification;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 

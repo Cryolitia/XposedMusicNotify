@@ -1,9 +1,8 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Base;
 
 import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -17,8 +16,11 @@ import android.widget.RemoteViews;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.GeneralTools;
 import de.robv.android.xposed.XSharedPreferences;
 import me.qiwu.MusicNotification.ColorUtil;
+import cn.nexus6p.QQMusicNotify.R;
 
 import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
 import static android.app.Notification.FLAG_NO_CLEAR;
@@ -26,9 +28,8 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 import static cn.nexus6p.QQMusicNotify.GeneralTools.getMoudleContext;
 
-public abstract class BasicNotification implements HookInterface {
+public abstract class BasicNotification extends BasicInit {
 
-    public Context context;
     public CharSequence titleString;
     public CharSequence textString;
     public int iconID;
@@ -39,7 +40,6 @@ public abstract class BasicNotification implements HookInterface {
     public Intent playIntent;
     public Bitmap bitmap;
     public Intent contentIntent;
-    public ClassLoader classLoader;
     public int intentRequestID = 0;
     public Boolean hasExtraAction = false;
     public Intent extraActionIntent;
@@ -48,12 +48,6 @@ public abstract class BasicNotification implements HookInterface {
     private List<Notification.Action> actions = new ArrayList<>();
 
     public abstract void init();
-
-    @Override
-    public final BasicNotification setClassLoader(ClassLoader mClassLoader) {
-        classLoader = mClassLoader;
-        return this;
-    }
 
     public final Notification build() {
         Notification.Action previousAction = new Notification.Action.Builder(

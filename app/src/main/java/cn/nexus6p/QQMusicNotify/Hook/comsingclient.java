@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Keep;
 
-import cn.nexus6p.QQMusicNotify.BasicViewNotification;
+import cn.nexus6p.QQMusicNotify.Base.BasicViewNotification;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 

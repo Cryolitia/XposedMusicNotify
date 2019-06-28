@@ -21,7 +21,6 @@ import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,39 +43,14 @@ public class SettingsFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.settings);
-        findPreference("author").setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent();
-            try {
-                //intent.setClassName("com.coolapk.market", "com.coolapk.market.view.AppLinkActivity");
-                intent.setAction("android.intent.action.VIEW");
-                intent.setData(Uri.parse("coolmarket://u/603406"));
-                startActivity(intent);
-            } catch (Exception e) {
-                Toast.makeText(getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-            return true;
-        });
-        findPreference("github").setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent();
-            intent.setAction("android.intent.action.VIEW");
-            intent.setData(Uri.parse("https://github.com/singleNeuron/QQMusicNotify"));
-            startActivity(intent);
-            return true;
-        });
-        findPreference("qiwu").setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent();
-            try {
-                //intent.setClassName("com.coolapk.market", "com.coolapk.market.view.AppLinkActivity");
-                intent.setAction("android.intent.action.VIEW");
-                intent.setData(Uri.parse("coolmarket://u/753785"));
-                startActivity(intent);
-            } catch (Exception e) {
-                Toast.makeText(getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-            return true;
-        });
+
+        GeneralTools.jumpToLink(this,"author","u/603406",true);
+        GeneralTools.jumpToLink(this,"github","https://github.com/singleNeuron/QQMusicNotify",false);
+        GeneralTools.jumpToLink(this,"qiwu","u/753785",true);
+        GeneralTools.jumpToLink(this,"magiskMoudle","feed/11103560",true);
+        GeneralTools.jumpToLink(this,"magiskMoudle2","feed/11103560",true);
+        GeneralTools.jumpToLink(this,"github2","https://github.com/Qiwu2542284182/MusicNotification",false);
+
         Preference preference = findPreference("statue");
         if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
         else if (HookStatue.isExpModuleActive(getActivity())) {
@@ -137,6 +111,7 @@ public class SettingsFragment extends PreferenceFragment {
             } catch (Exception e) {
                 ClipboardManager cmb = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData mClipData = ClipData.newPlainText("QQ群", "951343825");
+                assert cmb != null;
                 cmb.setPrimaryClip(mClipData);
                 Toast.makeText(getActivity(),"已复制到剪贴板",Toast.LENGTH_SHORT).show();
             }
@@ -155,17 +130,17 @@ public class SettingsFragment extends PreferenceFragment {
             JSONArray jsonArray = GeneralTools.getSupportPackages(getContext());
             for (int i=0;i<jsonArray.length();i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
+                SwitchPreference switchPreference = new SwitchPreference(getActivity(),null);
                 if (PMEnabled) {
                     PackageInfo packageInfo;
                     try {
                         packageInfo = getActivity().getPackageManager().getPackageInfo(packageName, 0);
                     } catch (PackageManager.NameNotFoundException e) {
                         packageInfo = null;
-                        e.printStackTrace();
                     }
                     if(packageInfo == null) continue;
+                    else switchPreference.setIcon(getActivity().getPackageManager().getApplicationIcon(packageName));
                 }
-                SwitchPreference switchPreference = new SwitchPreference(getActivity(),null);
                 switchPreference.setChecked(true);
                 switchPreference.setTitle(jsonArray.getJSONObject(i).getString("name"));
                 switchPreference.setSummary(packageName);
@@ -181,6 +156,11 @@ public class SettingsFragment extends PreferenceFragment {
             if (showNetease) {
                 Preference Preference = new Preference(getActivity(),null);
                 Preference.setTitle("网易云音乐");
+                try {
+                    Preference.setIcon(getActivity().getPackageManager().getApplicationIcon("com.netease.cloudmusic"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Preference.setSummary("com.netease.cloudmusic");
                 Preference.setOnPreferenceClickListener(preference1 -> {
                     Shell.Result result = Shell.su("am start -n com.netease.cloudmusic/com.netease.cloudmusic.activity.SettingActivity").exec();
@@ -198,13 +178,6 @@ public class SettingsFragment extends PreferenceFragment {
 
         findPreference("connect").setOnPreferenceClickListener(preference1 -> {
             startActivity(Intent.createChooser(new Intent(Intent.ACTION_SENDTO,Uri.parse("mailto:liziyuan0720@gmail.com")),"发送邮件"));
-            return true;
-        });
-
-        findPreference("github2").setOnPreferenceClickListener(preference1 -> {
-            Intent localIntent = new Intent("android.intent.action.VIEW");
-            localIntent.setData(Uri.parse("https://github.com/Qiwu2542284182/MusicNotification"));
-            startActivity(localIntent);
             return true;
         });
 
@@ -227,19 +200,8 @@ public class SettingsFragment extends PreferenceFragment {
             return true;
         });
 
-        findPreference("sdcard").setOnPreferenceChangeListener((preference1, o) -> {
-            findPreference("locate").setEnabled((boolean)o);
-            return true;
-        });
-
-        findPreference("locate").setEnabled(((SwitchPreference)findPreference("sdcard")).isChecked());
-
-        findPreference("styleModify").setOnPreferenceChangeListener((preference1, o) -> {
-            findPreference("always_show").setEnabled((boolean)o);
-            return true;
-        });
-
-        findPreference("always_show").setEnabled(((SwitchPreference)findPreference("styleModify")).isChecked());
+        GeneralTools.bindPreference(this,"sdcard","locate");
+        GeneralTools.bindPreference(this,"styleModify","always_show");
 
         findPreference("openSource").setOnPreferenceClickListener(preference1 -> {
             final Notices notices = new Notices();

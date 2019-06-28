@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
@@ -41,12 +42,14 @@ public class NotificationHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-
                 Notification notification = (Notification)param.getResult();
                 if (isMediaNotification(notification)){
                     Bundle extras = NotificationCompat.getExtras(notification);
-                    String title = extras.getString(NotificationCompat.EXTRA_TITLE, "未知音乐");
-                    String subtitle = extras.getString(NotificationCompat.EXTRA_TEXT, "未知艺术家");
+                    Log.d("MusicNotification",extras.toString());
+                    String title = extras.get(NotificationCompat.EXTRA_TITLE).toString();
+                    String subtitle = extras.get(NotificationCompat.EXTRA_TEXT).toString();
+                    title = title==null|| title.equals("") ? "未知音乐":title;
+                    subtitle = subtitle==null || subtitle.equals("") ? "未知艺术家":subtitle;
                     RemoteViews remoteViews = getContentView(title,subtitle,notification);
                     int resId = getIconId(notification.getSmallIcon()) != -1 ? getIconId(notification.getSmallIcon()) : android.R.drawable.ic_dialog_info;
                     param.setResult(GeneralTools.buildMusicNotificationWithoutAction(

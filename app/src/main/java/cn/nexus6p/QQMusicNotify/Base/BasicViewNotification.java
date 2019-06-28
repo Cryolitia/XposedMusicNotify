@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Base;
 
 import android.app.Notification;
 import android.graphics.drawable.BitmapDrawable;

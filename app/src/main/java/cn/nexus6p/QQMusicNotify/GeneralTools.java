@@ -4,9 +4,14 @@ import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -91,7 +96,7 @@ final public class GeneralTools {
         } return false;
     }
 
-    private static String getAssetsString(String fileName, Context context) {
+    public static String getAssetsString(String fileName, Context context) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             BufferedReader bf = new BufferedReader(new InputStreamReader(
@@ -104,6 +109,41 @@ final public class GeneralTools {
             e.printStackTrace();
         }
         return stringBuilder.toString();
+    }
+
+    static void bindPreference (PreferenceFragment fragment, String string1, String... strings) {
+        fragment.findPreference(string1).setOnPreferenceChangeListener((preference1, o) -> {
+            for (String string : strings) {
+                fragment.findPreference(string).setEnabled((boolean) o);
+            }
+            return true;
+        });
+        for (String string : strings) {
+            fragment.findPreference(string).setEnabled(((SwitchPreference)fragment.findPreference(string1)).isChecked());
+        }
+    }
+
+    static void jumpToLink (PreferenceFragment fragment,String preference,String link,boolean isCoolapk) {
+        fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.VIEW");
+            if (isCoolapk) {
+                intent.setData(Uri.parse(link));
+                try {
+                    intent.setData(Uri.parse("coolmarket://"+link));
+                    fragment.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(fragment.getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
+                    intent.setData(Uri.parse("www.coolapk.com/"+link));
+                    fragment.startActivity(intent);
+                    e.printStackTrace();
+                }
+            } else {
+                intent.setData(Uri.parse(link));
+                fragment.startActivity(intent);
+            }
+            return true;
+        });
     }
 
 }

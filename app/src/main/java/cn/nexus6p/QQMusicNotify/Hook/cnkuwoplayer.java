@@ -10,7 +10,7 @@ import android.media.session.MediaSession;
 
 import androidx.annotation.Keep;
 
-import cn.nexus6p.QQMusicNotify.BasicNotification;
+import cn.nexus6p.QQMusicNotify.Base.BasicNotification;
 import cn.nexus6p.QQMusicNotify.GeneralTools;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
