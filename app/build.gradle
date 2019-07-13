@@ -16,9 +16,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            zipAlignEnabled true
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         compileOptions {
@@ -36,4 +36,6 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation "com.github.topjohnwu.libsu:core:2.5.0"
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.jayway.jsonpath:json-path:2.4.0'
 }

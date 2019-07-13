@@ -1,0 +1,159 @@
+<resources>
+    <string name="title_settings">自定义设置</string>
+    <string name="title_players">播放器</string>
+    <string name="title_supported_players">支持的播放器</string>
+    <string name="title_all">所有</string>
+    <string name="title_help">帮助</string>
+    <string name="title_media_notification">开启媒体通知</string>
+    <string name="title_high_contrast_text">高对比度文字/图片</string>
+    <string name="title_color_method">取色模式</string>
+    <string name="title_custom_color">默认取色</string>
+    <string name="app_name_spotify">Spotify</string>
+    <string name="desc_check_permission">如果您的设备获得了Root访问权限，那么您可以通过某种方法授予应用程序 android.permission.UPDATE_APP_OPS_STATS 权限来使应用可以自行阻止音乐应用程序的通知，但 android.permission.UPDATE_APP_OPS_STATS 权限被保护在"签名保护"下，所以目前不可能在这个应用程序中包含该功能。</string>
+    <string name="title_grant_permission">授予存储权限</string>
+    <string name="desc_storage">为了获取音乐的封面图片，应用需要获得储存卡储存权限。 为了授予应用该权限，请点击"允许"按钮。</string>
+    <string name="desc_receiver">如果您没有Root访问权限，但仍然可以自行阻止音乐应用程序的通知，并通过切换下面的开关告诉应用程序去完全依赖广播接收器。这可能会导致应用程序在与某些音乐应用程序一起使用时变得不稳定和不可靠，并且控制按钮可能无法正常工作，因为应用程序无法通过音乐应用程序的通知触发它们。</string>
+    <string name="title_receiver">使用广播接收器</string>
+    <string name="msg_permission_granted">成功！权限已经被授予</string>
+    <string name="msg_app_ops_denied">android.permission.UPDATE_APP_OPS_STATS 权限没有被授予</string>
+    <string name="title_check_permission">检查权限</string>
+    <string name="title_last_fm">从last.fm获取音乐封面</string>
+    <string name="msg_readme_error">不能获取ReadMe,网络错误</string>
+    <string name="title_default_player">默认音乐播放器</string>
+    <string name="desc_default_player">如果应用程序在点击通知时无法检测到音乐播放器，则可以设置默认应用程序来启动。</string>
+    <string name="title_always_dismissible">始终使应用程序通知不可以被划去</string>
+    <string name="title_kill_process">划去通知后关闭应用程序(不安全)</string>
+    <string name="msg_reflection_error">不能再反射过程中发送关键事件: %s</string>
+    <string name="title_media_controls">音乐控制方法(不可靠)</string>
+    <string name="desc_media_controls">这使您可以指定一种方法来控制音乐播放器，如果应用程序无法找出哪个应用程序正在播放音乐，或者没有任何其他方式来控制它。</string>
+    <string name="action_load_all_apps">加载所有应用</string>
+    <string name="title_album_art">显示专辑图片</string>
+    <string name="action_github">游览Github库</string>
+    <string name="title_inverse_text">使用反转的文字颜色</string>
+    <string name="title_contributors">贡献者</string>
+    <string name="action_about">关于</string>
+    <string name="msg_vuk">感谢 legendary Vukašin Anđelković 制作漂亮的APP图标</string>
+    <string name="title_libraries">开源库</string>
+    <string name="title_glide">Glide</string>
+    <string name="desc_glide">An image loading and caching library for Android focused on smooth scrolling.</string>
+    <string name="msg_open_source">也想贡献代码? 这个应用程序在Github上开源</string>
+    <string name="title_cancel_original_notification">尝试正常地关闭音乐应用程序通知</string>
+    <string name="title_appearance_settings">外观设置</string>
+    <string name="title_settings_behavior">行为设置</string>
+    <string name="title_force_md_icons">强制MD播放图标</string>
+    <string name="title_external_storage">外置储存</string>
+    <string name="action_open">打开</string>
+    <string name="action_set_default">默认</string>
+    <string name="title_default">默认</string>
+    <string name="title_markwon">Markwon</string>
+    <string name="desc_markwon">A library for Android that renders markdown as system-native Spannables.</string>
+    <string name="title_welcome">欢迎</string>
+    <string name="desc_tutorial">媒体通知是一款可以在Android Oreo以前的设备上重现Android Oreo丰富多彩的媒体通知的应用程序。 请注意，这个应用程序不会取代其他应用程序的通知; 它会创建自己的通知。 要查看所有可用选项和用例，请访问“帮助”部分或按“了解更多”。</string>
+    <string name="title_learn_more">了解更多</string>
+    <string name="title_got_it">明白</string>
+    <string name="title_tutorial_players">应用程序单独设置</string>
+    <string name="desc_tutorial_player">该列表列出了手机上当前安装的所有应用程序。 每个应用程序右侧的开关允许您在应用程序播放时启用或禁用媒体通知。 如果关闭该开关，媒体通知将不会做任何事情，因为无法从该应用程序获取任何通知或广播。</string>
+    <string name="desc_tutorial_players_supported">“支持的播放器”部分包含媒体通知正式支持的应用程序。 “所有”部分包含其他所有内容。 不幸的是，由于目前还没有确定应用程序是否播放音乐的可靠方法，因此在该列表中仅包括音乐播放器是不可能的。</string>
+    <string name="desc_tutorial_players_default">将应用程序设置为默认播放器将导致媒体通知无法通过任何其他方法找到当前播放器时始终假设该默认音乐应用程序正在播放。</string>
+    <string name="title_show_tutorials">简介</string>
+    <string name="current_maintainer">当前维护者</string>
+    <string name="changelog">更新日志</string>
+    <string name="intro">显示引导</string>
+    <string name="top_2">漂亮的状态栏</string>
+    <string name="noti_decp">Android Oreo 风格</string>
+    <string name="top_3">快来尝试一下</string>
+    <string name="fin_decp">不要忘记阅读"帮助"，里面有许多有用的技巧与提示</string>
+    <string name="top_4">自动匹配专辑图片</string>
+    <string name="noti_decp_2">从 Audioscrobbler 和 腾讯音乐 获取歌曲封面</string>
+    <string name="top_5">寻找帮助</string>
+    <string name="noti_decp_3"><b>在使用之前，请确认您的播放器在设置中开启了"系统状态栏样式"（例如网易云音乐），这将帮助媒体通知正确显示样式。</b>请在遇到问题时先仔细阅读"帮助"栏,然后在反馈时请尽量使用内置的反馈器</string>
+    <string name="readme">https://raw.githubusercontent.com/Soptq/MediaNotification/Coolapk/README_zh.md</string>
+    <string name="local">CHINESE</string>
+    <string name="isplaying">播放中</string>
+    <string name="ispause">暂停</string>
+    <string name="title_settings_daemon">守护后台</string>
+    <string name="title_daemon_option1">方法一</string>
+    <string name="daemon_decp1">需要Root权限来挂载根目录读写权限。使用外部文件游览器来从/data/app/soptqs.medianotification复制MediaNotification.apk到/system/app/"您新建的文件夹"来使该应用成为一个系统应用,您可以手动地更安全地复制这个文件。使应用程序成为系统应用将保持应用的后台开启，这会让该应用随时响应您的音乐通知栏请求.但是，当您想卸载该应用时，您可能需要手动操作。</string>
+    <string name="daemon_button1">复制</string>
+    <string name="title_daemon_option2">方法二（推荐）</string>
+    <string name="daemon_ready_to_download">准备下载</string>
+    <string name="sure_to_download">确定下载?</string>
+    <string name="daemon_download_fail">还没有模块适配当前版本</string>
+    <string name="daemon_download_fail_decp">看起来开发者正在适配中，为何不等等</string>
+    <string name="daemon_decp2">需要Magisk Manager。使用模块将MediaNotification.apk复制到系统app目录。这和方法一有同样的作用但是您可以简单的在Magisk Manager中关闭这个模块来使其可以被卸载。</string>
+    <string name="daemon_button2">下载模块</string>
+    <string name="reboot">重启以生效，如果重启后发现复制失败，请手动替换。</string>
+    <string name="title_alert_copy">方法一</string>
+    <string name="change_log_comfirm">确定</string>
+    <string name="title_alert_copy_decp">
+         Medianotification 在这里\n
+        \n
+        -----/data/app/soptqs.medianotification\n
+        \n
+        您需要把它剪贴到\n
+        \n
+        -----/system/app/"您的文件夹"\n
+    </string>
+    <string name="yes">是的</string>
+    <string name="Cancel">取消</string>
+    <string name="download">下载中</string>
+    <string name="bugReport">报告</string>
+    <string name="title_tencent_music">从腾讯获取音乐封面</string>
+    <string name="title_shell">Root权限（可选）</string>
+    <string name="decp_shell">使用Root权限来用Shell命令模拟按键控制音乐，您可以在"音乐控制方法"中开启使用Shell控制的功能。这种方法很稳定，但是反应有一点慢。我正在尝试让它反应得更快</string>
+    <string name="button_shell">授予Root权限</string>
+    <string name="title_ignore">不再显示</string>
+    <string name="title_about_control_method">音乐控制方法</string>
+    <string name="desc_control_method">现在的音乐控制方法比以前要稳定得多。要使用音乐控制方法，您需要先长按通知栏中的音乐通知，并选择“全部阻止”来阻止原始音乐通知。你应该从顶部到底部一个个的尝试方法，因为越后面的越慢。最后一个方法甚至需要Root权限，但是，我可以肯定，最后一个最稳定且拥有最大的兼容性。</string>
+    <string name="title_donate">捐赠</string>
+    <string name="decp_donate">现在我为这款应用已经写了超过3000行代码，总数占了整款应用的30%。维护这款应用，为他添加新功能花费我很多的时间，有时修复一个bug要花费一整天。所以如果您能捐赠我一点余头的话我真的会很感谢。谢谢您</string>
+    <string name="donate_wechat">微信</string>
+    <string name="donate_alipay">支付宝</string>
+
+
+    <string-array name="array_control_methods">
+        <item>默认 (无)</item>
+        <item>AudioManager API</item>
+        <item>Reflection (Unstable)</item>
+        <item>Broadcast</item>
+        <item>Broadcast String</item>
+        <item>Broadcast Parcelable</item>
+        <item>模拟按钮 (需Root且很慢)</item>
+    </string-array>
+
+    <string name="air_title_report_issue">报告问题</string>
+
+    <string name="air_title_issue">报告</string>
+    <string name="air_title_login">登录</string>
+
+    <string name="air_label_issue_title">标题</string>
+    <string name="air_label_issue_description">描述</string>
+    <string name="air_label_device_info">设备信息</string>
+
+    <string name="air_label_use_account">用您的Github账号发送</string>
+    <string name="air_label_use_email">用Email发送</string>
+    <string name="air_label_use_guest">匿名发送</string>
+    <string name="air_label_username">用户名</string>
+    <string name="air_label_password">密码</string>
+    <string name="air_label_email">E-mail</string>
+    <string name="air_label_email_optional">E-mail (选填)</string>
+
+    <string name="air_error_no_title">请输入一个标题</string>
+    <string name="air_error_no_description">请输入一段描述</string>
+    <plurals name="air_error_short_description">
+        <item quantity="one">描述至少需要 %d 个字</item>
+        <item quantity="other">描述至少需要 %d 个字</item>
+    </plurals>
+    <string name="air_error_no_username">请输入您的Github用户名</string>
+    <string name="air_error_no_password">请输入您的Github密码</string>
+    <string name="air_error_no_email">请输入您的E-mail</string>
+
+    <string name="air_dialog_title_loading">正在上传至Github…</string>
+    <string name="air_dialog_title_failed">无法发送报告</string>
+    <string name="air_dialog_description_failed_wrong_credentials">错误的用户名或密码</string>
+    <string name="air_dialog_description_failed_invalid_token">无效的身份密钥。请联系开发者。</string>
+    <string name="air_dialog_description_failed_issues_not_available">反馈功能在这个Github库并没有被开启。请联系开发者。</string>
+    <string name="air_dialog_description_failed_unknown">其他错误。请联系开发者。</string>
+    <string name="air_dialog_action_failed">确认</string>
+
+</resources>

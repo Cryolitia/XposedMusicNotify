@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.preference.PreferenceCategory android:title="模块设置">
+        <androidx.preference.SwitchPreferenceCompat android:title="启用" android:key="styleModify" android:defaultValue="false" />
+        <androidx.preference.SwitchPreferenceCompat android:title="保持音乐通知不被划去" android:key="always_show" android:defaultValue="false" />
+        <!--<SwitchPreference android:title="MIUI优化" android:summary="通知去白边、强制展开" android:key="miuiModify" android:defaultValue="true" />-->
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="常见问题">
+        <androidx.preference.Preference android:title="怎么使用这个模块" android:summary="Xposed或EdXposed直接激活模块，太极用户激活后需要将使用的音乐软件添加到太极内。激活模块后系统音乐通知将变成安卓O样式，请在音乐软件内将通知栏样式改为系统样式，比如：网易云音乐设置--通知栏样式--系统样式，否则不生效。" />
+        <androidx.preference.Preference android:title="为什么用了之后通知有白边" android:summary="定制系统的原因，魅族和MIUI都有，MIUI可以使用主题或刷入面具模块(点击下载)解决，魅族系统没用过，自行解决。" android:key="magiskMoudle" />
+        <androidx.preference.Preference android:title="为什么用了之后通知下半部分不显示" android:summary="MIUI系统的原因，不是模块的问题，可以使用主题或刷入面具模块(点击下载)解决。" />
+        <androidx.preference.Preference android:title="为什么用了之后通知部分按钮显示不全" android:summary="dpi过小，自行调整至合适的dpi" android:key="magiskMoudle2"/>
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="其他">
+        <androidx.preference.Preference android:title="查看源码" android:key="github2" />
+        <androidx.preference.Preference android:title="支持我" android:key="alipay" />
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

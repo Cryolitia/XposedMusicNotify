@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <androidx.preference.ListPreference
+        android:title="取色模式"
+        android:key="pickColorMode"
+        android:entries="@array/pickColorMode"
+        android:entryValues="@array/pickColorMode"
+        android:defaultValue="主要"/>
+    <androidx.preference.EditTextPreference
+        android:title="默认取色"
+        android:key="defaultColor"
+        android:defaultValue="#000000" />
+    <androidx.preference.SwitchPreferenceCompat
+        android:title="使用反转的文字颜色"
+        android:key="inverseTextSwitch"/>
+    <androidx.preference.SwitchPreferenceCompat
+        android:title="高对比度文字/图片"
+        android:key="highContrast"/>
+    <androidx.preference.ListPreference
+        android:title="获取音乐封面"
+        android:key="getAlbum"
+        android:entries="@array/array_get_album"
+        android:entryValues="@array/array_get_album"
+        android:defaultValue="无"/>
+</androidx.preference.PreferenceScreen>

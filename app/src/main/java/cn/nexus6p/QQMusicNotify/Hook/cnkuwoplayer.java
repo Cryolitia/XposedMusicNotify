@@ -11,7 +11,7 @@ import android.media.session.MediaSession;
 import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicNotification;
-import cn.nexus6p.QQMusicNotify.GeneralTools;
+import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -34,7 +34,7 @@ public class cnkuwoplayer extends BasicNotification {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     channelID = "music";
                     NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_DEFAULT);
-                    ((NotificationManager) GeneralTools.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+                    ((NotificationManager) GeneralUtils.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
                 }
                 iconID = 0x7f020dca;
                 context = (Context) getObjectField(param.thisObject,"mContext");

@@ -2,4 +2,25 @@
 <resources>
     <string name="app_name">给播放器原生的音乐通知</string>
     <string name="description">Trying to make music players using standard notification</string>
+    <string-array name="pickColorMode">
+        <item>优势</item>
+        <item>最优</item>
+        <item>活力</item>
+        <item>柔和</item>
+        <item>主要</item>
+        <item>默认</item>
+    </string-array>
+    <string-array name="array_color_methods">
+        <item>Dominant</item>
+        <item>Primary</item>
+        <item>Vibrant</item>
+        <item>Muted</item>
+        <item>Main</item>
+        <item>Always Default</item>
+    </string-array>
+    <string-array name="array_get_album">
+        <item>无</item>
+        <item>last.fm</item>
+        <item>QQ音乐</item>
+    </string-array>
 </resources>

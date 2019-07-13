@@ -53,7 +53,7 @@ public class initHook implements IXposedHookLoadPackage {
         });
 
         if (xSharedPreferences.getBoolean("styleModify", false)) {
-            /*if (lpparam.packageName.equals("com.android.systemui")) {
+            if (lpparam.packageName.equals("com.android.systemui")&&xSharedPreferences.getBoolean("miuiModify",true)) {
                 XposedBridge.log("给播放器系统的音乐通知：加载包"+lpparam.packageName);
                 try {
                     Class c = comandroidsystemui.class;
@@ -63,7 +63,7 @@ public class initHook implements IXposedHookLoadPackage {
                     e.printStackTrace();
                 }
                 return;
-            }*/
+            }
             try {
                 new NotificationHook().init();
             } catch (Exception e) {
@@ -76,8 +76,8 @@ public class initHook implements IXposedHookLoadPackage {
         if (xSharedPreferences == null) {
             Log.e("QQMusicnotify", "XSharedPreferences should not be null!");
         }
-        JSONArray jsonArray = GeneralTools.getSupportPackages(GeneralTools.getMoudleContext(context));
-        return (GeneralTools.isStringInJSONArray(packageName, jsonArray) && xSharedPreferences.getBoolean(packageName + ".enabled", true));
+        JSONArray jsonArray = GeneralUtils.getSupportPackages(GeneralUtils.getMoudleContext(context));
+        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && xSharedPreferences.getBoolean(packageName + ".enabled", true));
     }
 
 }

@@ -1,88 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="设置">
-        <PreferenceScreen
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.preference.PreferenceCategory android:title="设置">
+        <androidx.preference.PreferenceScreen
             android:key="app"
             android:title="播放器设置" >
             <PreferenceCategory
                 android:title="在这里对每个播放器进行个性化设置"/>
-        </PreferenceScreen>
-        <PreferenceScreen
+        </androidx.preference.PreferenceScreen>
+        <androidx.preference.Preference
             android:summary="适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用"
-            android:title="全局样式修改">
-            <PreferenceCategory android:title="模块设置">
-                <SwitchPreference android:title="启用" android:key="styleModify" android:defaultValue="false" />
-                <SwitchPreference android:title="保持音乐通知不被划去" android:key="always_show" android:defaultValue="false" />
-                <!--<SwitchPreference android:title="MIUI去白边" android:key="deleteWhite" android:defaultValue="true" />
-                <SwitchPreference android:title="MIUI通知强制展开" android:key="forceSpread" android:defaultValue="true" />-->
-            </PreferenceCategory>
-            <PreferenceCategory android:title="常见问题">
-                <Preference android:title="怎么使用这个模块" android:summary="Xposed或EdXposed直接激活模块，太极用户激活后需要将使用的音乐软件添加到太极内。激活模块后系统音乐通知将变成安卓O样式，请在音乐软件内将通知栏样式改为系统样式，比如：网易云音乐设置--通知栏样式--系统样式，否则不生效。" />
-                <Preference android:title="为什么用了之后通知有白边" android:summary="定制系统的原因，魅族和MIUI都有，MIUI可以使用主题或刷入面具模块(点击下载)解决，魅族系统没用过，自行解决。" android:key="magiskMoudle" />
-                <Preference android:title="为什么用了之后通知下半部分不显示" android:summary="MIUI系统的原因，不是模块的问题，可以使用主题或刷入面具模块(点击下载)解决。" />
-                <Preference android:title="为什么用了之后通知部分按钮显示不全" android:summary="dpi过小，自行调整至合适的dpi" android:key="magiskMoudle2"/>
-            </PreferenceCategory>
-            <PreferenceCategory android:title="其他">
-                <Preference android:title="查看源码" android:key="github2" />
-                <Preference android:title="支持我" android:key="alipay" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <EditTextPreference
+            android:title="全局样式修改"
+            android:key="music_notification"/>
+        <androidx.preference.PreferenceScreen android:summary="启用全局样式修改后可用，来自媒体通知"
+            android:title="通知样式设定"
+            android:key="media_notification">
+        </androidx.preference.PreferenceScreen>
+        <androidx.preference.EditTextPreference
             android:defaultValue="/sdcard/MusicNotification"
             android:key="locate"
-            android:summary="/sdcard/MusicNotification"
             android:title="配置文件存储路径（请确保路径对所有应用可读！）" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="showIcon"
             android:title="显示桌面图标" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="隐私">
-        <SwitchPreference
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="隐私">
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pm"
             android:summary="开启后可提供更好的体验与适配，不会上传至服务器"
             android:title="允许读取已安装的应用" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="network"
             android:summary="自动获取最新的适配文件"
             android:title="允许联网" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="sdcard"
             android:summary="在本地存储配置文件"
             android:title="允许访问外部存储" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="更多">
-        <Preference
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="更多">
+        <androidx.preference.Preference
             android:key="author"
             android:summary="神经元"
             android:title="作者" />
-        <Preference
+        <androidx.preference.Preference
             android:key="qiwu"
             android:summary="部分代码合并自祈无的MusicNotification"
             android:title="特别感谢" />
-        <Preference
+        <androidx.preference.Preference
             android:key="version"
             android:title="版本" />
-        <Preference
+        <androidx.preference.Preference
             android:key="statue"
             android:title="状态" />
-        <Preference
+        <androidx.preference.Preference
             android:key="connect"
             android:summary="liziyuan0720@gmail.com"
             android:title="联系作者" />
-        <Preference
+        <androidx.preference.Preference
             android:key="qqqun"
             android:summary="951343825"
             android:title="加入QQ群" />
-        <Preference
+        <androidx.preference.Preference
             android:key="github"
             android:summary="https://github.com/singleNeuron/QQMusicNotify"
             android:title="项目地址" />
-        <Preference
+        <androidx.preference.Preference
             android:key="openSource"
             android:title="开放源代码许可" />
-    </PreferenceCategory>
-</PreferenceScreen>
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

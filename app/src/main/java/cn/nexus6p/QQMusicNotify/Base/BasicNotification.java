@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
-import cn.nexus6p.QQMusicNotify.GeneralTools;
+import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import de.robv.android.xposed.XSharedPreferences;
 import me.qiwu.MusicNotification.ColorUtil;
 import cn.nexus6p.QQMusicNotify.R;
@@ -26,7 +26,7 @@ import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
 import static android.app.Notification.FLAG_NO_CLEAR;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
-import static cn.nexus6p.QQMusicNotify.GeneralTools.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
 
 public abstract class BasicNotification extends BasicInit {
 
@@ -69,7 +69,7 @@ public abstract class BasicNotification extends BasicInit {
         }
         if (new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("styleModify",false)) {
             RemoteViews remoteViews = getContentView(titleString.toString(),textString.toString());
-            return GeneralTools.buildMusicNotificationWithoutAction(context,iconID,titleString,textString,statue,remoteViews,PendingIntent.getActivity(context, intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
+            return GeneralUtils.buildMusicNotificationWithoutAction(context,iconID,titleString,textString,statue,remoteViews,PendingIntent.getActivity(context, intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
         } else {
             Notification.Builder builder = new Notification.Builder(context)
                     .setContentTitle(titleString)

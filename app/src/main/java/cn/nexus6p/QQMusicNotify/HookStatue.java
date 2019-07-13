@@ -10,12 +10,12 @@ import android.util.Log;
 import androidx.annotation.Keep;
 
 @Keep
-class HookStatue {
-    static Boolean isEnabled() {
+public class HookStatue {
+    public static Boolean isEnabled() {
         Log.d("QQNotify","模块未激活");
         return false;
     }
-    static boolean isExpModuleActive(Context context) {
+    public static boolean isExpModuleActive(Context context) {
 
         boolean isExp = false;
         if (context == null) {

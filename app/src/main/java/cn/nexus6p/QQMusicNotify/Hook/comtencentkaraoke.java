@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicViewNotification;
-import cn.nexus6p.QQMusicNotify.GeneralTools;
+import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -27,7 +27,7 @@ public class comtencentkaraoke extends BasicViewNotification {
         String className = "";
         String methodName = "";
         try {
-            JSONObject jsonObject = new JSONObject(GeneralTools.getAssetsString("com.tencent.karaoke.json",GeneralTools.getMoudleContext(context)));
+            JSONObject jsonObject = new JSONObject(GeneralUtils.getAssetsString("com.tencent.karaoke.json",GeneralUtils.getMoudleContext(context)));
             className = jsonObject.getString("class");
             methodName = jsonObject.getString("method");
             titleID = Integer.parseInt(jsonObject.getString("titleID"),16);

@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.ui;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -11,11 +11,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
+
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreferenceCompat;
 import android.widget.Toast;
+
+import androidx.preference.PreferenceFragment;
 
 import com.topjohnwu.superuser.Shell;
 
@@ -28,6 +32,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
+import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.HookStatue;
+import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.ui.MainActivity;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
@@ -36,20 +45,18 @@ import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
 import static android.content.Context.MODE_WORLD_READABLE;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.bindEditTextSummary;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.jumpToLink;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
         getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.settings);
 
-        GeneralTools.jumpToLink(this,"author","u/603406",true);
-        GeneralTools.jumpToLink(this,"github","https://github.com/singleNeuron/QQMusicNotify",false);
-        GeneralTools.jumpToLink(this,"qiwu","u/753785",true);
-        GeneralTools.jumpToLink(this,"magiskMoudle","feed/11103560",true);
-        GeneralTools.jumpToLink(this,"magiskMoudle2","feed/11103560",true);
-        GeneralTools.jumpToLink(this,"github2","https://github.com/Qiwu2542284182/MusicNotification",false);
+        jumpToLink(this,"author","u/603406",true);
+        jumpToLink(this,"github","https://github.com/singleNeuron/QQMusicNotify",false);
+        jumpToLink(this,"qiwu","u/753785",true);
 
         Preference preference = findPreference("statue");
         if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
@@ -59,12 +66,12 @@ public class SettingsFragment extends PreferenceFragment {
                     preference.setSummary("太极·阳 已激活");
                 else {
                     preference.setSummary("太极·阴 已激活");
-                    findPreference("styleModify").setSummary("警告：当前模式可能为太极·阴，此功能不可用");
+                    findPreference("music_notification").setSummary("适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用\n警告：当前模式可能为太极·阴，此功能将仅对上方列表中应用生效");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 preference.setSummary("太极·阴 已激活");
-                findPreference("styleModify").setSummary("警告：当前模式可能为太极·阴，此功能不可用");
+                findPreference("music_notification").setSummary("适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用\n警告：当前模式可能为太极·阴，此功能将仅对上方列表中应用生效");
             }
         } else {
             preference.setSummary("模块未激活");
@@ -81,18 +88,8 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             });
         }
-        boolean PMEnabled =((SwitchPreference) findPreference("pm")).isChecked();
-        if (PMEnabled) {
-            PackageManager pm = getActivity().getPackageManager();
-            try {
-                PackageInfo packageInfo = pm.getPackageInfo(getActivity().getPackageName(), 0);
-                findPreference("version").setSummary(packageInfo.versionName);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            findPreference("version").setSummary("已禁止读取软件包列表，功能不可用");
-        }
+        boolean PMEnabled =((SwitchPreferenceCompat) findPreference("pm")).isChecked();
+        findPreference("version").setSummary(BuildConfig.VERSION_NAME);
         findPreference("qqqun").setOnPreferenceClickListener(preference1 -> {
             /*
              *
@@ -119,7 +116,7 @@ public class SettingsFragment extends PreferenceFragment {
         });
 
         //从github.com/zpp0196/QQPurify里抄来的
-        SwitchPreference showIcon = (SwitchPreference) findPreference("showIcon");
+        SwitchPreferenceCompat showIcon = (SwitchPreferenceCompat) findPreference("showIcon");
         showIcon.setChecked(getEnable());
         showIcon.setOnPreferenceChangeListener((iconPreference, newValue) -> {
             getActivity().getPackageManager().setComponentEnabledSetting(getAlias(), getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
@@ -127,10 +124,10 @@ public class SettingsFragment extends PreferenceFragment {
         });
 
         try {
-            JSONArray jsonArray = GeneralTools.getSupportPackages(getContext());
+            JSONArray jsonArray = GeneralUtils.getSupportPackages(getContext());
             for (int i=0;i<jsonArray.length();i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
-                SwitchPreference switchPreference = new SwitchPreference(getActivity(),null);
+                SwitchPreferenceCompat switchPreference = new SwitchPreferenceCompat(getActivity(),null);
                 if (PMEnabled) {
                     PackageInfo packageInfo;
                     try {
@@ -181,32 +178,17 @@ public class SettingsFragment extends PreferenceFragment {
             return true;
         });
 
-        findPreference("alipay").setOnPreferenceClickListener(preference1 -> {
-            Intent localIntent = new Intent();
-            localIntent.setAction("android.intent.action.VIEW");
-            localIntent.setData(Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + "https://qr.alipay.com/fkx00337aktbgg6hgq64ae2?t=1542355035868"));
-            if (localIntent.resolveActivity(getActivity().getPackageManager()) != null)
-            {
-                startActivity(localIntent);
-                return true;
-            }
-            localIntent.setData(Uri.parse("https://qr.alipay.com/fkx00337aktbgg6hgq64ae2?t=1542355035868".toLowerCase()));
-            startActivity(localIntent);
-            return true;
-        });
-
         findPreference("version").setOnPreferenceClickListener(preference1 -> {
             getJsonFromInternet();
             return true;
         });
 
-        GeneralTools.bindPreference(this,"sdcard","locate");
-        GeneralTools.bindPreference(this,"styleModify","always_show");
+        //GeneralUtils.bindPreference(this,"sdcard","locate");
 
         findPreference("openSource").setOnPreferenceClickListener(preference1 -> {
             final Notices notices = new Notices();
             notices.addNotice(new Notice("给播放器原生的音乐通知","https://github.com/singleNeuron/XposedMusicNotify","Copyright 2019 神经元",new GnuLesserGeneralPublicLicense3()));
-            notices.addNotice(new Notice("AOSP","https://source.android.com/license","AOSP",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("AOSP","https://source.android.com/license","Android Open Source Project",new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("XposedBridge","https://github.com/rovo89/XposedBridge","Copyright 2013 rovo89, Tungstwenty",new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("MusicNotification", "https://github.com/Qiwu2542284182/MusicNotification", "祈无", new License() {
                 @Override
@@ -215,7 +197,7 @@ public class SettingsFragment extends PreferenceFragment {
                 }
                 @Override
                 public String readSummaryTextFromResources(Context context) {
-                    return "PY License\n已和原作者py并获得使用授权";
+                    return "PY License\n已和原作者py";
                 }
                 @Override
                 public String readFullTextFromResources(Context context) {
@@ -241,6 +223,19 @@ public class SettingsFragment extends PreferenceFragment {
         });
 
         getJsonFromInternet();
+
+        findPreference("music_notification").setOnPreferenceClickListener(preference1 -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MusicNotificationFragment() ).addToBackStack( MusicNotificationFragment.class.getSimpleName() ).commit();
+            return true;
+        });
+
+        findPreference("media_notification").setOnPreferenceClickListener(preference1 -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MediaNotificationFragment()).addToBackStack( MusicNotificationFragment.class.getSimpleName() ).commit();
+            return true;
+        });
+
+        bindEditTextSummary((EditTextPreference) findPreference("locate"));
+
     }
 
     private boolean getEnable() {
@@ -261,7 +256,7 @@ public class SettingsFragment extends PreferenceFragment {
     //抄的https://www.jianshu.com/p/4e12da9866a0
     private void getJsonFromInternet () {
         final String url = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/version.json";
-        if (!((SwitchPreference)findPreference("network")).isChecked()) {
+        if (!((SwitchPreferenceCompat)findPreference("network")).isChecked()) {
             Toast.makeText(getContext(),"联网已禁用，无法检查新版本",Toast.LENGTH_SHORT).show();
             return;
         }
@@ -279,8 +274,7 @@ public class SettingsFragment extends PreferenceFragment {
                             try {
                                 JSONObject jsonObject = new JSONObject(json);
                                 int versionCode = jsonObject.optInt("code");
-                                int nowCode = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionCode;
-                                if (versionCode>nowCode) {
+                                if (versionCode> BuildConfig.VERSION_CODE) {
                                     new AlertDialog.Builder(getContext())
                                             .setTitle("发现新版本")
                                             .setMessage(jsonObject.optString("name"))

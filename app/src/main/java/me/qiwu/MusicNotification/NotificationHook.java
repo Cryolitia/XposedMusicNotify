@@ -17,15 +17,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
-import cn.nexus6p.QQMusicNotify.GeneralTools;
+import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
-import static cn.nexus6p.QQMusicNotify.GeneralTools.getContext;
-import static cn.nexus6p.QQMusicNotify.GeneralTools.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.getContext;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
 
 
 /**
@@ -52,7 +52,7 @@ public class NotificationHook {
                     subtitle = subtitle==null || subtitle.equals("") ? "未知艺术家":subtitle;
                     RemoteViews remoteViews = getContentView(title,subtitle,notification);
                     int resId = getIconId(notification.getSmallIcon()) != -1 ? getIconId(notification.getSmallIcon()) : android.R.drawable.ic_dialog_info;
-                    param.setResult(GeneralTools.buildMusicNotificationWithoutAction(
+                    param.setResult(GeneralUtils.buildMusicNotificationWithoutAction(
                             getContext(),resId,title,subtitle
                             ,new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT)
                             ,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent));

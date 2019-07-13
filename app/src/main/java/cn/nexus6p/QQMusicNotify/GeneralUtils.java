@@ -8,8 +8,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
+
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -25,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 
 import de.robv.android.xposed.XposedBridge;
 
-final public class GeneralTools {
+final public class GeneralUtils {
 
     public static Context getContext () {
         return AndroidAppHelper.currentApplication().getApplicationContext();
@@ -111,7 +115,7 @@ final public class GeneralTools {
         return stringBuilder.toString();
     }
 
-    static void bindPreference (PreferenceFragment fragment, String string1, String... strings) {
+    public static void bindPreference (PreferenceFragmentCompat fragment, String string1, String... strings) {
         fragment.findPreference(string1).setOnPreferenceChangeListener((preference1, o) -> {
             for (String string : strings) {
                 fragment.findPreference(string).setEnabled((boolean) o);
@@ -119,11 +123,11 @@ final public class GeneralTools {
             return true;
         });
         for (String string : strings) {
-            fragment.findPreference(string).setEnabled(((SwitchPreference)fragment.findPreference(string1)).isChecked());
+            fragment.findPreference(string).setEnabled(((SwitchPreferenceCompat)fragment.findPreference(string1)).isChecked());
         }
     }
 
-    static void jumpToLink (PreferenceFragment fragment,String preference,String link,boolean isCoolapk) {
+    public static void jumpToLink (PreferenceFragmentCompat fragment,String preference,String link,boolean isCoolapk) {
         fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
             Intent intent = new Intent();
             intent.setAction("android.intent.action.VIEW");
@@ -142,6 +146,22 @@ final public class GeneralTools {
                 intent.setData(Uri.parse(link));
                 fragment.startActivity(intent);
             }
+            return true;
+        });
+    }
+
+    public static void bindEditTextSummary (EditTextPreference preference) {
+        preference.setSummary(preference.getText());
+        preference.setOnPreferenceChangeListener((preference1, newValue) -> {
+            preference.setSummary((CharSequence) newValue);
+            return true;
+        });
+    }
+
+    public static void bindListSummary (ListPreference preference) {
+        preference.setSummary(preference.getEntry());
+        preference.setOnPreferenceChangeListener((preference1, newValue) -> {
+            preference.setSummary((CharSequence)newValue);
             return true;
         });
     }
