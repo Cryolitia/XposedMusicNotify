@@ -88,7 +88,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             });
         }
-        boolean PMEnabled =((SwitchPreferenceCompat) findPreference("pm")).isChecked();
+
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
         findPreference("qqqun").setOnPreferenceClickListener(preference1 -> {
             /*
@@ -122,56 +122,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             getActivity().getPackageManager().setComponentEnabledSetting(getAlias(), getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             return true;
         });
-
-        try {
-            JSONArray jsonArray = GeneralUtils.getSupportPackages(getContext());
-            for (int i=0;i<jsonArray.length();i++) {
-                String packageName = jsonArray.getJSONObject(i).getString("app");
-                SwitchPreferenceCompat switchPreference = new SwitchPreferenceCompat(getActivity(),null);
-                if (PMEnabled) {
-                    PackageInfo packageInfo;
-                    try {
-                        packageInfo = getActivity().getPackageManager().getPackageInfo(packageName, 0);
-                    } catch (PackageManager.NameNotFoundException e) {
-                        packageInfo = null;
-                    }
-                    if(packageInfo == null) continue;
-                    else switchPreference.setIcon(getActivity().getPackageManager().getApplicationIcon(packageName));
-                }
-                switchPreference.setChecked(true);
-                switchPreference.setTitle(jsonArray.getJSONObject(i).getString("name"));
-                switchPreference.setSummary(packageName);
-                switchPreference.setKey(packageName+".enabled");
-                ((PreferenceScreen) findPreference("app")).addPreference(switchPreference);
-            }
-            boolean showNetease = false;
-            try {
-                showNetease = !PMEnabled || getActivity().getPackageManager().getPackageInfo("com.netease.cloudmusic", 0)!=null;
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (showNetease) {
-                Preference Preference = new Preference(getActivity(),null);
-                Preference.setTitle("网易云音乐");
-                try {
-                    Preference.setIcon(getActivity().getPackageManager().getApplicationIcon("com.netease.cloudmusic"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Preference.setSummary("com.netease.cloudmusic");
-                Preference.setOnPreferenceClickListener(preference1 -> {
-                    Shell.Result result = Shell.su("am start -n com.netease.cloudmusic/com.netease.cloudmusic.activity.SettingActivity").exec();
-                    if (result.isSuccess()) Toast.makeText(getContext(),"请在设置中通知栏样式设置为系统样式",Toast.LENGTH_LONG).show();
-                    else {
-                        Toast.makeText(getContext(),"请检查root权限："+result.getErr().toString(),Toast.LENGTH_LONG).show();
-                    }
-                    return true;
-                });
-                ((PreferenceScreen) findPreference("app")).addPreference(Preference);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         findPreference("connect").setOnPreferenceClickListener(preference1 -> {
             startActivity(Intent.createChooser(new Intent(Intent.ACTION_SENDTO,Uri.parse("mailto:liziyuan0720@gmail.com")),"发送邮件"));
@@ -231,6 +181,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         findPreference("media_notification").setOnPreferenceClickListener(preference1 -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MediaNotificationFragment()).addToBackStack( MusicNotificationFragment.class.getSimpleName() ).commit();
+            return true;
+        });
+
+        findPreference("apps").setOnPreferenceClickListener(preference1 -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AppsFragment()).addToBackStack( AppsFragment.class.getSimpleName() ).commit();
             return true;
         });
 

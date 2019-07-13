@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.preference.PreferenceCategory android:title="设置">
-        <androidx.preference.PreferenceScreen
-            android:key="app"
-            android:title="播放器设置" >
-            <PreferenceCategory
-                android:title="在这里对每个播放器进行个性化设置"/>
-        </androidx.preference.PreferenceScreen>
+        <androidx.preference.Preference
+            android:title="播放器设置"
+            android:key="apps">
+        </androidx.preference.Preference>
         <androidx.preference.Preference
             android:summary="适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用"
             android:title="全局样式修改"

@@ -156,4 +156,7 @@
     <string name="air_dialog_description_failed_unknown">其他错误。请联系开发者。</string>
     <string name="air_dialog_action_failed">确认</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

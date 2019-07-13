@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="app">
+    <PreferenceCategory
+        android:title="在这里对每个播放器进行个性化设置" />
+</androidx.preference.PreferenceScreen>
