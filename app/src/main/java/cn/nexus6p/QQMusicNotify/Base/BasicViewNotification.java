@@ -2,6 +2,7 @@ package cn.nexus6p.QQMusicNotify.Base;
 
 import android.app.Notification;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +30,9 @@ public abstract class BasicViewNotification extends BasicNotification {
         bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         titleString = titleTextView.getText();
         textString = textTextView.getText();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channelID = oldNotification.getChannelId();
+        }
         return this.build();
     }
 

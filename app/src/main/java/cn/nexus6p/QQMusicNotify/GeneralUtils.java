@@ -115,18 +115,6 @@ final public class GeneralUtils {
         return stringBuilder.toString();
     }
 
-    public static void bindPreference (PreferenceFragmentCompat fragment, String string1, String... strings) {
-        fragment.findPreference(string1).setOnPreferenceChangeListener((preference1, o) -> {
-            for (String string : strings) {
-                fragment.findPreference(string).setEnabled((boolean) o);
-            }
-            return true;
-        });
-        for (String string : strings) {
-            fragment.findPreference(string).setEnabled(((SwitchPreferenceCompat)fragment.findPreference(string1)).isChecked());
-        }
-    }
-
     public static void jumpToLink (PreferenceFragmentCompat fragment,String preference,String link,boolean isCoolapk) {
         fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
             Intent intent = new Intent();

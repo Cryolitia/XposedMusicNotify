@@ -10,12 +10,15 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 import android.widget.Toast;
 
@@ -190,6 +193,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         bindEditTextSummary((EditTextPreference) findPreference("locate"));
+
+        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.O||getActivity().getPreferences(MODE_WORLD_READABLE).getBoolean("forceO",false)) {
+            SwitchPreference switchPreference = new SwitchPreference(getActivity(), null);
+            switchPreference.setTitle("修改版本为Android O");
+            switchPreference.setIconSpaceReserved(true);
+            switchPreference.setSummary("理论上可以使网易云/QQ音乐显示原生设置，未经测试，可能导致手机功能异常或无法启动，风险自负");
+            switchPreference.setKey("forceO");
+            switchPreference.setChecked(false);
+            ((PreferenceCategory) findPreference("settings")).addPreference(switchPreference);
+        }
 
     }
 

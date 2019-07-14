@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.session.MediaSession;
+import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public abstract class BasicNotification extends BasicInit {
         actions.add(previousAction);
         actions.add(playAction);
         actions.add(nextAction);
+
         if (hasExtraAction) {
             Notification.Action extraAction = new Notification.Action.Builder(extraActionIcon, "桌面歌词", PendingIntent.getBroadcast(context, 0, extraActionIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
             actions.add(extraAction);
@@ -89,6 +91,9 @@ public abstract class BasicNotification extends BasicInit {
             if (hasExtraAction)
                 builder.addAction(actions.get(3));
             if (bitmap == null) builder.setColor(Color.BLACK);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O&&channelID!=null) {
+                builder.setChannelId(channelID);
+            }
             Notification notification = builder.build();
             if (statue) notification.flags = FLAG_FOREGROUND_SERVICE | FLAG_NO_CLEAR;
             contentIntent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);

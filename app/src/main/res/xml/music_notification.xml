@@ -2,7 +2,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.preference.PreferenceCategory android:title="模块设置">
         <androidx.preference.SwitchPreferenceCompat android:title="启用" android:key="styleModify" android:defaultValue="false" />
-        <androidx.preference.SwitchPreferenceCompat android:title="保持音乐通知不被划去" android:key="always_show" android:defaultValue="false" />
+        <androidx.preference.SwitchPreferenceCompat android:title="保持音乐通知不被划去" android:key="always_show" android:defaultValue="false" android:dependency="styleModify" />
         <!--<SwitchPreference android:title="MIUI优化" android:summary="通知去白边、强制展开" android:key="miuiModify" android:defaultValue="true" />-->
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="常见问题">

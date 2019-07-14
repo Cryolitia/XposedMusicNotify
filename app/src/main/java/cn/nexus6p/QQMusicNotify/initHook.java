@@ -2,6 +2,7 @@ package cn.nexus6p.QQMusicNotify;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.Keep;
@@ -33,6 +34,17 @@ public class initHook implements IXposedHookLoadPackage {
             return;
         }
         xSharedPreferences = new XSharedPreferences("cn.nexus6p.QQMusicNotify");
+        if (xSharedPreferences.getBoolean("forceO",false)) {
+            XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    if (param.method.getName().startsWith("get")) {
+                        XposedHelpers.setStaticIntField(android.os.Build.VERSION.class, "SDK_INT",Build.VERSION_CODES.O);
+                    }
+                }
+            });
+        }
         XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
