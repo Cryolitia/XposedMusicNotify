@@ -12,7 +12,7 @@
         <androidx.preference.PreferenceScreen android:summary="启用全局样式修改后可用，来自媒体通知（建设中...请期待）"
             android:title="通知样式设定"
             android:key="media_notification"
-            android:enabled="false">
+            android:enabled="true">
         </androidx.preference.PreferenceScreen>
         <androidx.preference.EditTextPreference
             android:defaultValue="/sdcard/MusicNotification"
@@ -45,10 +45,10 @@
         <androidx.preference.Preference
             android:key="author"
             android:summary="神经元"
-            android:title="作者" />
+            android:title="作者"
+            android:icon="@drawable/singleneuron"/>
         <androidx.preference.Preference
-            android:key="qiwu"
-            android:summary="部分代码合并自祈无的MusicNotification"
+            android:summary="部分代码合并自祈无的MusicNotification，Soptq的MediaNotification"
             android:title="特别感谢" />
         <androidx.preference.Preference
             android:key="version"

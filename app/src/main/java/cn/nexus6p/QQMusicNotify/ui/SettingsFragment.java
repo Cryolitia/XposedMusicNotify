@@ -7,7 +7,6 @@ import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -17,16 +16,11 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 import android.widget.Toast;
 
-import androidx.preference.PreferenceFragment;
 
-import com.topjohnwu.superuser.Shell;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,10 +30,8 @@ import java.net.URL;
 import java.util.Objects;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.HookStatue;
 import cn.nexus6p.QQMusicNotify.R;
-import cn.nexus6p.QQMusicNotify.ui.MainActivity;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
@@ -59,7 +51,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         jumpToLink(this,"author","u/603406",true);
         jumpToLink(this,"github","https://github.com/singleNeuron/QQMusicNotify",false);
-        jumpToLink(this,"qiwu","u/753785",true);
 
         Preference preference = findPreference("statue");
         if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
@@ -69,12 +60,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     preference.setSummary("太极·阳 已激活");
                 else {
                     preference.setSummary("太极·阴 已激活");
-                    findPreference("music_notification").setSummary("适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用\n警告：当前模式可能为太极·阴，此功能将仅对上方列表中应用生效");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 preference.setSummary("太极·阴 已激活");
-                findPreference("music_notification").setSummary("适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用\n警告：当前模式可能为太极·阴，此功能将仅对上方列表中应用生效");
             }
         } else {
             preference.setSummary("模块未激活");

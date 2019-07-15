@@ -154,4 +154,20 @@ final public class GeneralUtils {
         });
     }
 
+    public static void jumpToAlipay (PreferenceFragmentCompat fragment,String preference,String link) {
+        fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
+            Intent localIntent = new Intent();
+            localIntent.setAction("android.intent.action.VIEW");
+            localIntent.setData(Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + "https://qr.alipay.com/"+link));
+            if (localIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null)
+            {
+                fragment.startActivity(localIntent);
+                return true;
+            }
+            localIntent.setData(Uri.parse(("https://qr.alipay.com/"+link).toLowerCase()));
+            fragment.startActivity(localIntent);
+            return true;
+        });
+    }
+
 }

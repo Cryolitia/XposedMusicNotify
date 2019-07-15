@@ -1,25 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <androidx.preference.ListPreference
-        android:title="取色模式"
-        android:key="pickColorMode"
-        android:entries="@array/pickColorMode"
-        android:entryValues="@array/pickColorMode"
-        android:defaultValue="主要"/>
-    <androidx.preference.EditTextPreference
-        android:title="默认取色"
-        android:key="defaultColor"
-        android:defaultValue="#000000" />
-    <androidx.preference.SwitchPreferenceCompat
-        android:title="使用反转的文字颜色"
-        android:key="inverseTextSwitch"/>
-    <androidx.preference.SwitchPreferenceCompat
-        android:title="高对比度文字/图片"
-        android:key="highContrast"/>
-    <androidx.preference.ListPreference
-        android:title="获取音乐封面"
-        android:key="getAlbum"
-        android:entries="@array/array_get_album"
-        android:entryValues="@array/array_get_album"
-        android:defaultValue="无"/>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.preference.PreferenceCategory android:title="自定义设置">
+        <androidx.preference.ListPreference
+            android:defaultValue="主要"
+            android:entries="@array/pickColorMode"
+            android:entryValues="@array/pickColorMode"
+            android:key="pickColorMode"
+            android:title="取色模式" />
+        <androidx.preference.EditTextPreference
+            android:defaultValue="#000000"
+            android:key="defaultColor"
+            android:title="默认取色" />
+        <androidx.preference.SwitchPreferenceCompat
+            android:key="inverseTextSwitch"
+            android:title="使用反转的文字颜色" />
+        <androidx.preference.SwitchPreferenceCompat
+            android:key="highContrast"
+            android:title="高对比度文字/图片" />
+        <androidx.preference.ListPreference
+            android:defaultValue="无"
+            android:entries="@array/array_get_album"
+            android:entryValues="@array/array_get_album"
+            android:key="getAlbum"
+            android:title="获取音乐封面" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="关于">
+        <androidx.preference.Preference
+            android:title="作者"
+            android:summary="Soptq"
+            android:key="author3"/>
+        <androidx.preference.Preference
+            android:title="捐赠"
+            android:summary="现在我为这款应用已经写了超过3000行代码，总数占了整款应用的30%。维护这款应用，为他添加新功能花费我很多的时间，有时修复一个bug要花费一整天。所以如果您能捐赠我一点余头的话我真的会很感谢。谢谢您"
+            android:key="alipay2"/>
+    </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

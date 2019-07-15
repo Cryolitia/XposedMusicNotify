@@ -65,17 +65,6 @@ public class initHook implements IXposedHookLoadPackage {
         });
 
         if (xSharedPreferences.getBoolean("styleModify", false)) {
-            if (lpparam.packageName.equals("com.android.systemui")&&xSharedPreferences.getBoolean("miuiModify",true)) {
-                XposedBridge.log("给播放器系统的音乐通知：加载包"+lpparam.packageName);
-                try {
-                    Class c = comandroidsystemui.class;
-                    HookInterface hookInterface = (HookInterface) c.newInstance();
-                    hookInterface.setClassLoader(lpparam.classLoader).init();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return;
-            }
             try {
                 new NotificationHook().init();
             } catch (Exception e) {
