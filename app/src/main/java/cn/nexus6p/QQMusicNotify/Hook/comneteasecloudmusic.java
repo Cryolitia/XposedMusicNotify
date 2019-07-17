@@ -27,7 +27,7 @@ public class comneteasecloudmusic extends BasicInit {
         XposedHelpers.findAndHookMethod(SharedPreferences.Editor.class, "putInt",String.class,int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+                super.beforeHookedMethod(param);
                 if (param.args[0].equals("notificationBackground")) {
                     param.args[1]=2;
                 }

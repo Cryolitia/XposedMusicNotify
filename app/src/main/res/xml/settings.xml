@@ -14,15 +14,14 @@
             android:key="media_notification"
             android:enabled="true">
         </androidx.preference.PreferenceScreen>
-        <androidx.preference.EditTextPreference
-            android:defaultValue="/sdcard/MusicNotification"
-            android:key="locate"
-            android:title="配置文件存储路径（请确保路径对所有应用可读！）"
-            android:dependency="sdcard"/>
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="showIcon"
             android:title="显示桌面图标" />
+        <androidx.preference.Preference
+            android:title="重新解压配置文件"
+            android:summary="一般情况下无需使用"
+            android:key="reUnzip"/>
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="隐私">
         <androidx.preference.SwitchPreferenceCompat
@@ -35,11 +34,6 @@
             android:key="network"
             android:summary="自动获取最新的适配文件"
             android:title="允许联网" />
-        <androidx.preference.SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:key="sdcard"
-            android:summary="在本地存储配置文件"
-            android:title="允许访问外部存储" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="更多">
         <androidx.preference.Preference

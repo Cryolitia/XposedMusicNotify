@@ -28,7 +28,7 @@ public class comtencentkaraoke extends BasicViewNotification {
         String className = "";
         String methodName = "";
         try {
-            JSONObject jsonObject = new JSONObject(GeneralUtils.getAssetsString("com.tencent.karaoke.json",GeneralUtils.getMoudleContext(context)));
+            JSONObject jsonObject = new JSONObject(GeneralUtils.getAssetsString("com.tencent.karaoke.json"));
             className = jsonObject.getString("class");
             methodName = jsonObject.getString("method");
             titleID = Integer.parseInt(jsonObject.getString("titleID"),16);

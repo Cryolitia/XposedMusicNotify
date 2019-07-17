@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,6 +31,7 @@ import java.net.URL;
 import java.util.Objects;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.HookStatue;
 import cn.nexus6p.QQMusicNotify.R;
 import de.psdev.licensesdialog.LicensesDialog;
@@ -42,11 +44,11 @@ import de.psdev.licensesdialog.model.Notices;
 import static android.content.Context.MODE_WORLD_READABLE;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.bindEditTextSummary;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.jumpToLink;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.setWorldReadable;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
-        getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.settings);
 
         jumpToLink(this,"author","u/603406",true);
@@ -66,7 +68,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 preference.setSummary("太极·阴 已激活");
             }
         } else {
-            preference.setSummary("模块未激活");
+            preference.setSummary("模块未激活，您是否已在启用模块后重启手机？");
             preference.setOnPreferenceClickListener(preference1 -> {
                 Intent t = new Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
                 t.setData(Uri.parse("package:" + "cn.nexus6p.QQMusicNotify"));
@@ -130,7 +132,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference("openSource").setOnPreferenceClickListener(preference1 -> {
             final Notices notices = new Notices();
             notices.addNotice(new Notice("给播放器原生的音乐通知","https://github.com/singleNeuron/XposedMusicNotify","Copyright 2019 神经元",new GnuLesserGeneralPublicLicense3()));
-            notices.addNotice(new Notice("AOSP","https://source.android.com/license","Android Open Source Project",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("Android","https://source.android.com/license","The Android Open Source Project",new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("XposedBridge","https://github.com/rovo89/XposedBridge","Copyright 2013 rovo89, Tungstwenty",new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("MusicNotification", "https://github.com/Qiwu2542284182/MusicNotification", "祈无", new License() {
                 @Override
@@ -181,8 +183,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        bindEditTextSummary((EditTextPreference) findPreference("locate"));
-
         if (Build.VERSION.SDK_INT<Build.VERSION_CODES.O||getActivity().getPreferences(MODE_WORLD_READABLE).getBoolean("forceO",false)) {
             SwitchPreference switchPreference = new SwitchPreference(getActivity(), null);
             switchPreference.setTitle("修改版本为Android O");
@@ -192,6 +192,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             switchPreference.setChecked(false);
             ((PreferenceCategory) findPreference("settings")).addPreference(switchPreference);
         }
+
+        findPreference("reUnzip").setOnPreferenceClickListener(preference12 -> {
+            try {for (File file : getActivity().getExternalFilesDir(null).listFiles()) file.delete();}
+            catch (Exception e) {e.printStackTrace();}
+            ((MainActivity) SettingsFragment.this.getActivity()).copyAssetsDir2Phone();
+            return true;
+        });
+
+        setWorldReadable(getActivity());
 
     }
 

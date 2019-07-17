@@ -1,13 +1,24 @@
 package cn.nexus6p.QQMusicNotify;
 
-public class PreferenceUtil {
-    public int getInt(String string, int mInt) {
-        return 0;
+import java.lang.ref.WeakReference;
+
+import de.robv.android.xposed.XSharedPreferences;
+
+final public class PreferenceUtil {
+
+    private static WeakReference<XSharedPreferences> xSharedPreferencesWeakReferences = new WeakReference<>(null);
+
+    public static XSharedPreferences getXSharedPreference () {
+        XSharedPreferences preferences = xSharedPreferencesWeakReferences.get();
+        if (preferences==null) {
+            preferences = new XSharedPreferences(BuildConfig.APPLICATION_ID);
+            preferences.makeWorldReadable();
+            preferences.reload();
+            xSharedPreferencesWeakReferences = new WeakReference<>(preferences);
+        } else  {
+            preferences.reload();
+        }
+        return preferences;
     }
-    public boolean getBoolean(String string, boolean mBoolean) {
-        return true;
-    }
-    public String getString(String string, String string1) {
-        return "";
-    }
+
 }

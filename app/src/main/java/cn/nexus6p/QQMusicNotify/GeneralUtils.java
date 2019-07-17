@@ -14,6 +14,8 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
+
+import android.os.Environment;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -23,6 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -80,10 +84,10 @@ final public class GeneralUtils {
         return builder.build();
     }
 
-    public static JSONArray getSupportPackages (Context context) {
+    public static JSONArray getSupportPackages () {
         JSONArray jsonArray = null;
         try {
-            jsonArray = new JSONArray(getAssetsString("packages.json",context));
+            jsonArray = new JSONArray(getAssetsString("packages.json"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -100,11 +104,11 @@ final public class GeneralUtils {
         } return false;
     }
 
-    public static String getAssetsString(String fileName, Context context) {
+    public static String getAssetsString(String fileName) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            BufferedReader bf = new BufferedReader(new InputStreamReader(
-                    context.getAssets().open(fileName), StandardCharsets.UTF_8) );
+            File file = new File(Environment.getExternalStorageDirectory().getPath()+File.separator+"Android/data/cn.nexus6p.QQMusicNotify/files/" +fileName);
+            BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             String line;
             while ((line = bf.readLine()) != null) {
                 stringBuilder.append(line);
@@ -168,6 +172,22 @@ final public class GeneralUtils {
             fragment.startActivity(localIntent);
             return true;
         });
+    }
+
+    public static void setWorldReadable(Context context) {
+        try {
+            File dataDir = new File(context.getApplicationInfo().dataDir);
+            File prefsDir = new File(dataDir, "shared_prefs");
+            File prefsFile = new File(prefsDir, BuildConfig.APPLICATION_ID + "_preferences.xml");
+            if (prefsFile.exists()) {
+                for (File file : new File[]{dataDir, prefsDir, prefsFile}) {
+                    file.setReadable(true, false);
+                    file.setExecutable(true, false);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

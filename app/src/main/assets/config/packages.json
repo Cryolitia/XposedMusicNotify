@@ -14,5 +14,9 @@
     {
         "app": "com.tencent.qqmusic",
         "name": "QQ音乐"
+    },
+    {
+    "app": "cn.kuwo.player",
+    "name": "酷我音乐"
     }
 ]

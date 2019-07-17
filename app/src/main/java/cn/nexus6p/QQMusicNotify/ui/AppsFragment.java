@@ -1,6 +1,7 @@
 package cn.nexus6p.QQMusicNotify.ui;
 
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -23,18 +24,18 @@ import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static android.content.Context.MODE_WORLD_READABLE;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.setWorldReadable;
 
 
 public class AppsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.apps);
 
-        boolean PMEnabled = getActivity().getPreferences(MODE_WORLD_READABLE).getBoolean("pm",true);
+        boolean PMEnabled = getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean("pm",true);
         try {
-            JSONArray jsonArray = GeneralUtils.getSupportPackages(getContext());
+            JSONArray jsonArray = GeneralUtils.getSupportPackages();
             for (int i=0;i<jsonArray.length();i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
                 SwitchPreference switchPreference = new SwitchPreference(getActivity(),null);
@@ -83,6 +84,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
             e.printStackTrace();
         }
 
+        setWorldReadable(getActivity());
 
     }
 

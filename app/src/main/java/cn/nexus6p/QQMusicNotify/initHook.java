@@ -13,19 +13,17 @@ import cn.nexus6p.QQMusicNotify.Base.HookInterface;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import cn.nexus6p.QQMusicNotify.Hook.comandroidsystemui;
 import me.qiwu.MusicNotification.NotificationHook;
 
+import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 @Keep
 public class initHook implements IXposedHookLoadPackage {
-
-    private XSharedPreferences xSharedPreferences;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
@@ -33,8 +31,7 @@ public class initHook implements IXposedHookLoadPackage {
             findAndHookMethod("cn.nexus6p.QQMusicNotify.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
             return;
         }
-        xSharedPreferences = new XSharedPreferences("cn.nexus6p.QQMusicNotify");
-        if (xSharedPreferences.getBoolean("forceO",false)) {
+        if (getXSharedPreference().getBoolean("forceO",false)) {
             XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -50,7 +47,7 @@ public class initHook implements IXposedHookLoadPackage {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 Context context = (Context) param.args[0];
-                if (isHookEnabled(lpparam.packageName,context)) {
+                if (isHookEnabled(lpparam.packageName)) {
                     XposedBridge.log("给播放器系统的音乐通知：加载包"+lpparam.packageName);
                     final ClassLoader classLoader = (context.getClassLoader());
                     if (classLoader == null) {
@@ -64,7 +61,18 @@ public class initHook implements IXposedHookLoadPackage {
             }
         });
 
-        if (xSharedPreferences.getBoolean("styleModify", false)) {
+        if (getXSharedPreference().getBoolean("styleModify", false)) {
+            if (lpparam.packageName.equals("com.android.systemui")&& getXSharedPreference().getBoolean("miuiModify",true)) {
+                XposedBridge.log("给播放器系统的音乐通知：加载包"+lpparam.packageName);
+                try {
+                    Class c = comandroidsystemui.class;
+                    HookInterface hookInterface = (HookInterface) c.newInstance();
+                    hookInterface.setClassLoader(lpparam.classLoader).init();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
             try {
                 new NotificationHook().init();
             } catch (Exception e) {
@@ -73,12 +81,9 @@ public class initHook implements IXposedHookLoadPackage {
         }
     }
 
-    private boolean isHookEnabled(String packageName, Context context) {
-        if (xSharedPreferences == null) {
-            Log.e("QQMusicnotify", "XSharedPreferences should not be null!");
-        }
-        JSONArray jsonArray = GeneralUtils.getSupportPackages(GeneralUtils.getMoudleContext(context));
-        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && xSharedPreferences.getBoolean(packageName + ".enabled", true));
+    private boolean isHookEnabled(String packageName) {
+        JSONArray jsonArray = GeneralUtils.getSupportPackages();
+        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && getXSharedPreference().getBoolean(packageName + ".enabled", true));
     }
 
 }

@@ -8,11 +8,14 @@ import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicInit;
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
+import cn.nexus6p.QQMusicNotify.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+
+import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
 
 @Keep
 public class comandroidsystemui extends BasicInit {
@@ -28,15 +31,15 @@ public class comandroidsystemui extends BasicInit {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         super.afterHookedMethod(param);
-                        XposedHelpers.setIntField(param.thisObject,"mNotificationMinHeightLegacy",new XSharedPreferences("cn.nexus6p.QQMusicNotify").getInt("notification_min_height_legacy",133));
+                        XposedHelpers.setIntField(param.thisObject,"mNotificationMinHeightLegacy", getXSharedPreference().getInt("notification_min_height_legacy",133));
                     }
                 });
-                /*XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.ExpandableNotificationRow", classLoader, "updateLimits", new XC_MethodReplacement() {
+                XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.ExpandableNotificationRow", classLoader, "updateLimits", new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                         return null;
                     }
-                });*/
+                });
                 final int minHeightID = context.getResources().getIdentifier("notification_min_height_legacy","dimen","com.android.systemui");
                 final int marginEndID = context.getResources().getIdentifier("notification_custom_view_margin_end","dimen","com.android.systemui");
                 final int marginStartID = context.getResources().getIdentifier("notification_custom_view_margin_start","dimen","com.android.systemui");

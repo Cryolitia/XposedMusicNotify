@@ -35,7 +35,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-import cn.nexus6p.QQMusicNotify.PreferenceUtil;
 import cn.nexus6p.QQMusicNotify.R;
 import soptqs.medianotification.utils.BlurUtils;
 import soptqs.medianotification.utils.ImageUtils;
@@ -45,6 +44,7 @@ import soptqs.medianotification.utils.PreferenceUtils;
 import static android.content.ContentValues.TAG;
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
 
 public class NotificationService {
 
@@ -62,7 +62,6 @@ public class NotificationService {
     private List<Bitmap> actionIcons;
     private boolean isPlaying;
     private Context context;
-    private PreferenceUtil prefs;
 
     public void updateNotification() {
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -73,13 +72,13 @@ public class NotificationService {
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
                 //.setDeleteIntent(PendingIntent.getService(this, 0, deleteIntent, 0))
 //                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle())
-                .setOngoing(isPlaying || prefs.getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
+                .setOngoing(isPlaying || getXSharedPreference().getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
                 .setVisibility(VISIBILITY_PUBLIC);
 
         if (contentIntent != null)
             builder.setContentIntent(contentIntent);
         else {
-            packageName = prefs.getString(PreferenceUtils.PREF_DEFAULT_MUSIC_PLAYER, null);
+            packageName = getXSharedPreference().getString(PreferenceUtils.PREF_DEFAULT_MUSIC_PLAYER, null);
             if (packageName != null) {
                 try {
                     Intent contentIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
@@ -121,7 +120,7 @@ public class NotificationService {
     }
 
     private RemoteViews getContentView(boolean isCollapsed) {
-        if (!prefs.getBoolean(PreferenceUtils.PREF_NOTIFICATION_STYLE2, false)) {
+        if (!getXSharedPreference().getBoolean(PreferenceUtils.PREF_NOTIFICATION_STYLE2, false)) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
             remoteViews = remoteViewSettign(remoteViews, PreferenceUtils.PREF_NOTIFICATION_STYLE1);
             return remoteViews;
@@ -138,7 +137,7 @@ public class NotificationService {
         remoteViews.setTextViewText(R.id.title, title);
         remoteViews.setTextViewText(R.id.subtitle, subtitle);
 
-        remoteViews.setViewVisibility(R.id.largeIcon, prefs.getBoolean(PreferenceUtils.PREF_SHOW_ALBUM_ART, true) ? View.VISIBLE : View.GONE);
+        remoteViews.setViewVisibility(R.id.largeIcon, getXSharedPreference().getBoolean(PreferenceUtils.PREF_SHOW_ALBUM_ART, true) ? View.VISIBLE : View.GONE);
         remoteViews.setImageViewBitmap(R.id.largeIcon, largeIcon);
         Palette palette = PaletteUtils.getPalette(getMoudleContext(context), largeIcon);
         Palette.Swatch swatch = PaletteUtils.getSwatch(getMoudleContext(context), palette);
@@ -159,7 +158,7 @@ public class NotificationService {
 
         remoteViews.setInt(R.id.content, "setBackgroundResource", selectableItemBackground);
 
-        boolean useNotificationIcons = !prefs.getBoolean(PreferenceUtils.PREF_FORCE_MD_ICONS, false) && actionIcons.size() == actions.size();
+        boolean useNotificationIcons = !getXSharedPreference().getBoolean(PreferenceUtils.PREF_FORCE_MD_ICONS, false) && actionIcons.size() == actions.size();
 
         for (int i = 0; i < 5; i++) {
             int id = -1;
@@ -294,16 +293,16 @@ public class NotificationService {
 
     public void largeIconProcess(Bitmap bkp) {
 
-        if (prefs.getBoolean(PreferenceUtils.PREF_ENABLE_RENDERSCRIPT, false)) {
-            if (!prefs.getBoolean(PreferenceUtils.PREF_NOTIFICATION_STYLE2, false)) {
+        if (getXSharedPreference().getBoolean(PreferenceUtils.PREF_ENABLE_RENDERSCRIPT, false)) {
+            if (!getXSharedPreference().getBoolean(PreferenceUtils.PREF_NOTIFICATION_STYLE2, false)) {
                 largeIcon = ImageUtils.centerSquareScaleBitmap(bkp);
-            } else if (prefs.getBoolean(PreferenceUtils.PREF_ENABLE_BLUR, false)) {
+            } else if (getXSharedPreference().getBoolean(PreferenceUtils.PREF_ENABLE_BLUR, false)) {
                 largeIcon = BlurUtils.fastblur(defautIcon, 0.4f, 15);
             } else largeIcon = ImageUtils.centerSquareScaleBitmap(bkp);
         } else {
-            if (!prefs.getBoolean(PreferenceUtils.PREF_NOTIFICATION_STYLE2, false)) {
+            if (!getXSharedPreference().getBoolean(PreferenceUtils.PREF_NOTIFICATION_STYLE2, false)) {
                 largeIcon = ImageUtils.centerSquareScaleBitmap(bkp);
-            } else if (prefs.getBoolean(PreferenceUtils.PREF_ENABLE_BLUR, false)) {
+            } else if (getXSharedPreference().getBoolean(PreferenceUtils.PREF_ENABLE_BLUR, false)) {
                 largeIcon = BlurUtils.blur(context, ImageUtils.centerSquareScaleBitmap(bkp), 15);
             } else largeIcon = ImageUtils.centerSquareScaleBitmap(bkp);
         }

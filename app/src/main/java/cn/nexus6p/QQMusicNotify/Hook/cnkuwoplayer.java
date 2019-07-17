@@ -33,10 +33,10 @@ public class cnkuwoplayer extends BasicNotification {
                 super.afterHookedMethod(param);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     channelID = "music";
-                    NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_HIGH);
                     ((NotificationManager) GeneralUtils.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
                 }
-                iconID = 0x7f020dca;
+                iconID = 0x7f020dfd;
                 context = (Context) getObjectField(param.thisObject,"mContext");
                 bitmap = (Bitmap) param.args[0];
                 if (mTOKEN==null) mTOKEN = new MediaSession(context,"MediaSessionHelper").getSessionToken();
@@ -53,6 +53,10 @@ public class cnkuwoplayer extends BasicNotification {
                 hasExtraAction = true;
                 extraActionIcon = 0x7f02040a;
                 extraActionIntent = new Intent("kuwo.desklrc.enable");
+                Object object = XposedHelpers.callStaticMethod(XposedHelpers.findClass("cn.kuwo.a.b.b",classLoader),"s");
+                Object object2 = XposedHelpers.callMethod(object,"getStatus");
+                Object object3 = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("cn.kuwo.service.PlayProxy$Status",classLoader),"PLAYING");
+                statue = object2==object3;
                 return build();
             }
         });
