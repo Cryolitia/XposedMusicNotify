@@ -221,7 +221,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     //抄的https://www.jianshu.com/p/4e12da9866a0
     private void getJsonFromInternet () {
-        final String url = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/version.json";
+        final String url = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/config/version.json";
         if (!((SwitchPreferenceCompat)findPreference("network")).isChecked()) {
             Toast.makeText(getContext(),"联网已禁用，无法检查新版本",Toast.LENGTH_SHORT).show();
             return;
