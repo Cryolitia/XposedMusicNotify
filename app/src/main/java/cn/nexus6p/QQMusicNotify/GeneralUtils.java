@@ -88,7 +88,7 @@ final public class GeneralUtils {
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(getAssetsString("packages.json"));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return jsonArray;
@@ -113,8 +113,9 @@ final public class GeneralUtils {
             while ((line = bf.readLine()) != null) {
                 stringBuilder.append(line);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
         return stringBuilder.toString();
     }

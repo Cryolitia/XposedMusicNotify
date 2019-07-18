@@ -35,7 +35,15 @@
             android:summary="自动获取最新的适配文件"
             android:title="允许联网" />
     </androidx.preference.PreferenceCategory>
-    <androidx.preference.PreferenceCategory android:title="更多">
+    <androidx.preference.PreferenceCategory android:title="故障排除">
+        <androidx.preference.Preference
+            android:title="SeLinux"
+            android:summary="将SeLinux状态更改为Permissive" />
+        <androidx.preference.Preference
+            android:title="存储重定向"
+            android:summary="如果安装了存储重定向，请允许所有播放软件读取/sdcard/Android/data/cn.nexus6p.QQMusicNotify" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="关于">
         <androidx.preference.Preference
             android:key="author"
             android:summary="神经元"

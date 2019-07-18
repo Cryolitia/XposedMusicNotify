@@ -50,10 +50,10 @@ public class cnkuwoplayer extends BasicNotification {
                 contentIntent.setAction("android.intent.action.MAIN")
                     .addCategory("android.intent.category.LAUNCHER");
                 intentRequestID = 1;
-                hasExtraAction = true;
+                hasExtraAction = false;
                 extraActionIcon = 0x7f02040a;
                 extraActionIntent = new Intent("kuwo.desklrc.enable");
-                Object object = XposedHelpers.callStaticMethod(XposedHelpers.findClass("cn.kuwo.a.b.b",classLoader),"s");
+                Object object = XposedHelpers.callStaticMethod(XposedHelpers.findClass("cn.kuwo.a.b.b",classLoader),"r");
                 Object object2 = XposedHelpers.callMethod(object,"getStatus");
                 Object object3 = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("cn.kuwo.service.PlayProxy$Status",classLoader),"PLAYING");
                 statue = object2==object3;

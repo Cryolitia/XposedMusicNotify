@@ -9,6 +9,8 @@ import androidx.annotation.Keep;
 
 import org.json.JSONArray;
 
+import java.lang.ref.WeakReference;
+
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -24,6 +26,8 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 @Keep
 public class initHook implements IXposedHookLoadPackage {
+
+    private static WeakReference<JSONArray> jsonArrayWeakReference = new WeakReference<>(null);
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
@@ -42,13 +46,13 @@ public class initHook implements IXposedHookLoadPackage {
                 }
             });
         }
-        XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                Context context = (Context) param.args[0];
-                if (isHookEnabled(lpparam.packageName)) {
-                    XposedBridge.log("给播放器系统的音乐通知：加载包"+lpparam.packageName);
+        if (isHookEnabled(lpparam.packageName)) {
+            XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    Context context = (Context) param.args[0];
+                    XposedBridge.log("原生音乐通知：加载包" + lpparam.packageName);
                     final ClassLoader classLoader = (context.getClassLoader());
                     if (classLoader == null) {
                         Log.e(lpparam.packageName + "Hook", "Can't get ClassLoader!");
@@ -58,8 +62,8 @@ public class initHook implements IXposedHookLoadPackage {
                     HookInterface hookInterface = (HookInterface) c.newInstance();
                     hookInterface.setClassLoader(classLoader).setContext(context).init();
                 }
-            }
-        });
+            });
+        }
 
         if (getXSharedPreference().getBoolean("styleModify", false)) {
             /*if (lpparam.packageName.equals("com.android.systemui")&& getXSharedPreference().getBoolean("miuiModify",true)) {
@@ -82,7 +86,15 @@ public class initHook implements IXposedHookLoadPackage {
     }
 
     private boolean isHookEnabled(String packageName) {
-        JSONArray jsonArray = GeneralUtils.getSupportPackages();
+        JSONArray jsonArray = jsonArrayWeakReference.get();
+        if (jsonArray==null) {
+            jsonArray=GeneralUtils.getSupportPackages();
+            if (jsonArray!=null) jsonArrayWeakReference = new WeakReference<>(jsonArray);
+        }
+        if (jsonArray==null) {
+            Log.d("原生音乐通知","加载配置文件失败："+packageName);
+            return false;
+        }
         return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && getXSharedPreference().getBoolean(packageName + ".enabled", true));
     }
 

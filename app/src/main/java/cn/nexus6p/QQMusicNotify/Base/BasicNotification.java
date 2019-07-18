@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.media.session.MediaSession;
 import android.os.Build;
 import android.view.View;
@@ -52,14 +53,20 @@ public abstract class BasicNotification extends BasicInit {
 
     public final Notification build() {
         Notification.Action previousAction = new Notification.Action.Builder(
-                //Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.note_btn_pre))
-                android.R.drawable.ic_media_previous
+                Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_skip_previous))
+                //android.R.drawable.ic_media_previous
                 , "后退", PendingIntent.getBroadcast(context, 0, preSongIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
         Notification.Action playAction = new Notification.Action.Builder(
-                statue ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play, statue ? "暂停" : "播放"
+                statue ?
+                        //android.R.drawable.ic_media_pause :
+                        Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_pause)) :
+                        //android.R.drawable.ic_media_play
+                        Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_play))
+                , statue ? "暂停" : "播放"
                 , PendingIntent.getBroadcast(context, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
         Notification.Action nextAction = new Notification.Action.Builder(
-                android.R.drawable.ic_media_next
+                //android.R.drawable.ic_media_next
+                Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_skip_next))
                 , "前进", PendingIntent.getBroadcast(context, 0, nextSongIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
         actions.add(previousAction);
         actions.add(playAction);
@@ -139,19 +146,24 @@ public abstract class BasicNotification extends BasicInit {
         for (int i = 0;i<=2;i++) {
             switch (i) {
                 case 0:
-                    actionIconID = android.R.drawable.ic_media_previous;
+                    actionIconID = //android.R.drawable.ic_media_previous;
+                            R.drawable.ic_skip_previous;
                     break;
                 case 1:
-                    actionIconID = (!statue) ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause;
+                    actionIconID = (!statue) ? //android.R.drawable.ic_media_play
+                            R.drawable.ic_play
+                            : //android.R.drawable.ic_media_pause;
+                            R.drawable.ic_pause;
                     break;
                 case 2:
-                    actionIconID = android.R.drawable.ic_media_next;
+                    actionIconID = //android.R.drawable.ic_media_next;
+                            R.drawable.ic_skip_next;
                     break;
             }
             int id = getMoudleContext(context).getResources().getIdentifier("ic_" + i, "id", BuildConfig.APPLICATION_ID);
             Notification.Action action = actions.get(i);
             remoteViews.setViewVisibility(id, View.VISIBLE);
-            remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(context.getResources(), actionIconID));
+            remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(getMoudleContext(context).getResources(), actionIconID));
             remoteViews.setOnClickPendingIntent(id, action.actionIntent);
             remoteViews.setInt(id, "setColorFilter", textColor);
             remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
