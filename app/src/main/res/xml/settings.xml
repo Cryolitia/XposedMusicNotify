@@ -67,9 +67,14 @@
             android:summary="951343825"
             android:title="加入QQ群" />
         <androidx.preference.Preference
+            android:key="telegram"
+            android:summary="@NeuronDevelopChannel"
+            android:title="Telegram频道/群组" />
+        <androidx.preference.Preference
             android:key="github"
             android:summary="https://github.com/singleNeuron/QQMusicNotify"
-            android:title="项目地址" />
+            android:title="项目地址"
+            android:icon="@drawable/ic_github"/>
         <androidx.preference.Preference
             android:key="openSource"
             android:title="开放源代码许可" />

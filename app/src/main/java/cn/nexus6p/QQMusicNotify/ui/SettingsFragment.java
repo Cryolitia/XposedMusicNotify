@@ -38,6 +38,7 @@ import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
 import de.psdev.licensesdialog.licenses.License;
+import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
@@ -53,11 +54,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         jumpToLink(this,"author","u/603406",true);
         jumpToLink(this,"github","https://github.com/singleNeuron/QQMusicNotify",false);
+        jumpToLink(this,"telegram","https://t.me/NeuronDevelopChannel",false);
 
         Preference preference = findPreference("statue");
         if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
         else if (HookStatue.isExpModuleActive(getActivity())) {
-            try {
+            preference.setSummary("太极·阳 已激活");
+            /*try {
                 if (Objects.requireNonNull(System.getProperties().get("taichi_magisk")).toString().equals("1"))
                     preference.setSummary("太极·阳 已激活");
                 else {
@@ -66,7 +69,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             } catch (Exception e) {
                 e.printStackTrace();
                 preference.setSummary("太极·阴 已激活");
-            }
+            }*/
         } else {
             preference.setSummary("模块未激活，您是否已在启用模块后重启手机？");
             preference.setOnPreferenceClickListener(preference1 -> {
@@ -157,6 +160,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
             }));
             notices.addNotice(new Notice("MediaNotification","https://github.com/Soptq/MediaNotification/tree/Coolapk","Soptq",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("去除通知栏白色边框","https://github.com/singleNeuron/XposedRemoveNotificationWhiteFrame","Copyright 2019 神经元",new MITLicense()));
             notices.addNotice(new Notice("QQ净化","https://github.com/zpp0196/QQPurify","zpp0196",new ApacheSoftwareLicense20()));
             new LicensesDialog.Builder(Objects.requireNonNull(getContext()))
                     .setNotices(notices)

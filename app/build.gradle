@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
-    buildToolsVersion "28.0.3"
+    buildToolsVersion '29.0.0'
 
     defaultConfig {
         applicationId "cn.nexus6p.QQMusicNotify"
@@ -26,6 +26,10 @@ android {
             targetCompatibility JavaVersion.VERSION_1_8
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 dependencies {
@@ -34,8 +38,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.palette:palette:1.0.0'
-    implementation "com.github.topjohnwu.libsu:core:2.5.0"
+    implementation 'com.github.topjohnwu.libsu:core:2.5.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation ('com.github.bumptech.glide:glide:4.9.0'){
+        exclude group: 'com.android.support'
+        exclude module: 'appcompat-v7'
+        exclude module: 'support-v4'
+    }
     implementation 'com.jayway.jsonpath:json-path:2.4.0'
 }

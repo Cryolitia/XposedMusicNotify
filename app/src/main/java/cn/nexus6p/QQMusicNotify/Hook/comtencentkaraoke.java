@@ -25,19 +25,7 @@ public class comtencentkaraoke extends BasicViewNotification {
 
     @Override
     public void init() {
-        String className = "";
-        String methodName = "";
-        try {
-            JSONObject jsonObject = new JSONObject(GeneralUtils.getAssetsString("com.tencent.karaoke.json"));
-            className = jsonObject.getString("class");
-            methodName = jsonObject.getString("method");
-            titleID = Integer.parseInt(jsonObject.getString("titleID"),16);
-            textID = Integer.parseInt(jsonObject.getString("textID"),16);
-            bitmapID = Integer.parseInt(jsonObject.getString("bitmapID"),16);
-            iconID = Integer.parseInt(jsonObject.getString("iconID"),16);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        initWithJSON("com.tencent.karaoke.json");
         if (className.equals("")) className = "com.tencent.karaoke.common.media.n";
         if (methodName.equals("")) methodName = "a";
         if (titleID==0) titleID = 0x7f0914e1;

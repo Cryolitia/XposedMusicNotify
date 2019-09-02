@@ -18,7 +18,6 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import cn.nexus6p.QQMusicNotify.Hook.comandroidsystemui;
 import me.qiwu.MusicNotification.NotificationHook;
 
 import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
@@ -66,17 +65,15 @@ public class initHook implements IXposedHookLoadPackage {
         }
 
         if (getXSharedPreference().getBoolean("styleModify", false)) {
-            /*if (lpparam.packageName.equals("com.android.systemui")&& getXSharedPreference().getBoolean("miuiModify",true)) {
+            if (lpparam.packageName.equals("com.android.systemui")&& getXSharedPreference().getBoolean("miuiModify",true)) {
                 XposedBridge.log("给播放器系统的音乐通知：加载包"+lpparam.packageName);
                 try {
-                    Class c = comandroidsystemui.class;
-                    HookInterface hookInterface = (HookInterface) c.newInstance();
-                    hookInterface.setClassLoader(lpparam.classLoader).init();
-                } catch (Exception e) {
+                    new cn.nexus6p.removewhitenotificationforbugme.main().handleLoadPackage(lpparam);
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
                 return;
-            }*/
+            }
             try {
                 new NotificationHook().init();
             } catch (Exception e) {

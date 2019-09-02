@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Build;
 
@@ -16,6 +17,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
 import android.os.Environment;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -53,7 +55,7 @@ final public class GeneralUtils {
         return getMoudleContext(getContext());
     }
 
-    public static Notification  buildMusicNotificationWithoutAction (Context context, int iconID, CharSequence titleString, CharSequence textString, boolean statue, RemoteViews remoteViews, PendingIntent contentIntent, String channelID, PendingIntent deleteIntent) {
+    public static Notification  buildMusicNotificationWithoutAction (Context context, int iconID, CharSequence titleString, CharSequence textString, boolean statue, RemoteViews remoteViews, PendingIntent contentIntent, String channelID, PendingIntent deleteIntent, MediaSession.Token token) {
         if (Build.VERSION.SDK_INT >= 26 && channelID!=null) {
             Notification.Builder builder = new Notification.Builder(context,channelID)
                     .setSmallIcon(iconID)
@@ -66,6 +68,7 @@ final public class GeneralUtils {
                     .setCustomBigContentView(remoteViews)
                     .setContentIntent(contentIntent)
                     .setDeleteIntent(deleteIntent);
+            if (token!=null) builder.setStyle(new Notification.DecoratedMediaCustomViewStyle().setMediaSession(token));
             return builder.build();
         }
         NotificationCompat.Builder builder= new NotificationCompat.Builder(context)
@@ -81,6 +84,7 @@ final public class GeneralUtils {
                 .setCustomContentView(remoteViews)
                 .setContentIntent(contentIntent)
                 .setDeleteIntent(deleteIntent);
+        if (token!=null) builder.setStyle(new androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle().setMediaSession(MediaSessionCompat.Token.fromToken(token)));
         return builder.build();
     }
 
@@ -95,6 +99,7 @@ final public class GeneralUtils {
     }
 
     static boolean isStringInJSONArray (String string,JSONArray jsonArray) {
+        if (jsonArray==null) return false;
         for (int i=0;i<jsonArray.length();i++) {
             try {
                 if (jsonArray.getJSONObject(i).getString("app").equals(string)) return true;

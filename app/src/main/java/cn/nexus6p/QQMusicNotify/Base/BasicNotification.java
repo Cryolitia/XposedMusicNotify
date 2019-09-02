@@ -78,7 +78,7 @@ public abstract class BasicNotification extends BasicInit {
         }
         if (new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("styleModify",false)) {
             RemoteViews remoteViews = getContentView(titleString.toString(),textString.toString());
-            return GeneralUtils.buildMusicNotificationWithoutAction(context,iconID,titleString,textString,statue,remoteViews,PendingIntent.getActivity(context, intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
+            return GeneralUtils.buildMusicNotificationWithoutAction(context,iconID,titleString,textString,statue,remoteViews,PendingIntent.getActivity(context, intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null,null);
         } else {
             Notification.Builder builder = new Notification.Builder(context)
                     .setContentTitle(titleString)
@@ -170,7 +170,7 @@ public abstract class BasicNotification extends BasicInit {
             // XposedBridge.log("资源："+action.getIcon());
         }
         if (hasExtraAction) {
-            int id = getMoudleContext(context).getResources().getIdentifier("ic_" + String.valueOf(3), "id", BuildConfig.APPLICATION_ID);
+            int id = getMoudleContext(context).getResources().getIdentifier("ic_" + 3, "id", BuildConfig.APPLICATION_ID);
             Notification.Action action = actions.get(3);
             remoteViews.setViewVisibility(id, View.VISIBLE);
             remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(context.getResources(), extraActionIcon));

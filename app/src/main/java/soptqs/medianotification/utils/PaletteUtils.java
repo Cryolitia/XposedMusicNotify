@@ -55,7 +55,7 @@ public class PaletteUtils {
     @ColorInt
     public static int getTextColor(Context context, Palette palette, Palette.Swatch swatch) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefs.getBoolean(PreferenceUtils.PREF_HIGH_CONTRAST_TEXT, false) || prefs.getBoolean(PreferenceUtils.PREF_NOTIFICATION_STYLE2, false)) {
+        if (prefs.getBoolean(PreferenceUtils.PREF_HIGH_CONTRAST_TEXT, false)) {
             if (ColorUtils.isColorLight(swatch.getRgb()))
                 return Color.BLACK;
             else return Color.WHITE;

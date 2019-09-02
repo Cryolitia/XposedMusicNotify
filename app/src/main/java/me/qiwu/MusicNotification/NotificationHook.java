@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.media.session.MediaSession;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.core.app.NotificationCompat;
@@ -24,6 +25,7 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
+import static android.app.Notification.EXTRA_MEDIA_SESSION;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.getContext;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
 
@@ -52,10 +54,16 @@ public class NotificationHook {
                     subtitle = subtitle==null || subtitle.equals("") ? "未知艺术家":subtitle;
                     RemoteViews remoteViews = getContentView(title,subtitle,notification);
                     int resId = getIconId(notification.getSmallIcon()) != -1 ? getIconId(notification.getSmallIcon()) : android.R.drawable.ic_dialog_info;
+                    MediaSession.Token token = null;
+                    try {
+                        token=notification.extras.getParcelable(EXTRA_MEDIA_SESSION);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     param.setResult(GeneralUtils.buildMusicNotificationWithoutAction(
                             getContext(),resId,title,subtitle
                             ,new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT)
-                            ,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent));
+                            ,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent,null));
                 }
             }
         });

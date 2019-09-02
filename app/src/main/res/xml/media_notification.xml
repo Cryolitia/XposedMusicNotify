@@ -17,12 +17,12 @@
         <androidx.preference.SwitchPreferenceCompat
             android:key="highContrast"
             android:title="高对比度文字/图片" />
-        <androidx.preference.ListPreference
+        <!--<androidx.preference.ListPreference
             android:defaultValue="无"
             android:entries="@array/array_get_album"
             android:entryValues="@array/array_get_album"
             android:key="getAlbum"
-            android:title="获取音乐封面" />
+            android:title="获取音乐封面" />-->
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="关于">
         <androidx.preference.Preference

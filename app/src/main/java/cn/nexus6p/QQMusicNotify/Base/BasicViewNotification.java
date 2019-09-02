@@ -9,13 +9,33 @@ import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import cn.nexus6p.QQMusicNotify.GeneralUtils;
+
 public abstract class BasicViewNotification extends BasicNotification {
 
     public Notification oldNotification;
     public int titleID;
     public int textID;
     public int bitmapID;
+    public String className = "";
+    public String methodName = "";
     protected BasicViewNotification() { }
+
+    public final void initWithJSON (String packageName) {
+        try {
+            JSONObject jsonObject = new JSONObject(GeneralUtils.getAssetsString(packageName));
+            className = jsonObject.getString("class");
+            methodName = jsonObject.getString("method");
+            titleID = Integer.parseInt(jsonObject.getString("titleID"),16);
+            textID = Integer.parseInt(jsonObject.getString("textID"),16);
+            bitmapID = Integer.parseInt(jsonObject.getString("bitmapID"),16);
+            iconID = Integer.parseInt(jsonObject.getString("iconID"),16);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public final Notification viewBuild () {
         if (oldNotification==null) {
