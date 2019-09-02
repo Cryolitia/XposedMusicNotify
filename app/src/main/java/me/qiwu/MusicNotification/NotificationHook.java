@@ -17,6 +17,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
@@ -60,10 +62,12 @@ public class NotificationHook {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    BasicParam basicParam = new BasicParam(
+                            getContext(),resId,title,subtitle,null,new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT),null
+                    );
                     param.setResult(GeneralUtils.buildMusicNotificationWithoutAction(
-                            getContext(),resId,title,subtitle
-                            ,new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT)
-                            ,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent,null));
+                            basicParam,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent
+                    ));
                 }
             }
         });

@@ -36,17 +36,17 @@ public class cnkuwoplayer extends BasicNotification {
                     NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_HIGH);
                     ((NotificationManager) GeneralUtils.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
                 }
-                iconID = 0x7f020dfd;
-                context = (Context) getObjectField(param.thisObject,"mContext");
-                bitmap = (Bitmap) param.args[0];
-                if (mTOKEN==null) mTOKEN = new MediaSession(context,"MediaSessionHelper").getSessionToken();
-                token = mTOKEN;
-                titleString = (CharSequence) param.args[1];
-                textString = (CharSequence) param.args[2];
+                basicParam.setIconID(0x7f020dfd);
+                basicParam.setContext((Context) getObjectField(param.thisObject,"mContext"));
+                basicParam.setBitmap((Bitmap) param.args[0]);
+                if (mTOKEN==null) mTOKEN = new MediaSession(basicParam.getContext(),"MediaSessionHelper").getSessionToken();
+                basicParam.setToken(mTOKEN);
+                basicParam.setTitleString((CharSequence) param.args[1]);
+                basicParam.setTextString((CharSequence) param.args[2]);
                 preSongIntent = new Intent("kuwo.play.pre");
                 playIntent = new Intent("kuwo.play.playing");
                 nextSongIntent = new Intent("kuwo.play.next");
-                contentIntent = new Intent(context,XposedHelpers.findClass("cn.kuwo.player.activities.EntryActivity",classLoader));
+                contentIntent = new Intent(basicParam.getContext(),XposedHelpers.findClass("cn.kuwo.player.activities.EntryActivity",classLoader));
                 contentIntent.setAction("android.intent.action.MAIN")
                     .addCategory("android.intent.category.LAUNCHER");
                 intentRequestID = 1;
@@ -56,7 +56,7 @@ public class cnkuwoplayer extends BasicNotification {
                 Object object = XposedHelpers.callStaticMethod(XposedHelpers.findClass("cn.kuwo.a.b.b",classLoader),"r");
                 Object object2 = XposedHelpers.callMethod(object,"getStatus");
                 Object object3 = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("cn.kuwo.service.PlayProxy$Status",classLoader),"PLAYING");
-                statue = object2==object3;
+                basicParam.setStatue(object2==object3);
                 return build();
             }
         });

@@ -2,9 +2,11 @@ package cn.nexus6p.QQMusicNotify.Base;
 
 import android.content.Context;
 
+import base.BasicParam;
+
 public abstract class BasicInit implements HookInterface {
 
-    public Context context;
+    public BasicParam basicParam = new BasicParam();
     public ClassLoader classLoader;
 
     @Override
@@ -15,7 +17,7 @@ public abstract class BasicInit implements HookInterface {
 
     @Override
     public final BasicInit setContext(Context mContext) {
-        context = mContext;
+        basicParam.setContext(mContext);
         return this;
     }
 }

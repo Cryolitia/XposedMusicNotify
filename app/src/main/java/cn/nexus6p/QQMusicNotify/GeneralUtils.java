@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import base.BasicParam;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
@@ -55,36 +56,36 @@ final public class GeneralUtils {
         return getMoudleContext(getContext());
     }
 
-    public static Notification  buildMusicNotificationWithoutAction (Context context, int iconID, CharSequence titleString, CharSequence textString, boolean statue, RemoteViews remoteViews, PendingIntent contentIntent, String channelID, PendingIntent deleteIntent, MediaSession.Token token) {
+    public static Notification  buildMusicNotificationWithoutAction (BasicParam basicParam, RemoteViews remoteViews, PendingIntent contentIntent, String channelID, PendingIntent deleteIntent) {
         if (Build.VERSION.SDK_INT >= 26 && channelID!=null) {
-            Notification.Builder builder = new Notification.Builder(context,channelID)
-                    .setSmallIcon(iconID)
-                    .setContentTitle(titleString)
-                    .setContentText(textString)
+            Notification.Builder builder = new Notification.Builder(basicParam.getContext(),channelID)
+                    .setSmallIcon(basicParam.getIconID())
+                    .setContentTitle(basicParam.getTitleString())
+                    .setContentText(basicParam.getTextString())
                     .setCategory(NotificationCompat.CATEGORY_STATUS)
                     .setVisibility(Notification.VISIBILITY_PUBLIC)
-                    .setOngoing(statue)
+                    .setOngoing(basicParam.getStatue())
                     .setCustomContentView(remoteViews)
                     .setCustomBigContentView(remoteViews)
                     .setContentIntent(contentIntent)
                     .setDeleteIntent(deleteIntent);
-            if (token!=null) builder.setStyle(new Notification.DecoratedMediaCustomViewStyle().setMediaSession(token));
+            //if (basicParam.getToken()!=null) builder.setStyle(new Notification.DecoratedMediaCustomViewStyle().setMediaSession(basicParam.getToken()));
             return builder.build();
         }
-        NotificationCompat.Builder builder= new NotificationCompat.Builder(context)
-                .setSmallIcon(iconID)
-                .setContentTitle(titleString)
-                .setContentText(textString)
+        NotificationCompat.Builder builder= new NotificationCompat.Builder(basicParam.getContext())
+                .setSmallIcon(basicParam.getIconID())
+                .setContentTitle(basicParam.getTitleString())
+                .setContentText(basicParam.getTextString())
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setOngoing(statue)
+                .setOngoing(basicParam.getStatue())
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContent(remoteViews)
                 .setCustomBigContentView(remoteViews)
                 .setCustomContentView(remoteViews)
                 .setContentIntent(contentIntent)
                 .setDeleteIntent(deleteIntent);
-        if (token!=null) builder.setStyle(new androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle().setMediaSession(MediaSessionCompat.Token.fromToken(token)));
+        //if (basicParam.getToken()!=null) builder.setStyle(new androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle().setMediaSession(MediaSessionCompat.Token.fromToken(basicParam.getToken())));
         return builder.build();
     }
 

@@ -1,4 +1,4 @@
-package soptqs.medianotification.services;
+package soptqs.medianotification.utils;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -16,21 +17,16 @@ import android.widget.RemoteViews;
 import androidx.core.app.NotificationCompat;
 import androidx.palette.graphics.Palette;
 
-import com.bumptech.glide.request.target.Target;
-
 import java.util.List;
 
+import base.BasicParam;
 import cn.nexus6p.QQMusicNotify.R;
-import soptqs.medianotification.utils.BlurUtils;
-import soptqs.medianotification.utils.ImageUtils;
-import soptqs.medianotification.utils.PaletteUtils;
-import soptqs.medianotification.utils.PreferenceUtils;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
 import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
 
-public class NotificationService {
+public class NotificationUtils {
 
     private NotificationManager notificationManager;
     private String packageName;
@@ -45,17 +41,21 @@ public class NotificationService {
     private boolean isPlaying;
     private Context context;
 
-    public NotificationService setParam(String mPackageName, Bitmap mSmallIcon, String mTitle, String mSubtitle, Bitmap mLargeIcon, PendingIntent mContentIntent, List<NotificationCompat.Action> mActions, List<Bitmap> mActionIcons, boolean mIsPlaying, Context mContext) {
+    public NotificationUtils setParam(String mPackageName, BasicParam basicParam, PendingIntent mContentIntent, List<NotificationCompat.Action> mActions, List<Bitmap> mActionIcons) {
         packageName = mPackageName;
-        smallIcon = mSmallIcon;
-        title = mTitle;
-        subtitle = mSubtitle;
-        largeIcon = mLargeIcon;
+        title = basicParam.getTitleString().toString();
+        subtitle = basicParam.getTextString().toString();
+        largeIcon = basicParam.getBitmap();
         contentIntent = mContentIntent;
         actions = mActions;
         actionIcons = mActionIcons;
-        isPlaying = mIsPlaying;
-        context = mContext;
+        isPlaying = basicParam.getStatue();
+        context = basicParam.getContext();
+        try {
+            smallIcon = ((BitmapDrawable) context.getResources().getDrawable(basicParam.getIconID(),null)).getBitmap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -119,7 +119,7 @@ public class NotificationService {
     }
 
     private RemoteViews remoteViewSetting(RemoteViews remoteViews) {
-        remoteViews.setTextViewText(R.id.appName, appName + " \u2022 " + (isPlaying ? getMoudleContext(context).getResources().getString(R.string.isplaying) : getMoudleContext(context).getResources().getString(R.string.ispause)));
+        remoteViews.setTextViewText(R.id.appName, appName);
         remoteViews.setTextViewText(R.id.title, title);
         remoteViews.setTextViewText(R.id.subtitle, subtitle);
 

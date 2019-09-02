@@ -29,28 +29,28 @@ public class comsingclient extends BasicViewNotification {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 oldNotification = (Notification) XposedHelpers.getObjectField(param.thisObject,"b");
-                context = (Context) XposedHelpers.getObjectField(param.thisObject,"a");
-                iconID = 0x7f0207f1;
+                basicParam.setContext ((Context) XposedHelpers.getObjectField(param.thisObject,"a"));
+                basicParam.setIconID(0x7f0207f1);
                 titleID = 0x7f100bf8;
                 textID = 0x7f100bf9;
                 bitmapID = 0x7f100bf7;
-                View view = oldNotification.bigContentView.apply(context,null);
+                View view = oldNotification.bigContentView.apply(basicParam.getContext(),null);
                 try {
-                    bitmap = ((BitmapDrawable)((ImageView) view.findViewById(bitmapID)).getDrawable()).getBitmap();
-                    titleString = ((TextView) view.findViewById(titleID)).getText();
-                    textString = ((TextView) view.findViewById(textID)).getText();
+                    basicParam.setBitmap(((BitmapDrawable)((ImageView) view.findViewById(bitmapID)).getDrawable()).getBitmap());
+                    basicParam.setTextString(((TextView) view.findViewById(titleID)).getText());
+                    basicParam.setTextString(((TextView) view.findViewById(textID)).getText());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (mTOKEN==null) mTOKEN = new MediaSession(context,"MediaSessionHelper").getSessionToken();
-                token = mTOKEN;
+                if (mTOKEN==null) mTOKEN = new MediaSession(basicParam.getContext(),"MediaSessionHelper").getSessionToken();
+                basicParam.setToken(mTOKEN);
                 playIntent = new Intent("com.sing.client.click_action_pause");
                 preSongIntent = new Intent("com.sing.client.click_action_pre");
                 nextSongIntent = new Intent("com.sing.client.click_action");
                 hasExtraAction = false;
                 extraActionIcon = 0x7f020207;
                 extraActionIntent = new Intent("com.sing.client.click_action_lyric");
-                contentIntent = new Intent().putExtra("isFrom","isFromPlay").setClass(context,XposedHelpers.findClass("com.sing.client.play.ui.PlayerActivity",classLoader));
+                contentIntent = new Intent().putExtra("isFrom","isFromPlay").setClass(basicParam.getContext(),XposedHelpers.findClass("com.sing.client.play.ui.PlayerActivity",classLoader));
                 intentRequestID = 5;
                 XposedHelpers.setObjectField(param.thisObject,"b",build());
             }

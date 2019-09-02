@@ -12,6 +12,7 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import soptqs.medianotification.services.NotificationService;
 
 public abstract class BasicViewNotification extends BasicNotification {
 
@@ -31,7 +32,7 @@ public abstract class BasicViewNotification extends BasicNotification {
             titleID = Integer.parseInt(jsonObject.getString("titleID"),16);
             textID = Integer.parseInt(jsonObject.getString("textID"),16);
             bitmapID = Integer.parseInt(jsonObject.getString("bitmapID"),16);
-            iconID = Integer.parseInt(jsonObject.getString("iconID"),16);
+            basicParam.setIconID(Integer.parseInt(jsonObject.getString("iconID"),16));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,13 +44,13 @@ public abstract class BasicViewNotification extends BasicNotification {
             return null;
         }
         RemoteViews remoteViews = oldNotification.bigContentView;
-        View view = remoteViews.apply(context,null);
+        View view = remoteViews.apply(basicParam.getContext(),null);
         TextView titleTextView = view.findViewById(titleID);
         TextView textTextView = view.findViewById(textID);
         ImageView imageView = view.findViewById(bitmapID);
-        bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        titleString = titleTextView.getText();
-        textString = textTextView.getText();
+        basicParam.setBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
+        basicParam.setTitleString(titleTextView.getText());
+        basicParam.setTextString(textTextView.getText());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channelID = oldNotification.getChannelId();
         }

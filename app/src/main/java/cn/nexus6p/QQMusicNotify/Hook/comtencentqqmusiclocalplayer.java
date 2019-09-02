@@ -29,19 +29,19 @@ public class comtencentqqmusiclocalplayer extends BasicNotification {
             @Override
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                iconID = 0x7f020099;
-                context = (Context) param.args[0];
-                bitmap = (Bitmap) param.args[2];
-                statue = (!(Boolean)XposedHelpers.callStaticMethod(clazzO,"a")&&((Boolean)XposedHelpers.callStaticMethod(clazzO,"e")||(Boolean)XposedHelpers.callStaticMethod(clazzO,"b")));
-                if (mTOKEN==null) mTOKEN = new MediaSession(context,"mbr").getSessionToken();
-                token = mTOKEN;
-                titleString = (CharSequence) XposedHelpers.callMethod(param.args[1],"getName");
-                textString = (CharSequence) XposedHelpers.callMethod(param.args[1],"getSinger");
+                basicParam.setIconID(0x7f020099);
+                basicParam.setContext((Context)param.args[0]);
+                basicParam.setBitmap((Bitmap) param.args[2]);
+                basicParam.setStatue((!(Boolean)XposedHelpers.callStaticMethod(clazzO,"a")&&((Boolean)XposedHelpers.callStaticMethod(clazzO,"e")||(Boolean)XposedHelpers.callStaticMethod(clazzO,"b"))));
+                if (mTOKEN==null) mTOKEN = new MediaSession(basicParam.getContext(),"mbr").getSessionToken();
+                basicParam.setToken(mTOKEN);
+                basicParam.setTitleString((CharSequence) XposedHelpers.callMethod(param.args[1],"getName"));
+                basicParam.setTextString((CharSequence) XposedHelpers.callMethod(param.args[1],"getSinger"));
                 preSongIntent = new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_PREVIOUS_TASKBAR");
                 playIntent = new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_TOGGLEPAUSE_TASKBAR");
                 nextSongIntent = new Intent("com.tencent.qqmusicsdk.ACTION_SERVICE_NEXT_TASKBAR");
                 contentIntent = new Intent("android.intent.action.MAIN");
-                contentIntent.addCategory("android.intent.category.LAUNCHER").setClassName(context,(String)XposedHelpers.callStaticMethod(clazz3,"d",context));
+                contentIntent.addCategory("android.intent.category.LAUNCHER").setClassName(basicParam.getContext(),(String)XposedHelpers.callStaticMethod(clazz3,"d",basicParam.getContext()));
                 return build();
             }
         });

@@ -31,19 +31,19 @@ public class comtencentkaraoke extends BasicViewNotification {
         if (titleID==0) titleID = 0x7f0914e1;
         if (textID==0) textID = 0x7f0914df;
         if (bitmapID==0) bitmapID = 0x7f0914dc;
-        if (iconID==0) iconID = 0x7f080b4c;
+        if (basicParam.getIconID()==0) basicParam.setIconID(0x7f080b4c);
         Class playInfoClazz = XposedHelpers.findClass("com.tencent.karaoke.common.media.player.PlaySongInfo", classLoader);
         XposedHelpers.findAndHookMethod(className, classLoader, methodName, Context.class, playInfoClazz, int.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                context = (Context) param.args[0];
+                basicParam.setContext((Context) param.args[0]);
                 Parcelable playSongInfo = (Parcelable) param.args[1];
                 oldNotification = (Notification) param.getResult();
-                statue = ((int) param.args[2]) == 8;
+                basicParam.setStatue(((int) param.args[2]) == 8);
                 if (mTOKEN == null)
-                    mTOKEN = new MediaSession(context, "Karaoke media button").getSessionToken();
-                token = mTOKEN;
+                    mTOKEN = new MediaSession(basicParam.getContext(), "Karaoke media button").getSessionToken();
+                basicParam.setToken(mTOKEN);
                 preSongIntent = new Intent((String)XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.tencent.karaoke.common.f$a",classLoader),"d")).putExtra("play_current_song", playSongInfo);
                 playIntent = new Intent((String)XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.tencent.karaoke.common.f$a",classLoader),"a")).putExtra("play_current_song", playSongInfo);
                 nextSongIntent = new Intent((String)XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.tencent.karaoke.common.f$a",classLoader),"e")).putExtra("play_current_song", playSongInfo);
@@ -51,7 +51,7 @@ public class comtencentkaraoke extends BasicViewNotification {
                 contentIntent.setData(Uri.parse("qmkege://"))
                         .putExtra("action", "notification_player")
                         .putExtra("from","from_notification")
-                        .setClassName(context, XposedHelpers.findClass("com.tencent.karaoke.widget.intent.IntentHandleActivity", classLoader).getCanonicalName())
+                        .setClassName(basicParam.getContext(), XposedHelpers.findClass("com.tencent.karaoke.widget.intent.IntentHandleActivity", classLoader).getCanonicalName())
                         .addCategory("android.intent.category.DEFAULT");
                 XposedBridge.log("加载方法完毕");
                 param.setResult(viewBuild());
