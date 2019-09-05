@@ -65,8 +65,8 @@ public class initHook implements IXposedHookLoadPackage {
         }
 
         if (getXSharedPreference().getBoolean("styleModify", false)) {
+            XposedBridge.log("原生音乐通知：加载包"+lpparam.packageName);
             if (lpparam.packageName.equals("com.android.systemui")&& getXSharedPreference().getBoolean("miuiModify",true)) {
-                XposedBridge.log("给播放器系统的音乐通知：加载包"+lpparam.packageName);
                 try {
                     new cn.nexus6p.removewhitenotificationforbugme.main().handleLoadPackage(lpparam);
                 } catch (Throwable e) {
@@ -75,7 +75,7 @@ public class initHook implements IXposedHookLoadPackage {
                 return;
             }
             try {
-                new NotificationHook().init();
+                new NotificationHook().init(lpparam.packageName);
             } catch (Exception e) {
                 e.printStackTrace();
             }

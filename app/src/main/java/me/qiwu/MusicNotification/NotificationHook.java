@@ -13,10 +13,15 @@ import android.media.session.MediaSession;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.res.ResourcesCompat;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
@@ -26,6 +31,8 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import soptqs.medianotification.utils.ImageUtils;
+import soptqs.medianotification.utils.NotificationUtils;
 
 import static android.app.Notification.EXTRA_MEDIA_SESSION;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.getContext;
@@ -40,7 +47,7 @@ public class NotificationHook {
 
 
 
-    public void init(){
+    public void init(String packageName){
         XposedHelpers.findAndHookMethod(Notification.Builder.class, "build", new XC_MethodHook() {
 
             @Override
@@ -54,27 +61,42 @@ public class NotificationHook {
                     String subtitle = extras.get(NotificationCompat.EXTRA_TEXT).toString();
                     title = title==null|| title.equals("") ? "未知音乐":title;
                     subtitle = subtitle==null || subtitle.equals("") ? "未知艺术家":subtitle;
-                    RemoteViews remoteViews = getContentView(title,subtitle,notification);
+                    //RemoteViews remoteViews = getContentView(title,subtitle,notification);
                     int resId = getIconId(notification.getSmallIcon()) != -1 ? getIconId(notification.getSmallIcon()) : android.R.drawable.ic_dialog_info;
-                    MediaSession.Token token = null;
+                    /*MediaSession.Token token = null;
                     try {
                         token=notification.extras.getParcelable(EXTRA_MEDIA_SESSION);
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }
+                    }*/
+
                     BasicParam basicParam = new BasicParam(
-                            getContext(),resId,title,subtitle,null,new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT),null
+                            getContext(),resId,title,subtitle,getLargeIcon(notification),new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT),null
                     );
-                    param.setResult(GeneralUtils.buildMusicNotificationWithoutAction(
-                            basicParam,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent
-                    ));
+                    basicParam.setContentIntent(notification.contentIntent);
+                    basicParam.setDeleteIntent(notification.deleteIntent);
+                    List<NotificationCompat.Action> actions = new ArrayList<>();
+                    List<Bitmap> actionIcons = new ArrayList<>();
+                    int actionCount = NotificationCompat.getActionCount(notification);
+                    for (int i=0; i<actionCount; i++) {
+                        NotificationCompat.Action action = NotificationCompat.getAction(notification,i);
+                        try {
+                           actionIcons.add(getBitmap(getContext().getDrawable(action.icon)));
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        actions.add(new NotificationCompat.Action.Builder(action.icon,action.getTitle(),action.getActionIntent()).build());
+                    }
+                    Notification newNotification = new NotificationUtils().setParam(packageName, basicParam, actions, actionIcons).updateNotification();
+                    param.setResult(newNotification);
+                    //param.setResult(GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent));
                 }
             }
         });
 
     }
 
-    private RemoteViews getContentView(String title,String subtitle,Notification notification){
+    /*private RemoteViews getContentView(String title,String subtitle,Notification notification){
         int backgroundColor = Color.BLACK;
         int textColor = Color.WHITE;
         if (notification.getLargeIcon()!=null){
@@ -127,7 +149,7 @@ public class NotificationHook {
             XposedBridge.log("没有Action");
         }
         return remoteViews;
-    }
+    }*/
 
     private int getIconId(Icon icon){
         int id = -1;

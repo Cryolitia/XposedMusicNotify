@@ -12,7 +12,6 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import cn.nexus6p.QQMusicNotify.GeneralUtils;
-import soptqs.medianotification.services.NotificationService;
 
 public abstract class BasicViewNotification extends BasicNotification {
 

@@ -157,14 +157,6 @@ final public class GeneralUtils {
         });
     }
 
-    public static void bindListSummary (ListPreference preference) {
-        preference.setSummary(preference.getEntry());
-        preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-            preference.setSummary((CharSequence)newValue);
-            return true;
-        });
-    }
-
     public static void jumpToAlipay (PreferenceFragmentCompat fragment,String preference,String link) {
         fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
             Intent localIntent = new Intent();

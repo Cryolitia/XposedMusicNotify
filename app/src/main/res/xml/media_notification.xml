@@ -2,20 +2,20 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.preference.PreferenceCategory android:title="自定义设置">
         <androidx.preference.ListPreference
-            android:defaultValue="主要"
+            android:defaultValue="4"
             android:entries="@array/pickColorMode"
-            android:entryValues="@array/pickColorMode"
-            android:key="pickColorMode"
+            android:entryValues="@array/array_color_methods_int"
+            android:key="colorMethod"
             android:title="取色模式" />
         <androidx.preference.EditTextPreference
             android:defaultValue="#000000"
-            android:key="defaultColor"
+            android:key="customColor"
             android:title="默认取色" />
         <androidx.preference.SwitchPreferenceCompat
-            android:key="inverseTextSwitch"
+            android:key="inverseTextColors"
             android:title="使用反转的文字颜色" />
         <androidx.preference.SwitchPreferenceCompat
-            android:key="highContrast"
+            android:key="highContrastText"
             android:title="高对比度文字/图片" />
         <!--<androidx.preference.ListPreference
             android:defaultValue="无"

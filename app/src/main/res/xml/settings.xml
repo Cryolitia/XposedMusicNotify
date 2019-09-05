@@ -9,7 +9,7 @@
             android:summary="适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用"
             android:title="全局样式修改"
             android:key="music_notification"/>
-        <androidx.preference.PreferenceScreen android:summary="启用全局样式修改后可用，来自媒体通知（建设中...请期待）"
+        <androidx.preference.PreferenceScreen android:summary="启用全局样式修改后可用，来自媒体通知"
             android:title="通知样式设定"
             android:key="media_notification"
             android:enabled="true">

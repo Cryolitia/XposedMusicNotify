@@ -18,9 +18,12 @@
         <item>Main</item>
         <item>Always Default</item>
     </string-array>
-    <string-array name="array_get_album">
-        <item>无</item>
-        <item>last.fm</item>
-        <item>QQ音乐</item>
+    <string-array name="array_color_methods_int">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 </resources>

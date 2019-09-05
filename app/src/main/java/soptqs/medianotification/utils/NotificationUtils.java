@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -23,6 +24,7 @@ import base.BasicParam;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
+import static cn.nexus6p.QQMusicNotify.GeneralUtils.getContext;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
 import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
 
@@ -32,6 +34,7 @@ public class NotificationUtils {
     private String packageName;
     private String appName;
     private Bitmap smallIcon;
+    private int iconID;
     private String title;
     private String subtitle;
     private Bitmap largeIcon;
@@ -39,20 +42,25 @@ public class NotificationUtils {
     private List<NotificationCompat.Action> actions;
     private List<Bitmap> actionIcons;
     private boolean isPlaying;
-    private Context context;
+    private Context moudleContext;
+    private Context appContext;
+    private PendingIntent deleteIntent;
 
-    public NotificationUtils setParam(String mPackageName, BasicParam basicParam, PendingIntent mContentIntent, List<NotificationCompat.Action> mActions, List<Bitmap> mActionIcons) {
+    public NotificationUtils setParam(String mPackageName, BasicParam basicParam, List<NotificationCompat.Action> mActions, List<Bitmap> mIcons) {
         packageName = mPackageName;
         title = basicParam.getTitleString().toString();
         subtitle = basicParam.getTextString().toString();
         largeIcon = basicParam.getBitmap();
-        contentIntent = mContentIntent;
-        actions = mActions;
-        actionIcons = mActionIcons;
         isPlaying = basicParam.getStatue();
-        context = basicParam.getContext();
+        actions = mActions;
+        actionIcons = mIcons;
+        contentIntent = basicParam.getContentIntent();
+        deleteIntent = basicParam.getDeleteIntent();
+        iconID = basicParam.getIconID();
+        appContext = getContext();
+        moudleContext = getMoudleContext();
         try {
-            smallIcon = ((BitmapDrawable) context.getResources().getDrawable(basicParam.getIconID(),null)).getBitmap();
+            smallIcon = ((BitmapDrawable) appContext.getResources().getDrawable(basicParam.getIconID(),null)).getBitmap();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,9 +68,9 @@ public class NotificationUtils {
     }
 
     public Notification updateNotification() {
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "music")
-                .setSmallIcon(R.drawable.ic_music)
+        notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext, "music")
+                .setSmallIcon(iconID)
                 .setContentTitle(title)
                 .setContentText(subtitle)
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
@@ -71,23 +79,24 @@ public class NotificationUtils {
                 .setOngoing(isPlaying || getXSharedPreference().getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
                 .setVisibility(VISIBILITY_PUBLIC);
 
+        if (deleteIntent!=null) builder.setDeleteIntent(deleteIntent);
         if (contentIntent != null)
             builder.setContentIntent(contentIntent);
         else {
             if (packageName != null) {
                 try {
-                    Intent contentIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-                    builder.setContentIntent(PendingIntent.getActivity(context, 0, contentIntent, 0));
+                    Intent contentIntent = appContext.getPackageManager().getLaunchIntentForPackage(packageName);
+                    builder.setContentIntent(PendingIntent.getActivity(appContext, 0, contentIntent, 0));
                 } catch (Exception ignored) {
                 }
             }
         }
         try {
-            appName = context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_META_DATA).loadLabel(context.getPackageManager()).toString();
+            appName = appContext.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_META_DATA).loadLabel(appContext.getPackageManager()).toString();
         } catch (Exception ignored) {
         }
         if (appName == null)
-            appName = context.getString(R.string.app_name);
+            appName = moudleContext.getString(R.string.app_name);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             builder.setPriority(NotificationManager.IMPORTANCE_MAX);
@@ -98,7 +107,7 @@ public class NotificationUtils {
         }
 
         if (smallIcon == null)
-            smallIcon = ImageUtils.getVectorBitmap(getMoudleContext(context), R.drawable.ic_music);
+            smallIcon = ImageUtils.getVectorBitmap(moudleContext, R.drawable.ic_music);
 
         builder.setCustomContentView(getContentView(true));
         if (actions.size() > 0)
@@ -113,7 +122,7 @@ public class NotificationUtils {
     }
 
     private RemoteViews getContentView(boolean isCollapsed) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
+            RemoteViews remoteViews = new RemoteViews(moudleContext.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
             remoteViews = remoteViewSetting(remoteViews);
             return remoteViews;
     }
@@ -125,10 +134,10 @@ public class NotificationUtils {
 
         remoteViews.setViewVisibility(R.id.largeIcon, View.VISIBLE);
         remoteViews.setImageViewBitmap(R.id.largeIcon, largeIcon);
-        Palette palette = PaletteUtils.getPalette(getMoudleContext(context), largeIcon);
-        Palette.Swatch swatch = PaletteUtils.getSwatch(getMoudleContext(context), palette);
+        Palette palette = PaletteUtils.getPalette(moudleContext, largeIcon);
+        Palette.Swatch swatch = PaletteUtils.getSwatch(moudleContext, palette);
 
-        int color = PaletteUtils.getTextColor(getMoudleContext(context), palette, swatch);
+        int color = PaletteUtils.getTextColor(moudleContext, palette, swatch);
         remoteViews.setInt(R.id.image, "setBackgroundColor", swatch.getRgb());
         remoteViews.setInt(R.id.foregroundImage, "setColorFilter", swatch.getRgb());
         remoteViews.setInt(R.id.arrow, "setColorFilter", color);
@@ -137,7 +146,7 @@ public class NotificationUtils {
         remoteViews.setTextColor(R.id.title, color);
         remoteViews.setTextColor(R.id.subtitle, color);
 
-        TypedArray typedArray = context.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
+        TypedArray typedArray = appContext.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
         int selectableItemBackground = typedArray.getResourceId(0, 0);
         typedArray.recycle();
 
@@ -172,64 +181,10 @@ public class NotificationUtils {
             remoteViews.setViewVisibility(id, View.VISIBLE);
             remoteViews.setImageViewBitmap(id, actionIcons.get(i));
             remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
+            remoteViews.setInt(id,"setColorFilter", color);
             remoteViews.setOnClickPendingIntent(id, action.getActionIntent());
         }
         return remoteViews;
     }
-
-
-    /*private int getActionIconRes(int i, int actionCount, String... names) {
-        for (String name : names) {
-            if (contains(name, "play"))
-                return contains(name, "pause") ? (isPlaying ? R.drawable.ic_pause : R.drawable.ic_play) : R.drawable.ic_play;
-            else if (contains(name, "pause"))
-                return R.drawable.ic_pause;
-            else if (contains(name, "prev"))
-                return R.drawable.ic_skip_previous;
-            else if (contains(name, "next"))
-                return R.drawable.ic_skip_next;
-            else if (contains(name, "stop"))
-                return R.drawable.ic_stop;
-            else if (contains(name, "down") || contains(name, "dislike") || contains(name, "unfavorite") || contains(name, "un-favorite"))
-                return R.drawable.ic_thumb_down;
-            else if (contains(name, "up") || contains(name, "like") || contains(name, "favorite"))
-                return R.drawable.ic_thumb_up;
-            else if (contains(name, "add"))
-                return R.drawable.ic_add;
-            else if (contains(name, "added") || contains(name, "check") || contains(name, "new"))
-                return R.drawable.ic_check;
-        }
-
-        if (actionCount == 5) {
-            if (i == 0)
-                return R.drawable.ic_thumb_up;
-            else if (i == 1)
-                return R.drawable.ic_skip_previous;
-            else if (i == 2)
-                return isPlaying ? R.drawable.ic_pause : R.drawable.ic_play;
-            else if (i == 3)
-                return R.drawable.ic_skip_next;
-            else if (i == 4)
-                return R.drawable.ic_thumb_down;
-        } else if (actionCount == 4) {
-            if (i == 0)
-                return R.drawable.ic_skip_previous;
-            else if (i == 1)
-                return R.drawable.ic_stop;
-            else if (i == 2)
-                return isPlaying ? R.drawable.ic_pause : R.drawable.ic_play;
-            else if (i == 3)
-                return R.drawable.ic_skip_next;
-        } else if (actionCount == 3) {
-            if (i == 0)
-                return R.drawable.ic_skip_previous;
-            else if (i == 1)
-                return isPlaying ? R.drawable.ic_pause : R.drawable.ic_play;
-            else if (i == 2)
-                return R.drawable.ic_skip_next;
-        }
-
-        return R.drawable.ic_music;
-    }*/
 
 }

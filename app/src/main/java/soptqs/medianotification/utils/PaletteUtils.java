@@ -12,6 +12,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import de.robv.android.xposed.XSharedPreferences;
+
+import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
+
 public class PaletteUtils {
 
     public static Palette getPalette(Context context, Bitmap bitmap) {
@@ -20,13 +24,13 @@ public class PaletteUtils {
     }
 
     public static Palette.Swatch getSwatch(Context context, Palette palette) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        XSharedPreferences prefs = getXSharedPreference();
 
         if (palette == null)
             return new Palette.Swatch(prefs.getInt(PreferenceUtils.PREF_CUSTOM_COLOR, Color.WHITE), 1);
 
         Palette.Swatch swatch = null;
-        switch (prefs.getInt(PreferenceUtils.PREF_COLOR_METHOD, PreferenceUtils.COLOR_METHOD_DOMINANT)) {
+        switch (Integer.parseInt(prefs.getString(PreferenceUtils.PREF_COLOR_METHOD, "0"))) {
             case PreferenceUtils.COLOR_METHOD_DOMINANT:
                 swatch = palette.getDominantSwatch();
                 break;
@@ -54,7 +58,7 @@ public class PaletteUtils {
 
     @ColorInt
     public static int getTextColor(Context context, Palette palette, Palette.Swatch swatch) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            XSharedPreferences prefs = getXSharedPreference();
         if (prefs.getBoolean(PreferenceUtils.PREF_HIGH_CONTRAST_TEXT, false)) {
             if (ColorUtils.isColorLight(swatch.getRgb()))
                 return Color.BLACK;
@@ -64,7 +68,7 @@ public class PaletteUtils {
             if (prefs.getBoolean(PreferenceUtils.PREF_INVERSE_TEXT_COLORS, true)) {
                 int inverse = -1;
                 if (palette != null) {
-                    switch (prefs.getInt(PreferenceUtils.PREF_COLOR_METHOD, PreferenceUtils.COLOR_METHOD_DOMINANT)) {
+                    switch (Integer.parseInt(prefs.getString(PreferenceUtils.PREF_COLOR_METHOD, "0"))) {
                         case PreferenceUtils.COLOR_METHOD_DOMINANT:
                             inverse = ColorUtils.isColorSaturated(background) ? palette.getMutedColor(-1) : palette.getVibrantColor(-1);
                             break;
