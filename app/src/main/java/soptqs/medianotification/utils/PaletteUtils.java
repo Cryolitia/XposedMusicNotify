@@ -27,7 +27,7 @@ public class PaletteUtils {
         XSharedPreferences prefs = getXSharedPreference();
 
         if (palette == null)
-            return new Palette.Swatch(prefs.getInt(PreferenceUtils.PREF_CUSTOM_COLOR, Color.WHITE), 1);
+            return new Palette.Swatch(Color.parseColor(prefs.getString(PreferenceUtils.PREF_CUSTOM_COLOR, "#FFFFFF")), 1);
 
         Palette.Swatch swatch = null;
         switch (Integer.parseInt(prefs.getString(PreferenceUtils.PREF_COLOR_METHOD, "0"))) {
@@ -49,7 +49,7 @@ public class PaletteUtils {
         }
 
         if (swatch == null)
-            swatch = new Palette.Swatch(prefs.getInt(PreferenceUtils.PREF_CUSTOM_COLOR, Color.WHITE), 1);
+            swatch = new Palette.Swatch(Color.parseColor(prefs.getString(PreferenceUtils.PREF_CUSTOM_COLOR, "#FFFFFF")), 1);
 
         return swatch;
     }

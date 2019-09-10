@@ -59,7 +59,7 @@ public class initHook implements IXposedHookLoadPackage {
                     }
                     Class c = Class.forName("cn.nexus6p.QQMusicNotify.Hook." + lpparam.packageName.replace(".", ""));
                     HookInterface hookInterface = (HookInterface) c.newInstance();
-                    hookInterface.setClassLoader(classLoader).setContext(context).init();
+                    hookInterface.setClassLoader(classLoader).setContext(context).setPackageName(lpparam.packageName).init();
                 }
             });
         }

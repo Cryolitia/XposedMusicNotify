@@ -6,4 +6,5 @@ public interface HookInterface {
     void init();
     HookInterface setClassLoader(ClassLoader classLoader);
     HookInterface setContext(Context context);
+    HookInterface setPackageName(String packageName);
 }

@@ -9,8 +9,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Icon;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -21,7 +22,9 @@ import androidx.palette.graphics.Palette;
 import java.util.List;
 
 import base.BasicParam;
+import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.R;
+import de.robv.android.xposed.XSharedPreferences;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static cn.nexus6p.QQMusicNotify.GeneralUtils.getContext;
@@ -42,7 +45,7 @@ public class NotificationUtils {
     private List<NotificationCompat.Action> actions;
     private List<Bitmap> actionIcons;
     private boolean isPlaying;
-    private Context moudleContext;
+    private Context moduleContext;
     private Context appContext;
     private PendingIntent deleteIntent;
 
@@ -58,7 +61,12 @@ public class NotificationUtils {
         deleteIntent = basicParam.getDeleteIntent();
         iconID = basicParam.getIconID();
         appContext = getContext();
-        moudleContext = getMoudleContext();
+        moduleContext = getMoudleContext();
+        /*if (largeIcon==null) {
+            GradientDrawable drawable = (GradientDrawable) getMoudleContext().getDrawable(R.drawable.color_drawable);
+            drawable.setColor(Color.parseColor(new XSharedPreferences(BuildConfig.APPLICATION_ID).getString("customColor","#000000")));
+            largeIcon = ImageUtils.drawableToBitmap(drawable);
+        }*/
         try {
             smallIcon = ((BitmapDrawable) appContext.getResources().getDrawable(basicParam.getIconID(),null)).getBitmap();
         } catch (Exception e) {
@@ -96,7 +104,7 @@ public class NotificationUtils {
         } catch (Exception ignored) {
         }
         if (appName == null)
-            appName = moudleContext.getString(R.string.app_name);
+            appName = moduleContext.getString(R.string.app_name);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             builder.setPriority(NotificationManager.IMPORTANCE_MAX);
@@ -107,7 +115,7 @@ public class NotificationUtils {
         }
 
         if (smallIcon == null)
-            smallIcon = ImageUtils.getVectorBitmap(moudleContext, R.drawable.ic_music);
+            smallIcon = ImageUtils.getVectorBitmap(moduleContext, R.drawable.ic_music);
 
         builder.setCustomContentView(getContentView(true));
         if (actions.size() > 0)
@@ -122,7 +130,7 @@ public class NotificationUtils {
     }
 
     private RemoteViews getContentView(boolean isCollapsed) {
-            RemoteViews remoteViews = new RemoteViews(moudleContext.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
+            RemoteViews remoteViews = new RemoteViews(moduleContext.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
             remoteViews = remoteViewSetting(remoteViews);
             return remoteViews;
     }
@@ -134,10 +142,10 @@ public class NotificationUtils {
 
         remoteViews.setViewVisibility(R.id.largeIcon, View.VISIBLE);
         remoteViews.setImageViewBitmap(R.id.largeIcon, largeIcon);
-        Palette palette = PaletteUtils.getPalette(moudleContext, largeIcon);
-        Palette.Swatch swatch = PaletteUtils.getSwatch(moudleContext, palette);
+        Palette palette = PaletteUtils.getPalette(moduleContext, largeIcon);
+        Palette.Swatch swatch = PaletteUtils.getSwatch(moduleContext, palette);
 
-        int color = PaletteUtils.getTextColor(moudleContext, palette, swatch);
+        int color = PaletteUtils.getTextColor(moduleContext, palette, swatch);
         remoteViews.setInt(R.id.image, "setBackgroundColor", swatch.getRgb());
         remoteViews.setInt(R.id.foregroundImage, "setColorFilter", swatch.getRgb());
         remoteViews.setInt(R.id.arrow, "setColorFilter", color);

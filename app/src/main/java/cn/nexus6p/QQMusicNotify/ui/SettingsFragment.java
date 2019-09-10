@@ -59,7 +59,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference preference = findPreference("statue");
         if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
         else if (HookStatue.isExpModuleActive(getActivity())) {
-            preference.setSummary("太极·阳 已激活");
+            preference.setSummary("太极已激活");
             /*try {
                 if (Objects.requireNonNull(System.getProperties().get("taichi_magisk")).toString().equals("1"))
                     preference.setSummary("太极·阳 已激活");
@@ -87,6 +87,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
+        if (BuildConfig.VERSION_NAME.contains("canary")||BuildConfig.VERSION_NAME.contains("NIGHTLY")) Toast.makeText(getActivity(),"测试版本不代表最终品质，未经完全测试使用风险自负",Toast.LENGTH_LONG).show();
         findPreference("qqqun").setOnPreferenceClickListener(preference1 -> {
             /*
              *

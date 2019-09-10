@@ -14,6 +14,11 @@ public class comtencentqqmusic implements HookInterface {
     private ClassLoader mClassloader;
 
     @Override
+    public comtencentqqmusic setPackageName (String string) {
+        return this;
+    }
+
+    @Override
     public void init() {
         XposedHelpers.findAndHookMethod("com.tencent.qqmusic.fragment.morefeatures.settings.providers.NotificationStyleSettingProvider", mClassloader, "shouldUseAndroidMediaNotificationStyle", new XC_MethodReplacement() {
             @Override
