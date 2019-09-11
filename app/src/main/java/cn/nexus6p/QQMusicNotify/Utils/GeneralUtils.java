@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Utils;
 
 import android.app.AndroidAppHelper;
 import android.app.Notification;
@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import base.BasicParam;
+import cn.nexus6p.QQMusicNotify.BuildConfig;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
@@ -56,7 +57,7 @@ final public class GeneralUtils {
         return getMoudleContext(getContext());
     }
 
-    public static Notification  buildMusicNotificationWithoutAction (BasicParam basicParam, RemoteViews remoteViews, PendingIntent contentIntent, String channelID, PendingIntent deleteIntent) {
+    /*public static Notification  buildMusicNotificationWithoutAction (BasicParam basicParam, RemoteViews remoteViews, PendingIntent contentIntent, String channelID, PendingIntent deleteIntent) {
         if (Build.VERSION.SDK_INT >= 26 && channelID!=null) {
             Notification.Builder builder = new Notification.Builder(basicParam.getContext(),channelID)
                     .setSmallIcon(basicParam.getIconID())
@@ -87,7 +88,7 @@ final public class GeneralUtils {
                 .setDeleteIntent(deleteIntent);
         //if (basicParam.getToken()!=null) builder.setStyle(new androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle().setMediaSession(MediaSessionCompat.Token.fromToken(basicParam.getToken())));
         return builder.build();
-    }
+    }*/
 
     public static JSONArray getSupportPackages () {
         JSONArray jsonArray = null;
@@ -99,7 +100,7 @@ final public class GeneralUtils {
         return jsonArray;
     }
 
-    static boolean isStringInJSONArray (String string,JSONArray jsonArray) {
+    public static boolean isStringInJSONArray (String string,JSONArray jsonArray) {
         if (jsonArray==null) return false;
         for (int i=0;i<jsonArray.length();i++) {
             try {

@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify.ui;
+package cn.nexus6p.QQMusicNotify.Fragment;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -31,8 +31,9 @@ import java.net.URL;
 import java.util.Objects;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
-import cn.nexus6p.QQMusicNotify.HookStatue;
+import cn.nexus6p.QQMusicNotify.MainActivity;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.R;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -43,9 +44,9 @@ import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
 import static android.content.Context.MODE_WORLD_READABLE;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.bindEditTextSummary;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.jumpToLink;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.setWorldReadable;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.bindEditTextSummary;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
@@ -87,7 +88,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
-        if (BuildConfig.VERSION_NAME.contains("canary")||BuildConfig.VERSION_NAME.contains("NIGHTLY")) Toast.makeText(getActivity(),"测试版本不代表最终品质，未经完全测试使用风险自负",Toast.LENGTH_LONG).show();
+        if (BuildConfig.VERSION_NAME.contains("canary")||BuildConfig.VERSION_NAME.contains("NIGHTLY")) Toast.makeText(getActivity(),"您正在使用未经完全测试的版本，使用风险自负\n测试版本不代表最终品质",Toast.LENGTH_LONG).show();
         findPreference("qqqun").setOnPreferenceClickListener(preference1 -> {
             /*
              *

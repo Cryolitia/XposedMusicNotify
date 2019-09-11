@@ -25,7 +25,7 @@ import java.util.List;
 
 import base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
@@ -35,8 +35,8 @@ import soptqs.medianotification.utils.ImageUtils;
 import soptqs.medianotification.utils.NotificationUtils;
 
 import static android.app.Notification.EXTRA_MEDIA_SESSION;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.getContext;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getContext;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
 
 
 /**
@@ -87,7 +87,7 @@ public class NotificationHook {
                         }
                         actions.add(new NotificationCompat.Action.Builder(action.icon,action.getTitle(),action.getActionIntent()).build());
                     }
-                    Notification newNotification = new NotificationUtils().setParam(packageName, basicParam, actions, actionIcons).updateNotification();
+                    Notification newNotification = new NotificationUtils().setParam(basicParam, actions, actionIcons).updateNotification();
                     param.setResult(newNotification);
                     //param.setResult(GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent));
                 }

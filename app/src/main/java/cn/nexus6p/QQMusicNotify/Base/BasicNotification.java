@@ -24,7 +24,7 @@ import java.util.List;
 
 import base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import de.robv.android.xposed.XSharedPreferences;
 import me.qiwu.MusicNotification.ColorUtil;
 import cn.nexus6p.QQMusicNotify.R;
@@ -34,7 +34,7 @@ import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
 import static android.app.Notification.FLAG_NO_CLEAR;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
 
 public abstract class BasicNotification extends BasicInit {
 
@@ -91,7 +91,7 @@ public abstract class BasicNotification extends BasicInit {
                     //android.R.drawable.ic_media_play
                     BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_play));
             actionIcons.add(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_skip_next));
-            return new NotificationUtils().setParam(packageName,basicParam,actions,actionIcons).updateNotification();
+            return new NotificationUtils().setParam(basicParam,actions,actionIcons).updateNotification();
         } else {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(basicParam.getContext(),channelID)
                     .setContentTitle(basicParam.getTitleString())

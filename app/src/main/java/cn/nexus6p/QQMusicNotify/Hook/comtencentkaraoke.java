@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicViewNotification;
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;

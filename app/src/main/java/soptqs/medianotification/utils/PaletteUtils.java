@@ -14,7 +14,7 @@ import java.util.List;
 
 import de.robv.android.xposed.XSharedPreferences;
 
-import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
+import static cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil.getXSharedPreference;
 
 public class PaletteUtils {
 

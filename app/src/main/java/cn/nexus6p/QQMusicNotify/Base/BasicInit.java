@@ -8,13 +8,6 @@ public abstract class BasicInit implements HookInterface {
 
     public BasicParam basicParam = new BasicParam();
     public ClassLoader classLoader;
-    public String packageName;
-
-    @Override
-    public final BasicInit setPackageName(String mPackageName) {
-        packageName = mPackageName;
-        return this;
-    }
 
     @Override
     public final BasicInit setClassLoader(ClassLoader mClassLoader) {

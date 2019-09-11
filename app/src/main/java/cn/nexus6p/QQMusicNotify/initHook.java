@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import java.lang.ref.WeakReference;
 
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -20,7 +21,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.qiwu.MusicNotification.NotificationHook;
 
-import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
+import static cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil.getXSharedPreference;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 @Keep
@@ -31,7 +32,7 @@ public class initHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
         if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
-            findAndHookMethod("cn.nexus6p.QQMusicNotify.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
+            findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
             return;
         }
         if (getXSharedPreference().getBoolean("forceO",false)) {
@@ -59,7 +60,7 @@ public class initHook implements IXposedHookLoadPackage {
                     }
                     Class c = Class.forName("cn.nexus6p.QQMusicNotify.Hook." + lpparam.packageName.replace(".", ""));
                     HookInterface hookInterface = (HookInterface) c.newInstance();
-                    hookInterface.setClassLoader(classLoader).setContext(context).setPackageName(lpparam.packageName).init();
+                    hookInterface.setClassLoader(classLoader).setContext(context).init();
                 }
             });
         }
@@ -85,7 +86,7 @@ public class initHook implements IXposedHookLoadPackage {
     private boolean isHookEnabled(String packageName) {
         JSONArray jsonArray = jsonArrayWeakReference.get();
         if (jsonArray==null) {
-            jsonArray=GeneralUtils.getSupportPackages();
+            jsonArray= GeneralUtils.getSupportPackages();
             if (jsonArray!=null) jsonArrayWeakReference = new WeakReference<>(jsonArray);
         }
         if (jsonArray==null) {

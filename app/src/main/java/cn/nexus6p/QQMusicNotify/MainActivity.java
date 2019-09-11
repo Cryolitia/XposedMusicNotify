@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify.ui;
+package cn.nexus6p.QQMusicNotify;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -21,9 +21,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.Fragment.SettingsFragment;
 import cn.nexus6p.QQMusicNotify.R;
 
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.setWorldReadable;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 @Keep
 public class MainActivity extends AppCompatActivity {

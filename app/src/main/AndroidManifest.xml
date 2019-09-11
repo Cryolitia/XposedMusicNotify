@@ -4,14 +4,14 @@
     package="cn.nexus6p.QQMusicNotify"
     android:installLocation="internalOnly"
     android:versionCode="15"
-    android:versionName="2.6-canary">
+    android:versionName="2.6.1-canary">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="@string/app_name"
         tools:ignore="GoogleAppIndexingWarning"
         android:allowBackup="false"
         android:icon="@drawable/icon">
-        <activity android:name=".ui.MainActivity"
+        <activity android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
         <activity-alias
             android:name=".ui.MainActivityAlias"
             android:label="@string/app_name"
-            android:targetActivity=".ui.MainActivity">
+            android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 
 public abstract class BasicViewNotification extends BasicNotification {
 

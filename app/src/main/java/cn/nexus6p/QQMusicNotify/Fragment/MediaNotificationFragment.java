@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify.ui;
+package cn.nexus6p.QQMusicNotify.Fragment;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -11,13 +11,13 @@ import androidx.preference.PreferenceFragmentCompat;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static android.content.Context.MODE_WORLD_READABLE;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.jumpToAlipay;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.jumpToLink;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.setWorldReadable;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
+import static cn.nexus6p.QQMusicNotify. Utils.GeneralUtils.setWorldReadable;
 
 public class MediaNotificationFragment extends PreferenceFragmentCompat {
     @Override

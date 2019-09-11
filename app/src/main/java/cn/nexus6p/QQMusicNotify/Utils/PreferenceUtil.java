@@ -1,7 +1,8 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Utils;
 
 import java.lang.ref.WeakReference;
 
+import cn.nexus6p.QQMusicNotify.BuildConfig;
 import de.robv.android.xposed.XSharedPreferences;
 
 final public class PreferenceUtil {

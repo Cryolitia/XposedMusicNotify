@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify;
+package cn.nexus6p.QQMusicNotify.Utils;
 
 import android.content.ContentResolver;
 import android.content.Context;

@@ -1,5 +1,6 @@
 package soptqs.medianotification.utils;
 
+import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -27,14 +28,13 @@ import cn.nexus6p.QQMusicNotify.R;
 import de.robv.android.xposed.XSharedPreferences;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.getContext;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.getMoudleContext;
-import static cn.nexus6p.QQMusicNotify.PreferenceUtil.getXSharedPreference;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getContext;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil.getXSharedPreference;
 
 public class NotificationUtils {
 
     private NotificationManager notificationManager;
-    private String packageName;
     private String appName;
     private Bitmap smallIcon;
     private int iconID;
@@ -49,8 +49,7 @@ public class NotificationUtils {
     private Context appContext;
     private PendingIntent deleteIntent;
 
-    public NotificationUtils setParam(String mPackageName, BasicParam basicParam, List<NotificationCompat.Action> mActions, List<Bitmap> mIcons) {
-        packageName = mPackageName;
+    public NotificationUtils setParam(BasicParam basicParam, List<NotificationCompat.Action> mActions, List<Bitmap> mIcons) {
         title = basicParam.getTitleString().toString();
         subtitle = basicParam.getTextString().toString();
         largeIcon = basicParam.getBitmap();
@@ -90,7 +89,7 @@ public class NotificationUtils {
         if (deleteIntent!=null) builder.setDeleteIntent(deleteIntent);
         if (contentIntent != null)
             builder.setContentIntent(contentIntent);
-        else {
+        /*else {
             if (packageName != null) {
                 try {
                     Intent contentIntent = appContext.getPackageManager().getLaunchIntentForPackage(packageName);
@@ -98,9 +97,9 @@ public class NotificationUtils {
                 } catch (Exception ignored) {
                 }
             }
-        }
+        }*/
         try {
-            appName = appContext.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_META_DATA).loadLabel(appContext.getPackageManager()).toString();
+            appName = appContext.getPackageManager().getApplicationLabel(AndroidAppHelper.currentApplicationInfo()).toString();
         } catch (Exception ignored) {
         }
         if (appName == null)

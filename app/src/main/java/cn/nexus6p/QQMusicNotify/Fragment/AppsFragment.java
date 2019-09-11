@@ -1,4 +1,4 @@
-package cn.nexus6p.QQMusicNotify.ui;
+package cn.nexus6p.QQMusicNotify.Fragment;
 
 
 import android.content.Context;
@@ -20,11 +20,11 @@ import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
 
-import cn.nexus6p.QQMusicNotify.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static android.content.Context.MODE_WORLD_READABLE;
-import static cn.nexus6p.QQMusicNotify.GeneralUtils.setWorldReadable;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 
 public class AppsFragment extends PreferenceFragmentCompat {
@@ -38,7 +38,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
             JSONArray jsonArray = GeneralUtils.getSupportPackages();
             for (int i=0;i<jsonArray.length();i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
-                SwitchPreference switchPreference = new SwitchPreference(getActivity(),null);
+                Preference switchPreference = new Preference(getActivity(),null);
                 if (PMEnabled) {
                     PackageInfo packageInfo;
                     try {
@@ -49,7 +49,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
                     if(packageInfo == null) continue;
                     else switchPreference.setIcon(getActivity().getPackageManager().getApplicationIcon(packageName));
                 }
-                switchPreference.setChecked(true);
+                //switchPreference.setChecked(true);
                 switchPreference.setTitle(jsonArray.getJSONObject(i).getString("name"));
                 switchPreference.setSummary(packageName);
                 switchPreference.setKey(packageName+".enabled");
