@@ -22,7 +22,7 @@ import androidx.palette.graphics.Palette;
 
 import java.util.List;
 
-import base.BasicParam;
+import cn.nexus6p.QQMusicNotify.Base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.R;
 import de.robv.android.xposed.XSharedPreferences;

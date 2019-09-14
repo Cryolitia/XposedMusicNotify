@@ -10,6 +10,7 @@ import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.core.content.FileProvider;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-import base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import de.robv.android.xposed.XposedBridge;
 
@@ -185,6 +185,21 @@ final public class GeneralUtils {
                     file.setExecutable(true, false);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void editFile (File file, Context activity) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = FileProvider.getUriForFile(activity,BuildConfig.APPLICATION_ID+".fileProvider",file);
+        intent.setDataAndType(uri,"text/*");
+        try {
+            activity.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }

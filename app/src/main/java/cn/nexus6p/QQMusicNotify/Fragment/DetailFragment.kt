@@ -1,0 +1,153 @@
+package cn.nexus6p.QQMusicNotify.Fragment
+
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
+import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
+import cn.nexus6p.QQMusicNotify.BuildConfig
+import cn.nexus6p.QQMusicNotify.R
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.*
+import cn.nexus6p.QQMusicNotify.Utils.HookStatue
+import com.topjohnwu.superuser.Shell
+import org.jetbrains.anko.longToast
+import org.jetbrains.anko.toast
+import org.json.JSONObject
+import java.io.File
+import java.lang.RuntimeException
+
+class DetailFragment private constructor() : PreferenceFragmentCompat() {
+
+    companion object {
+        fun newInstance(packageName:String) : DetailFragment {
+            val bundle = Bundle()
+            bundle.putString("packageName",packageName)
+            val detailFragment = DetailFragment()
+            detailFragment.arguments=bundle
+            return detailFragment
+        }
+    }
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        addPreferencesFromResource(R.xml.detail)
+        setWorldReadable(activity)
+        if (arguments==null) throw RuntimeException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
+        val packageName = arguments!!.getString("packageName")
+        val appPreference = findPreference<Preference>("app")
+        val packageManager = activity!!.packageManager
+        appPreference!!.summary = packageName
+        var packageInfo : PackageInfo? = null
+        try {
+            packageInfo = packageManager.getPackageInfo(packageName!!,0)
+        } catch (e:PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+            activity!!.toast("应用不存在")
+        }
+        appPreference.title = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName!!,0))
+        appPreference.icon = packageManager.getApplicationIcon(packageName)
+        findPreference<Preference>("versionName")!!.summary = packageInfo!!.versionName
+        val versionCode : Long = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) packageInfo.longVersionCode
+        else packageInfo.versionCode.toLong()
+        findPreference<Preference>("versionCode")!!.summary = versionCode.toString()
+        val enablePreference  = findPreference<SwitchPreferenceCompat>("enable")
+        val enabled : Boolean = activity!!.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_PRIVATE).getBoolean("$packageName.enabled",true)
+        enablePreference!!.key = "$packageName.enabled"
+        enablePreference.isChecked = enabled
+        findPreference<Preference>("taichi")!!.isVisible = HookStatue.isExpModuleActive(activity)
+        val file = File(Environment.getExternalStorageDirectory().path + File.separator + "Android/data/cn.nexus6p.QQMusicNotify/files/$packageName.json")
+        if (file.exists()) {
+            try {
+                val jsonObject = JSONObject(getAssetsString("$packageName.json"))
+                findPreference<Preference>("nowVersion")!!.summary = "versionName: "+jsonObject.optString("versionName")+"  versionCode: "+jsonObject.optString("versionCode")
+                val detailPreferenceCategory : PreferenceCategory = findPreference("JSONDetail")!!
+                for (key in jsonObject.keys()) {
+                    val preference = Preference(activity)
+                    preference.title = key
+                    preference.summary = jsonObject.optString(key)
+                    detailPreferenceCategory.addItemFromInflater(preference)
+                }
+            } catch (e:Exception) {
+                findPreference<Preference>("nowVersion")!!.summary = "读取配置文件出错"
+                activity!!.longToast("读取配置文件出错:$e")
+                e.printStackTrace()
+            }
+            try {
+                val supportedVersionPreference = findPreference<Preference>("supportedVersion")
+                val jsonArray = getSupportPackages()
+                val list = ArrayList<String>()
+                for (i in 0 until jsonArray.length()) {
+                    val appJsonObject = jsonArray.optJSONObject(i)
+                    if (appJsonObject.optString("app").contains(packageName)) {
+                        val versionJsonArray = appJsonObject.optJSONArray("supportedVersion")
+                        for (j in 0 until versionJsonArray!!.length()) {
+                            val versionJsonObject = versionJsonArray.optJSONObject(j)
+                            list.add(versionJsonObject.optString("versionName"))
+                        }
+                        supportedVersionPreference!!.setOnPreferenceClickListener {
+                            val builder = AlertDialog.Builder(activity!!)
+                            builder.setTitle("支持版本").setItems(list.toArray(arrayOfNulls<String>(list.size)),null).setPositiveButton("确定",null).create().show()
+                            true
+                        }
+                        supportedVersionPreference.summary = list.toString()
+                        break
+                    }
+                }
+                supportedVersionPreference!!.summary = list.toString()
+            } catch (e:Exception) {
+                e.printStackTrace()
+            }
+            findPreference<Preference>("editjson")!!.setOnPreferenceClickListener {
+                editFile(file,activity)
+                true
+            }
+            findPreference<Preference>("editjson")!!.summary = file.absolutePath
+        } else {
+            activity!!.toast("找不到配置文件: $packageName")
+            findPreference<Preference>("nowVersion")!!.summary = "找不到配置文件"
+            findPreference<Preference>("supportedVersion")!!.isVisible = false
+            findPreference<Preference>("editjson")!!.isVisible = false
+            findPreference<Preference>("JSONDetail")!!.isVisible = false
+        }
+        findPreference<Preference>("forceStop")!!.setOnPreferenceClickListener {
+            if (!Shell.rootAccess()) activity!!.toast("没有Root权限")
+            else {
+                val result = Shell.su("am force-stop $packageName").exec()
+                if (!result.isSuccess) activity!!.longToast(result.err.toString())
+                else activity!!.toast("成功")
+            }
+            true
+        }
+        findPreference<Preference>("openSetting")!!.setOnPreferenceClickListener {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            intent.data = Uri.fromParts("package",packageName,null)
+            activity!!.startActivity(intent)
+            true
+        }
+
+        findPreference<Preference>("taichi")!!.setOnPreferenceClickListener {
+            val intent = Intent("me.weishu.exp.ACTION_ADD_APP")
+            intent.data = Uri.parse("package:$packageName")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            try {
+                activity!!.startActivity(intent)
+            }catch (e:Exception) {
+                e.printStackTrace()
+                activity!!.toast("未安装太极")
+            }
+            true
+        }
+
+        setWorldReadable(activity)
+    }
+}

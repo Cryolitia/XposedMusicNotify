@@ -1,5 +1,6 @@
 package cn.nexus6p.QQMusicNotify.Fragment;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -22,9 +23,9 @@ import static cn.nexus6p.QQMusicNotify. Utils.GeneralUtils.setWorldReadable;
 public class MediaNotificationFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
+        getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
         addPreferencesFromResource(cn.nexus6p.QQMusicNotify.R.xml.media_notification);
-
+        setWorldReadable(getActivity());
         String[] strings = getContext().getResources().getStringArray(R.array.pickColorMode);
         ListPreference preference = (ListPreference) findPreference("colorMethod");
         preference.setSummary(preference.getEntry());

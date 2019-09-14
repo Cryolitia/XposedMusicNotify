@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -14,16 +15,22 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
+import android.os.Environment;
 import android.widget.Toast;
 
 import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
 
+import java.io.File;
+
+import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static android.content.Context.MODE_WORLD_READABLE;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.editFile;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getAssetsString;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 
@@ -32,13 +39,13 @@ public class AppsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.apps);
-
-        boolean PMEnabled = getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean("pm",true);
+        setWorldReadable(getActivity());
+        boolean PMEnabled = getActivity().getSharedPreferences(BuildConfig.APPLICATION_ID+"_preferences",Context.MODE_PRIVATE).getBoolean("pm",true);
         try {
             JSONArray jsonArray = GeneralUtils.getSupportPackages();
             for (int i=0;i<jsonArray.length();i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
-                Preference switchPreference = new Preference(getActivity(),null);
+                Preference preference = new Preference(getActivity(),null);
                 if (PMEnabled) {
                     PackageInfo packageInfo;
                     try {
@@ -47,17 +54,21 @@ public class AppsFragment extends PreferenceFragmentCompat {
                         packageInfo = null;
                     }
                     if(packageInfo == null) continue;
-                    else switchPreference.setIcon(getActivity().getPackageManager().getApplicationIcon(packageName));
+                    else preference.setIcon(getActivity().getPackageManager().getApplicationIcon(packageName));
                 }
                 //switchPreference.setChecked(true);
-                switchPreference.setTitle(jsonArray.getJSONObject(i).getString("name"));
-                switchPreference.setSummary(packageName);
-                switchPreference.setKey(packageName+".enabled");
-                ((PreferenceScreen) findPreference("app")).addPreference(switchPreference);
+                preference.setTitle(jsonArray.getJSONObject(i).getString("name"));
+                preference.setSummary(packageName);
+                preference.setKey(packageName+".enabled");
+                preference.setOnPreferenceClickListener(preference1 -> {
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, DetailFragment.Companion.newInstance(packageName)).addToBackStack(DetailFragment.class.getSimpleName() ).commit();
+                    return true;
+                });
+                ((PreferenceCategory) findPreference("app")).addPreference(preference);
             }
             boolean showNetease = false;
             try {
-                showNetease = !PMEnabled || getActivity().getPackageManager().getPackageInfo("com.netease.cloudmusic", 0)!=null;
+                showNetease = getActivity().getPackageManager().getPackageInfo("com.netease.cloudmusic", 0)!=null;
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
@@ -78,8 +89,19 @@ public class AppsFragment extends PreferenceFragmentCompat {
                     }
                     return true;
                 });
-                ((PreferenceScreen) findPreference("app")).addPreference(Preference);
+                ((PreferenceCategory) findPreference("app")).addItemFromInflater(Preference);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String path = Environment.getExternalStorageDirectory().getPath()+File.separator+"Android/data/cn.nexus6p.QQMusicNotify/files/packages.json";
+            findPreference("editJSON").setOnPreferenceClickListener(preference -> {
+                editFile(new File(path),getActivity());
+                return true;
+            });
+            findPreference("editJSON").setSummary(path);
         } catch (Exception e) {
             e.printStackTrace();
         }

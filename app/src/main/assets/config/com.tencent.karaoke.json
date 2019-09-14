@@ -1,8 +1,17 @@
 {
-  "class": "com.tencent.karaoke.common.media.n",
+  "versionName": "6.7.8.278",
+  "versionCode": "356",
+  "class": "com.tencent.karaoke.common.media.w",
   "method": "a",
-  "titleID": "7f091569",
-  "textID": "7f091567",
-  "bitmapID": "7f091564",
-  "iconID": "7f080bc4"
+  "titleID": "7f0916b3",
+  "textID": "7f0916b1",
+  "bitmapID": "7f0916ae",
+  "iconID": "7f080cae",
+  "playSongInfoClass": "com.tencent.karaoke.common.media.player.PlaySongInfo",
+  "intentClass": "com.tencent.karaoke.common.k",
+  "preSongField": "e",
+  "playSongField": "b",
+  "nextSongField": "f",
+  "deleteField": "c",
+  "IntentHandleActivity": "com.tencent.karaoke.widget.intent.IntentHandleActivity"
 }

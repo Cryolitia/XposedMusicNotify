@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:key="app">
-    <androidx.preference.PreferenceCategory
-        android:title="在这里对每个播放器进行个性化设置" />
+<androidx.preference.PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+	<androidx.preference.PreferenceCategory
+		android:title="全局设置"
+		>
+		<androidx.preference.Preference
+			android:title="刷新本地缓存"
+			android:key="refreshPackage"
+			>
+		</androidx.preference.Preference>
+		<androidx.preference.SwitchPreferenceCompat
+			android:title="使用自定义远程仓库"
+			android:key="useCustomize"
+			>
+		</androidx.preference.SwitchPreferenceCompat>
+		<androidx.preference.Preference
+			android:title="远程仓库地址"
+			android:key="onlineGit"
+			android:summary="https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/config/"
+			android:dependency="useCustomize"
+			>
+		</androidx.preference.Preference>
+		<androidx.preference.Preference
+			android:title="编辑本地仓库配置文件"
+			android:key="editJSON"
+			>
+		</androidx.preference.Preference>
+	</androidx.preference.PreferenceCategory>
+	<androidx.preference.PreferenceCategory
+		android:title="在这里对每个播放器进行个性化设置"
+		android:key="app"
+		>
+	</androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

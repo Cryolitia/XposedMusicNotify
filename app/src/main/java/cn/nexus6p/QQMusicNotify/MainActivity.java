@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import org.json.JSONObject;
@@ -30,6 +31,10 @@ import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 public class MainActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
+
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

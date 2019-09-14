@@ -35,7 +35,7 @@ public class initHook implements IXposedHookLoadPackage {
             findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
             return;
         }
-        if (getXSharedPreference().getBoolean("forceO",false)) {
+        /*if (getXSharedPreference().getBoolean("forceO",false)) {
             XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -45,7 +45,7 @@ public class initHook implements IXposedHookLoadPackage {
                     }
                 }
             });
-        }
+        }*/
         if (isHookEnabled(lpparam.packageName)) {
             XposedHelpers.findAndHookMethod(Application.class.getName(), lpparam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override

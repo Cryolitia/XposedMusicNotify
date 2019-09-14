@@ -2,8 +2,6 @@ package cn.nexus6p.QQMusicNotify.Base;
 
 import android.content.Context;
 
-import base.BasicParam;
-
 public abstract class BasicInit implements HookInterface {
 
     public BasicParam basicParam = new BasicParam();

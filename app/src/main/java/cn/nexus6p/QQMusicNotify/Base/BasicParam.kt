@@ -1,4 +1,4 @@
-package base
+package cn.nexus6p.QQMusicNotify.Base
 
 import android.app.PendingIntent
 import android.content.Context

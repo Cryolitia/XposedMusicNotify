@@ -1,7 +1,13 @@
 [
     {
         "app": "com.tencent.karaoke",
-        "name": "全民K歌"
+        "name": "全民K歌",
+        "supportedVersion": [
+            {
+                "versionName": "6.7.8.278",
+                "versionCode": "356"
+            }
+        ]
     },
     {
         "app": "com.tencent.qqmusiclocalplayer",

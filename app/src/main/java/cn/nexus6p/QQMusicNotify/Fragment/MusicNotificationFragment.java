@@ -17,7 +17,7 @@ public class MusicNotificationFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.music_notification);
-
+        setWorldReadable(getActivity());
         //GeneralUtils.bindPreference(this,"styleModify","always_show");
 
         GeneralUtils.jumpToLink(this,"magiskMoudle","feed/11103560",true);

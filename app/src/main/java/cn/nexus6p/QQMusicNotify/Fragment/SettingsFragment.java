@@ -7,19 +7,20 @@ import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.preference.EditTextPreference;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 import android.widget.Toast;
 
+
+import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
@@ -28,11 +29,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
-import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.R;
 import de.psdev.licensesdialog.LicensesDialog;
@@ -43,8 +44,6 @@ import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
-import static android.content.Context.MODE_WORLD_READABLE;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.bindEditTextSummary;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
@@ -52,9 +51,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
         addPreferencesFromResource(R.xml.settings);
-
+        setWorldReadable(getActivity());
         jumpToLink(this,"author","u/603406",true);
-        jumpToLink(this,"github","https://github.com/singleNeuron/QQMusicNotify",false);
+        jumpToLink(this,"github","https://github.com/singleNeuron/XposedMusicNotify",false);
         jumpToLink(this,"telegram","https://t.me/NeuronDevelopChannel",false);
 
         Preference preference = findPreference("statue");
@@ -184,12 +183,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        //findPreference("apps").setFragment(AppsFragment.class.getName());
         findPreference("apps").setOnPreferenceClickListener(preference1 -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AppsFragment()).addToBackStack( AppsFragment.class.getSimpleName() ).commit();
             return true;
         });
 
-        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.O||getActivity().getPreferences(MODE_WORLD_READABLE).getBoolean("forceO",false)) {
+        /*if (Build.VERSION.SDK_INT<Build.VERSION_CODES.O||getActivity().getPreferences(MODE_WORLD_READABLE).getBoolean("forceO",false)) {
             SwitchPreference switchPreference = new SwitchPreference(getActivity(), null);
             switchPreference.setTitle("修改版本为Android O");
             switchPreference.setIconSpaceReserved(true);
@@ -197,12 +197,59 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             switchPreference.setKey("forceO");
             switchPreference.setChecked(false);
             ((PreferenceCategory) findPreference("settings")).addPreference(switchPreference);
-        }
+        }*/
 
         findPreference("reUnzip").setOnPreferenceClickListener(preference12 -> {
             try {for (File file : getActivity().getExternalFilesDir(null).listFiles()) file.delete();}
             catch (Exception e) {e.printStackTrace();}
             ((MainActivity) SettingsFragment.this.getActivity()).copyAssetsDir2Phone();
+            return true;
+        });
+
+        findPreference("selinux").setOnPreferenceClickListener(preference1 -> {
+            if (!Shell.rootAccess()) {
+                Toast.makeText(getActivity(),"未检测到Root权限",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            Shell.Result result = Shell.su("getenforce").exec();
+            if (!result.isSuccess()) {
+                Toast.makeText(getActivity(),result.getErr().toString(),Toast.LENGTH_LONG).show();
+                return true;
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle("SeLinux").setMessage("当前状态： "+result.getOut().get(0));
+            if (result.getOut().get(0).contains("Permissive")) {
+                builder.setPositiveButton("确定",null).setNegativeButton("取消",null).create().show();
+                return true;
+            }
+            builder.setPositiveButton("设为Permissive", (dialogInterface, i) -> {
+                Shell.Result result1 = Shell.su("setenforce 0").exec();
+                if (result1.isSuccess()) Toast.makeText(getActivity(),"成功",Toast.LENGTH_SHORT).show();
+                else Toast.makeText(getActivity(),result1.getErr().toString(),Toast.LENGTH_LONG).show();
+            }).setNegativeButton("取消",null).create().show();
+            return true;
+        });
+
+        SwitchPreferenceCompat pmPreference = (SwitchPreferenceCompat) findPreference("pm");
+        if (pmPreference.isChecked()) {
+            PackageManager packageManager = getActivity().getPackageManager();
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+            boolean isChimiInstall = false;
+            boolean isRedirectStorageInstall = false;
+            for (PackageInfo packageInfo : packageInfos) {
+                if (packageInfo.packageName.equalsIgnoreCase("chili.xposed.chimi")) isChimiInstall = true;
+                if (packageInfo.packageName.equalsIgnoreCase("moe.shizuku.redirectstorage")) isRedirectStorageInstall = true;
+            }
+            if (!isChimiInstall) findPreference("chimi").setVisible(false);
+            if (!isRedirectStorageInstall) findPreference("redirectStorage").setVisible(false);
+        }
+
+        int nightMode = ((SwitchPreferenceCompat)findPreference("forceNight")).isChecked()? AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+        boolean needRecreat = ((MainActivity)getActivity()).getDelegate().getLocalNightMode() != nightMode;
+        ((MainActivity)getActivity()).getDelegate().setLocalNightMode(((SwitchPreferenceCompat)findPreference("forceNight")).isChecked()? AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if (needRecreat) getActivity().recreate();
+        findPreference("forceNight").setOnPreferenceChangeListener((preference1, newValue) -> {
+            ((MainActivity)getActivity()).getDelegate().setLocalNightMode((boolean)newValue? AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            ((MainActivity)getActivity()).recreate();
             return true;
         });
 
@@ -219,6 +266,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         } catch (Exception e) {
             return false;
         }
+
     }
 
     private ComponentName getAlias() {

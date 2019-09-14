@@ -23,7 +23,7 @@ import android.widget.RemoteViews;
 import java.util.ArrayList;
 import java.util.List;
 
-import base.BasicParam;
+import cn.nexus6p.QQMusicNotify.Base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
