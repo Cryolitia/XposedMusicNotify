@@ -121,7 +121,9 @@ public class NotificationUtils {
             builder.setCustomBigContentView(getContentView(false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannel(new NotificationChannel("music", "Music", NotificationManager.IMPORTANCE_HIGH));
+            NotificationChannel notificationChannel = new NotificationChannel("music", "Music", NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.enableVibration(false);
+            notificationManager.createNotificationChannel(notificationChannel);
             builder.setChannelId("music");
         }
 

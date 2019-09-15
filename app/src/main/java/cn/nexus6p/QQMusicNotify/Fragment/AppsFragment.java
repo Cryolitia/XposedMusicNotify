@@ -96,7 +96,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
         }
 
         try {
-            String path = Environment.getExternalStorageDirectory().getPath()+File.separator+"Android/data/cn.nexus6p.QQMusicNotify/files/packages.json";
+            String path = getActivity().getExternalFilesDir(null)+File.separator+"packages.json";
             findPreference("editJSON").setOnPreferenceClickListener(preference -> {
                 editFile(new File(path),getActivity());
                 return true;

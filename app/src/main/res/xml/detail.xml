@@ -68,9 +68,4 @@
 			>
 		</androidx.preference.Preference>
 	</androidx.preference.PreferenceCategory>
-	<androidx.preference.PreferenceCategory
-		android:title="当前配置文件详细信息"
-		android:key="JSONDetail"
-		>
-	</androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

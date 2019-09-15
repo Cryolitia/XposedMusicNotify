@@ -44,6 +44,7 @@ import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
@@ -127,7 +128,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         findPreference("version").setOnPreferenceClickListener(preference1 -> {
-            getJsonFromInternet();
+            getJsonFromInternet((MainActivity)getActivity(),true);
             return true;
         });
 
@@ -170,8 +171,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .show();
             return true;
         });
-
-        getJsonFromInternet();
 
         findPreference("music_notification").setOnPreferenceClickListener(preference1 -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MusicNotificationFragment() ).addToBackStack( MusicNotificationFragment.class.getSimpleName() ).commit();
@@ -243,13 +242,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (!isRedirectStorageInstall) findPreference("redirectStorage").setVisible(false);
         }
 
-        int nightMode = ((SwitchPreferenceCompat)findPreference("forceNight")).isChecked()? AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-        boolean needRecreat = ((MainActivity)getActivity()).getDelegate().getLocalNightMode() != nightMode;
-        ((MainActivity)getActivity()).getDelegate().setLocalNightMode(((SwitchPreferenceCompat)findPreference("forceNight")).isChecked()? AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        if (needRecreat) getActivity().recreate();
         findPreference("forceNight").setOnPreferenceChangeListener((preference1, newValue) -> {
-            ((MainActivity)getActivity()).getDelegate().setLocalNightMode((boolean)newValue? AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-            ((MainActivity)getActivity()).recreate();
+            getActivity().recreate();
             return true;
         });
 
@@ -271,72 +265,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private ComponentName getAlias() {
         return new ComponentName(getActivity(), MainActivity.class.getName() + "Alias");
-    }
-
-    //抄的https://www.jianshu.com/p/4e12da9866a0
-    private void getJsonFromInternet () {
-        final String url = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/config/version.json";
-        if (!((SwitchPreferenceCompat)findPreference("network")).isChecked()) {
-            Toast.makeText(getContext(),"联网已禁用，无法检查新版本",Toast.LENGTH_SHORT).show();
-            return;
-        }
-        new Thread(() -> {
-            try {
-                HttpURLConnection conn=(HttpURLConnection) new URL(url).openConnection();
-                conn.setConnectTimeout(3000);
-                conn.setRequestMethod("GET");
-                if (conn.getResponseCode()==200) {
-                    InputStream inputStream=conn.getInputStream();
-                    byte[]jsonBytes=convertIsToByteArray(inputStream);
-                    String json=new String(jsonBytes);
-                    if (json.length()>0) {
-                        getActivity().runOnUiThread(() -> {
-                            try {
-                                JSONObject jsonObject = new JSONObject(json);
-                                int versionCode = jsonObject.optInt("code");
-                                if (versionCode> BuildConfig.VERSION_CODE) {
-                                    new AlertDialog.Builder(getContext())
-                                            .setTitle("发现新版本")
-                                            .setMessage(jsonObject.optString("name"))
-                                            .setNegativeButton("取消",null)
-                                            .setPositiveButton("下载", (dialogInterface, i) -> {
-                                                Intent localIntent = new Intent("android.intent.action.VIEW");
-                                                localIntent.setData(Uri.parse("https://github.com/singleNeuron/XposedMusicNotify/releases"));
-                                                startActivity(localIntent);
-                                            })
-                                            .create()
-                                            .show();
-                                } else getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"检查更新成功，当前已是最新版本",Toast.LENGTH_SHORT).show());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        return;
-                    }
-                }
-                getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错",Toast.LENGTH_SHORT).show());
-            } catch (Exception e) {
-                e.printStackTrace();
-                getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错："+e.getMessage(),Toast.LENGTH_LONG).show());
-            }
-        }).start();
-
-    }
-
-    private byte[] convertIsToByteArray (InputStream inputStream) {
-        ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        try {
-            while ((length=inputStream.read(buffer))!=-1) {
-                baos.write(buffer, 0, length);
-            }
-            inputStream.close();
-            baos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return baos.toByteArray();
     }
 
 }

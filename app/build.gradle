@@ -9,7 +9,7 @@ android {
         applicationId "cn.nexus6p.QQMusicNotify"
         minSdkVersion 23
         //noinspection OldTargetApi,ExpiredTargetSdkVersion
-        targetSdkVersion 28
+        targetSdkVersion 29
     }
 
     repositories {
@@ -18,10 +18,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
-            zipAlignEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.github.topjohnwu.libsu:core:2.5.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation ("org.jetbrains.anko:anko:0.10.8"){
         exclude group: 'com.android.support'
         exclude module: 'appcompat-v7'

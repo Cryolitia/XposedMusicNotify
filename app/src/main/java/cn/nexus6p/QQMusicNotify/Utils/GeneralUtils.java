@@ -1,5 +1,7 @@
 package cn.nexus6p.QQMusicNotify.Utils;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -24,17 +26,25 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.MainActivity;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
@@ -114,7 +124,8 @@ final public class GeneralUtils {
     public static String getAssetsString(String fileName) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            File file = new File(Environment.getExternalStorageDirectory().getPath()+File.separator+"Android/data/cn.nexus6p.QQMusicNotify/files/" +fileName);
+            @SuppressLint("SdCardPath") File file = new File("/sdcard/Android/data/cn.nexus6p.QQMusicNotify/files/" +fileName);
+            //File file = new File(Environment.getExternalStorageDirectory().getPath()+File.separator+"Android/data/cn.nexus6p.QQMusicNotify/files/" +fileName);
             BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             String line;
             while ((line = bf.readLine()) != null) {
@@ -203,6 +214,80 @@ final public class GeneralUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean isCheckingUpdate = false;
+
+    //抄的https://www.jianshu.com/p/4e12da9866a0
+    public static void getJsonFromInternet (MainActivity activity,boolean shouldShowToast) {
+        if (isCheckingUpdate) return;
+        isCheckingUpdate = true;
+        final String url = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/config/version.json";
+        if (!activity.getSharedPreferences(BuildConfig.APPLICATION_ID+"_preferences", Context.MODE_PRIVATE).getBoolean("network",false)) {
+            if(shouldShowToast) Toast.makeText(activity,"联网已禁用，无法检查新版本",Toast.LENGTH_SHORT).show();
+            isCheckingUpdate = false;
+            return;
+        }
+        new Thread(() -> {
+            try {
+                HttpURLConnection conn=(HttpURLConnection) new URL(url).openConnection();
+                conn.setConnectTimeout(3000);
+                conn.setRequestMethod("GET");
+                if (conn.getResponseCode()==200) {
+                    InputStream inputStream=conn.getInputStream();
+                    byte[]jsonBytes=convertIsToByteArray(inputStream);
+                    String json=new String(jsonBytes);
+                    if (json.length()>0) {
+                        activity.runOnUiThread(() -> {
+                            try {
+                                JSONObject jsonObject = new JSONObject(json);
+                                int versionCode = jsonObject.optInt("code");
+                                if (versionCode> BuildConfig.VERSION_CODE) {
+                                    new MaterialAlertDialogBuilder(getContext())
+                                            .setTitle("发现新版本")
+                                            .setMessage(jsonObject.optString("name"))
+                                            .setNegativeButton("取消",null)
+                                            .setPositiveButton("下载", (dialogInterface, i) -> {
+                                                Intent localIntent = new Intent("android.intent.action.VIEW");
+                                                localIntent.setData(Uri.parse("https://github.com/singleNeuron/XposedMusicNotify/releases"));
+                                                activity.startActivity(localIntent);
+                                            })
+                                            .create()
+                                            .show();
+                                } else activity.runOnUiThread(() -> Toast.makeText(getContext(),"检查更新成功，当前已是最新版本",Toast.LENGTH_SHORT).show());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            isCheckingUpdate = false;
+                        });
+                        return;
+                    }
+                }
+                activity.runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错",Toast.LENGTH_SHORT).show());
+                isCheckingUpdate = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+                activity.runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错："+e.getMessage(),Toast.LENGTH_LONG).show());
+                isCheckingUpdate = false;
+            }
+        }).start();
+
+    }
+
+    private static byte[] convertIsToByteArray (InputStream inputStream) {
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        try {
+            while ((length=inputStream.read(buffer))!=-1) {
+                baos.write(buffer, 0, length);
+            }
+            inputStream.close();
+            baos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return baos.toByteArray();
     }
 
 }

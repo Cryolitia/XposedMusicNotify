@@ -19,6 +19,7 @@ import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.R
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.*
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.topjohnwu.superuser.Shell
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
@@ -64,17 +65,14 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
         enablePreference!!.key = "$packageName.enabled"
         enablePreference.isChecked = enabled
         findPreference<Preference>("taichi")!!.isVisible = HookStatue.isExpModuleActive(activity)
-        val file = File(Environment.getExternalStorageDirectory().path + File.separator + "Android/data/cn.nexus6p.QQMusicNotify/files/$packageName.json")
+        val file = File(activity!!.getExternalFilesDir(null).toString() + File.separator + packageName + ".json")
         if (file.exists()) {
             try {
                 val jsonObject = JSONObject(getAssetsString("$packageName.json"))
                 findPreference<Preference>("nowVersion")!!.summary = "versionName: "+jsonObject.optString("versionName")+"  versionCode: "+jsonObject.optString("versionCode")
-                val detailPreferenceCategory : PreferenceCategory = findPreference("JSONDetail")!!
-                for (key in jsonObject.keys()) {
-                    val preference = Preference(activity)
-                    preference.title = key
-                    preference.summary = jsonObject.optString(key)
-                    detailPreferenceCategory.addItemFromInflater(preference)
+                findPreference<Preference>("nowVersion")!!.setOnPreferenceClickListener {
+                    activity!!.supportFragmentManager.beginTransaction().replace(R.id.content_frame, JsonDetailFragment.newInstance(jsonObject.toString())).addToBackStack(JsonDetailFragment::class.java.simpleName).commit()
+                    true
                 }
             } catch (e:Exception) {
                 findPreference<Preference>("nowVersion")!!.summary = "读取配置文件出错"
@@ -94,7 +92,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                             list.add(versionJsonObject.optString("versionName"))
                         }
                         supportedVersionPreference!!.setOnPreferenceClickListener {
-                            val builder = AlertDialog.Builder(activity!!)
+                            val builder = MaterialAlertDialogBuilder(activity!!)
                             builder.setTitle("支持版本").setItems(list.toArray(arrayOfNulls<String>(list.size)),null).setPositiveButton("确定",null).create().show()
                             true
                         }
@@ -116,7 +114,6 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             findPreference<Preference>("nowVersion")!!.summary = "找不到配置文件"
             findPreference<Preference>("supportedVersion")!!.isVisible = false
             findPreference<Preference>("editjson")!!.isVisible = false
-            findPreference<Preference>("JSONDetail")!!.isVisible = false
         }
         findPreference<Preference>("forceStop")!!.setOnPreferenceClickListener {
             if (!Shell.rootAccess()) activity!!.toast("没有Root权限")

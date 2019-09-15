@@ -3,7 +3,7 @@
     <androidx.preference.PreferenceCategory android:title="模块设置">
         <androidx.preference.SwitchPreferenceCompat android:title="启用" android:key="styleModify" android:defaultValue="false" />
         <androidx.preference.SwitchPreferenceCompat android:title="保持音乐通知不被划去" android:key="always_show" android:defaultValue="false" android:dependency="styleModify" />
-        <SwitchPreference android:title="MIUI/Flyme通知去白边"  android:key="miuiModify" android:defaultValue="true" />
+        <SwitchPreference android:title="MIUI/Flyme通知去白边"  android:key="miuiModify" android:defaultValue="true" android:dependency="styleModify"/>
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="常见问题">
         <androidx.preference.Preference android:title="怎么使用这个模块" android:summary="Xposed或EdXposed直接激活模块，太极用户激活后需要将使用的音乐软件添加到太极内。激活模块后系统音乐通知将变成安卓O样式，请在音乐软件内将通知栏样式改为系统样式，比如：网易云音乐设置--通知栏样式--系统样式，否则不生效。" />
