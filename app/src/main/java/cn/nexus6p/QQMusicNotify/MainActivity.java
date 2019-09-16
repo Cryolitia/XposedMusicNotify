@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mToolbar.setBackgroundColor(colorInt);
         setSupportActionBar(mToolbar);
-        getWindow().setStatusBarColor(Color.parseColor(isNightMode?"#212121":"#FAFAFA"));
+        getWindow().setStatusBarColor(Color.parseColor(isNightMode?"#212121":"#F5F5F5"));
         View docker = getWindow().getDecorView();
         int ui = docker.getSystemUiVisibility();
         if (!isNightMode) {
