@@ -1,0 +1,32 @@
+[
+    {
+        "app": "com.tencent.karaoke",
+        "name": "全民K歌",
+        "supportedVersion": [
+            {
+                "versionName": "6.7.8.278",
+                "versionCode": "356"
+            },
+            {
+                "versionName": "6.9.8.278",
+                "versionCode": "371"
+            }
+        ]
+    },
+    {
+        "app": "com.tencent.qqmusiclocalplayer",
+        "name": "轻听"
+    },
+    {
+        "app": "com.sing.client",
+        "name": "5Sing"
+    },
+    {
+        "app": "com.tencent.qqmusic",
+        "name": "QQ音乐"
+    },
+    {
+    "app": "cn.kuwo.player",
+    "name": "酷我音乐"
+    }
+]

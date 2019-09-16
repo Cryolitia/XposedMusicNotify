@@ -1,0 +1,17 @@
+{
+  "versionName": "6.9.8.278",
+  "versionCode": "371",
+  "class": "com.tencent.karaoke.common.media.w",
+  "method": "a",
+  "titleID": "7f091796",
+  "textID": "7f091794",
+  "bitmapID": "7f091791",
+  "iconID": "7f080d21",
+  "playSongInfoClass": "com.tencent.karaoke.common.media.player.PlaySongInfo",
+  "intentClass": "com.tencent.karaoke.common.k",
+  "preSongField": "e",
+  "playSongField": "b",
+  "nextSongField": "f",
+  "deleteField": "c",
+  "IntentHandleActivity": "com.tencent.karaoke.widget.intent.IntentHandleActivity"
+}
