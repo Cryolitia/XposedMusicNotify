@@ -243,7 +243,7 @@ final public class GeneralUtils {
                                 JSONObject jsonObject = new JSONObject(json);
                                 int versionCode = jsonObject.optInt("code");
                                 if (versionCode> BuildConfig.VERSION_CODE) {
-                                    new MaterialAlertDialogBuilder(getContext())
+                                    new MaterialAlertDialogBuilder(activity)
                                             .setTitle("发现新版本")
                                             .setMessage(jsonObject.optString("name"))
                                             .setNegativeButton("取消",null)
@@ -254,7 +254,7 @@ final public class GeneralUtils {
                                             })
                                             .create()
                                             .show();
-                                } else activity.runOnUiThread(() -> Toast.makeText(getContext(),"检查更新成功，当前已是最新版本",Toast.LENGTH_SHORT).show());
+                                } else activity.runOnUiThread(() -> Toast.makeText(activity,"检查更新成功，当前已是最新版本",Toast.LENGTH_SHORT).show());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -263,11 +263,11 @@ final public class GeneralUtils {
                         return;
                     }
                 }
-                activity.runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错",Toast.LENGTH_SHORT).show());
+                activity.runOnUiThread(() -> Toast.makeText(activity,"检查更新时出错",Toast.LENGTH_SHORT).show());
                 isCheckingUpdate = false;
             } catch (Exception e) {
                 e.printStackTrace();
-                activity.runOnUiThread(() -> Toast.makeText(getContext(),"检查更新时出错："+e.getMessage(),Toast.LENGTH_LONG).show());
+                activity.runOnUiThread(() -> Toast.makeText(activity,"检查更新时出错："+e.getMessage(),Toast.LENGTH_LONG).show());
                 isCheckingUpdate = false;
             }
         }).start();
