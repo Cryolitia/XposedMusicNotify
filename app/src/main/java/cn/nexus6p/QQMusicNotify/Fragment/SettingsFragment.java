@@ -17,9 +17,12 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
+
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONObject;
@@ -61,6 +64,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
         else if (HookStatue.isExpModuleActive(getActivity())) {
             preference.setSummary("太极已激活");
+            Preference taichiProblemPreference = findPreference("taichiProblem");
+            taichiProblemPreference.setVisible(true);
+            taichiProblemPreference.setOnPreferenceClickListener(preference1 -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setImageResource(R.drawable.taichi);
+                builder.setView(imageView).create().show();
+                return true;
+            });
             /*try {
                 if (Objects.requireNonNull(System.getProperties().get("taichi_magisk")).toString().equals("1"))
                     preference.setSummary("太极·阳 已激活");

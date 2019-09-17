@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 	<androidx.preference.PreferenceCategory
 		android:title="设置"
 		android:key="settings"
@@ -80,6 +79,18 @@
 			android:title="吃米"
 			android:summary="有报告称吃米可能与此模块有不良的相互作用，如此模块工作不正常请尝试禁用吃米并重启"
 			android:key="chimi"
+			>
+		</androidx.preference.Preference>
+		<androidx.preference.Preference
+			android:title="更新后无效"
+			android:summary="请在更新后重新勾选模块并重启手机"
+			>
+		</androidx.preference.Preference>
+		<androidx.preference.Preference
+			android:title="太极"
+			android:summary="如果EdXposed/Xposed等用户报告此模块工作正常但不在您的太极上工作。很大可能是太极的适配引擎又出现了问题/压根就没支持"
+			android:key="taichiProblem"
+			app:isPreferenceVisible="false"
 			>
 		</androidx.preference.Preference>
 	</androidx.preference.PreferenceCategory>
