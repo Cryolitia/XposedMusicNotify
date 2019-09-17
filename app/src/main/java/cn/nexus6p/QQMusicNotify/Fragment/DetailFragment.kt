@@ -9,13 +9,16 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import cn.nexus6p.QQMusicNotify.BuildConfig
+import cn.nexus6p.QQMusicNotify.MainActivity
 import cn.nexus6p.QQMusicNotify.R
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.*
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue
@@ -42,6 +45,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.detail)
         setWorldReadable(activity)
+        val list = ArrayList<String>()
         if (arguments==null) throw RuntimeException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
         val packageName = arguments!!.getString("packageName")
         val appPreference = findPreference<Preference>("app")
@@ -61,47 +65,54 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
         else packageInfo.versionCode.toLong()
         findPreference<Preference>("versionCode")!!.summary = versionCode.toString()
         val enablePreference  = findPreference<SwitchPreferenceCompat>("enable")
-        val enabled : Boolean = activity!!.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_PRIVATE).getBoolean("$packageName.enabled",true)
+        val enabled : Boolean = getSharedPreferenceOnUI(activity!!).getBoolean("$packageName.enabled",true)
         enablePreference!!.key = "$packageName.enabled"
         enablePreference.isChecked = enabled
         findPreference<Preference>("taichi")!!.isVisible = HookStatue.isExpModuleActive(activity)
         val file = File(activity!!.getExternalFilesDir(null).toString() + File.separator + packageName + ".json")
+        try {
+            val supportedVersionPreference = findPreference<Preference>("supportedVersion")
+            val jsonArray = getSupportPackages()
+            for (i in 0 until jsonArray.length()) {
+                val appJsonObject = jsonArray.optJSONObject(i)
+                if (appJsonObject.optString("app").contains(packageName)) {
+                    val versionJsonArray = appJsonObject.optJSONArray("supportedVersion")
+                    for (j in 0 until versionJsonArray!!.length()) {
+                        val versionJsonObject = versionJsonArray.optJSONObject(j)
+                        list.add(versionJsonObject.optString("versionName"))
+                    }
+                    supportedVersionPreference!!.setOnPreferenceClickListener {
+                        val builder = MaterialAlertDialogBuilder(activity!!)
+                        builder.setTitle("支持版本").setItems(list.toArray(arrayOfNulls<String>(list.size)),null).setPositiveButton("确定",null).create().show()
+                        true
+                    }
+                    supportedVersionPreference.summary = list.toString()
+                    findPreference<Preference>("refresh")!!.setOnPreferenceClickListener {
+                        if (list.contains(packageInfo.versionName)) downloadFileFromInternet("$packageName/$versionCode/$packageName.json",activity as MainActivity)
+                        else activity!!.toast("未适配的版本").show()
+                        true
+                    }
+                    break
+                }
+            }
+            supportedVersionPreference!!.summary = list.toString()
+        } catch (e:Exception) {
+            e.printStackTrace()
+        }
         if (file.exists()) {
             try {
                 val jsonObject = JSONObject(getAssetsString("$packageName.json"))
-                findPreference<Preference>("nowVersion")!!.summary = "versionName: "+jsonObject.optString("versionName")+"  versionCode: "+jsonObject.optString("versionCode")
-                findPreference<Preference>("nowVersion")!!.setOnPreferenceClickListener {
+                val nowVersionFragment = findPreference<Preference>("nowVersion")
+                nowVersionFragment!!.summary = "versionName: "+jsonObject.optString("versionName")+"  versionCode: "+jsonObject.optString("versionCode")
+                nowVersionFragment.setOnPreferenceClickListener {
                     activity!!.supportFragmentManager.beginTransaction().replace(R.id.content_frame, JsonDetailFragment.newInstance(jsonObject.toString())).addToBackStack(JsonDetailFragment::class.java.simpleName).commit()
                     true
                 }
+                val iconID = if(jsonObject.optString("versionCode") == versionCode.toString()) R.drawable.ic_check_circle else R.drawable.ic_cancel
+                nowVersionFragment.setIcon(iconID)
             } catch (e:Exception) {
                 findPreference<Preference>("nowVersion")!!.summary = "读取配置文件出错"
                 activity!!.longToast("读取配置文件出错:$e")
-                e.printStackTrace()
-            }
-            try {
-                val supportedVersionPreference = findPreference<Preference>("supportedVersion")
-                val jsonArray = getSupportPackages()
-                val list = ArrayList<String>()
-                for (i in 0 until jsonArray.length()) {
-                    val appJsonObject = jsonArray.optJSONObject(i)
-                    if (appJsonObject.optString("app").contains(packageName)) {
-                        val versionJsonArray = appJsonObject.optJSONArray("supportedVersion")
-                        for (j in 0 until versionJsonArray!!.length()) {
-                            val versionJsonObject = versionJsonArray.optJSONObject(j)
-                            list.add(versionJsonObject.optString("versionName"))
-                        }
-                        supportedVersionPreference!!.setOnPreferenceClickListener {
-                            val builder = MaterialAlertDialogBuilder(activity!!)
-                            builder.setTitle("支持版本").setItems(list.toArray(arrayOfNulls<String>(list.size)),null).setPositiveButton("确定",null).create().show()
-                            true
-                        }
-                        supportedVersionPreference.summary = list.toString()
-                        break
-                    }
-                }
-                supportedVersionPreference!!.summary = list.toString()
-            } catch (e:Exception) {
                 e.printStackTrace()
             }
             findPreference<Preference>("editjson")!!.setOnPreferenceClickListener {
@@ -110,9 +121,9 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             }
             findPreference<Preference>("editjson")!!.summary = file.absolutePath
         } else {
-            activity!!.toast("找不到配置文件: $packageName")
+            //activity!!.toast("找不到配置文件: $packageName")
             findPreference<Preference>("nowVersion")!!.summary = "找不到配置文件"
-            findPreference<Preference>("supportedVersion")!!.isVisible = false
+            //findPreference<Preference>("supportedVersion")!!.isVisible = false
             findPreference<Preference>("editjson")!!.isVisible = false
         }
         findPreference<Preference>("forceStop")!!.setOnPreferenceClickListener {

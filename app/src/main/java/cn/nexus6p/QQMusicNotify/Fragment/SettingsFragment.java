@@ -184,7 +184,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         //findPreference("apps").setFragment(AppsFragment.class.getName());
         findPreference("apps").setOnPreferenceClickListener(preference1 -> {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AppsFragment()).addToBackStack( AppsFragment.class.getSimpleName() ).commit();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AppsFragment(),"appsFragment").addToBackStack( AppsFragment.class.getSimpleName() ).commit();
             return true;
         });
 

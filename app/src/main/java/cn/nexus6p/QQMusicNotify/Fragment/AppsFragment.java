@@ -25,12 +25,15 @@ import org.json.JSONArray;
 import java.io.File;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static android.content.Context.MODE_WORLD_READABLE;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.downloadFileFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.editFile;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getAssetsString;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 
@@ -40,7 +43,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.apps);
         setWorldReadable(getActivity());
-        boolean PMEnabled = getActivity().getSharedPreferences(BuildConfig.APPLICATION_ID+"_preferences",Context.MODE_PRIVATE).getBoolean("pm",true);
+        boolean PMEnabled = getSharedPreferenceOnUI(getActivity()).getBoolean("pm",true);
         try {
             JSONArray jsonArray = GeneralUtils.getSupportPackages();
             for (int i=0;i<jsonArray.length();i++) {
@@ -105,6 +108,15 @@ public class AppsFragment extends PreferenceFragmentCompat {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        findPreference("refreshPackage").setOnPreferenceClickListener(preference -> {
+            if (!getSharedPreferenceOnUI(getActivity()).getBoolean("network",true)) {
+                Toast.makeText(getActivity(),"联网已禁用",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            downloadFileFromInternet("packages.json",(MainActivity) getActivity());
+            return true;
+        });
 
         setWorldReadable(getActivity());
 

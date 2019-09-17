@@ -33,6 +33,7 @@
 		<androidx.preference.Preference
 			android:title="当前配置文件"
 			android:key="nowVersion"
+			android:icon="@drawable/ic_cancel"
 			>
 		</androidx.preference.Preference>
 		<androidx.preference.Preference

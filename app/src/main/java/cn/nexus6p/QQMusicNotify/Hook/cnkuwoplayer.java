@@ -12,6 +12,7 @@ import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicNotification;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -26,8 +27,25 @@ public class cnkuwoplayer extends BasicNotification {
 
     @Override
     public void init() {
-        final Class notifyClazz = XposedHelpers.findClass("cn.kuwo.mod.notification.manager.KwNotificationManager",classLoader);
-        findAndHookMethod(notifyClazz, "getPlayNotification", Bitmap.class, String.class,String.class,String.class, new XC_MethodReplacement() {
+        PreferenceUtil preferenceUtil = new PreferenceUtil("cn.kuwo.player");
+        String className = preferenceUtil.getStringFromJson("class");
+        String methodName = preferenceUtil.getStringFromJson("method");
+        int iconID = preferenceUtil.getIntFromJson("iconID");
+        String contextField = preferenceUtil.getStringFromJson("contextField");
+        String preSongIntentName = preferenceUtil.getStringFromJson("preSongIntent");
+        String playSongIntentName = preferenceUtil.getStringFromJson("playSongIntent");
+        String nextSongIntentName = preferenceUtil.getStringFromJson("nextSongIntent");
+        String IntentHandleActivity = preferenceUtil.getStringFromJson("IntentHandleActivity");
+        String getStatusClass = preferenceUtil.getStringFromJson("getStatusClass");
+        String getStatusMethod = preferenceUtil.getStringFromJson("getStatusMethod");
+        String getStatusMethod2 = preferenceUtil.getStringFromJson("getStatusMethod2");
+        String playProxyStatusClass = preferenceUtil.getStringFromJson("playProxyStatusClass");
+        String playProxyStatusField = preferenceUtil.getStringFromJson("playProxyStatusField");
+        extraActionIcon = preferenceUtil.getIntFromJson("extraActionIcon");
+        String extraActionIntentName = preferenceUtil.getStringFromJson("extraActionIntent");
+
+        final Class notifyClazz = XposedHelpers.findClass(className,classLoader);
+        findAndHookMethod(notifyClazz, methodName, Bitmap.class, String.class,String.class,String.class, new XC_MethodReplacement() {
             @Override
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
@@ -36,27 +54,26 @@ public class cnkuwoplayer extends BasicNotification {
                     NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_HIGH);
                     ((NotificationManager) GeneralUtils.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
                 }
-                basicParam.setIconID(0x7f020dfd);
-                basicParam.setContext((Context) getObjectField(param.thisObject,"mContext"));
+                basicParam.setIconID(iconID);
+                basicParam.setContext((Context) getObjectField(param.thisObject,contextField));
                 basicParam.setBitmap((Bitmap) param.args[0]);
                 if (mTOKEN==null) mTOKEN = new MediaSession(basicParam.getContext(),"MediaSessionHelper").getSessionToken();
                 basicParam.setToken(mTOKEN);
                 basicParam.setTitleString((CharSequence) param.args[1]);
                 basicParam.setTextString((CharSequence) param.args[2]);
-                preSongIntent = new Intent("kuwo.play.pre");
-                playIntent = new Intent("kuwo.play.playing");
-                nextSongIntent = new Intent("kuwo.play.next");
-                contentIntent = new Intent(basicParam.getContext(),XposedHelpers.findClass("cn.kuwo.player.activities.EntryActivity",classLoader));
+                preSongIntent = new Intent(preSongIntentName);
+                playIntent = new Intent(playSongIntentName);
+                nextSongIntent = new Intent(nextSongIntentName);
+                contentIntent = new Intent(basicParam.getContext(),XposedHelpers.findClass(IntentHandleActivity,classLoader));
                 contentIntent.setAction("android.intent.action.MAIN")
                     .addCategory("android.intent.category.LAUNCHER");
                 intentRequestID = 1;
-                hasExtraAction = false;
-                extraActionIcon = 0x7f02040a;
-                extraActionIntent = new Intent("kuwo.desklrc.enable");
-                Object object = XposedHelpers.callStaticMethod(XposedHelpers.findClass("cn.kuwo.a.b.b",classLoader),"r");
-                Object object2 = XposedHelpers.callMethod(object,"getStatus");
-                Object object3 = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("cn.kuwo.service.PlayProxy$Status",classLoader),"PLAYING");
-                basicParam.setStatue(object2==object3);
+                hasExtraAction = true;
+                extraActionIntent = new Intent(extraActionIntentName);
+                Object object = XposedHelpers.callStaticMethod(XposedHelpers.findClass(getStatusClass,classLoader),getStatusMethod);
+                Object object2 = XposedHelpers.callMethod(object,getStatusMethod2);
+                Object object3 = XposedHelpers.getStaticObjectField(XposedHelpers.findClass(playProxyStatusClass,classLoader),playProxyStatusField);
+                basicParam.setStatue(object2.equals(object3));
                 return build();
             }
         });

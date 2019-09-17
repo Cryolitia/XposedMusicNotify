@@ -6,6 +6,10 @@
             {
                 "versionName": "6.7.8.278",
                 "versionCode": "356"
+            },
+            {
+                "versionName": "6.9.8.278",
+                "versionCode": "371"
             }
         ]
     },
@@ -23,6 +27,12 @@
     },
     {
     "app": "cn.kuwo.player",
-    "name": "酷我音乐"
+    "name": "酷我音乐",
+    "supportedVersion": [
+        {
+           "versionName": "9.2.4.0",
+           "versionCode": "9240"
+        }
+    ]
     }
 ]

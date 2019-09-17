@@ -84,6 +84,7 @@ public abstract class BasicNotification extends BasicInit {
                 return GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
             }*/
             basicParam.setContentIntent(PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+            actionIcons.clear();
             actionIcons.add(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_skip_previous));
             actionIcons.add(basicParam.getStatue() ?
                     //android.R.drawable.ic_media_pause :
@@ -91,6 +92,7 @@ public abstract class BasicNotification extends BasicInit {
                     //android.R.drawable.ic_media_play
                     BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_play));
             actionIcons.add(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_skip_next));
+            if (hasExtraAction) actionIcons.add(BitmapFactory.decodeResource(basicParam.getContext().getResources(), extraActionIcon));
             return new NotificationUtils().setParam(basicParam,actions,actionIcons).updateNotification();
         } else {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(basicParam.getContext(),channelID)

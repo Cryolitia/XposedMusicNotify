@@ -2,6 +2,7 @@ package cn.nexus6p.QQMusicNotify;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.SwitchPreferenceCompat;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,10 +32,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.Fragment.AppsFragment;
 import cn.nexus6p.QQMusicNotify.Fragment.SettingsFragment;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 @Keep
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         //if (savedInstanceState!=null) shouldCheckUpdate = savedInstanceState.getBoolean("shouldCheckUpdate",true);
 
-        boolean isNightMode = getSharedPreferences(BuildConfig.APPLICATION_ID+"_preferences", Context.MODE_PRIVATE).getBoolean("forceNight",false);
+        boolean isNightMode = getSharedPreferenceOnUI(this).getBoolean("forceNight",false);
         int nightMode = isNightMode ? AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
         @ColorInt int colorInt = Color.parseColor(isNightMode?"#212121":"#F5F5F5");
 
@@ -88,6 +92,19 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_frame, settingsFragment,"settingsFragment")
                 .commit();
 
+        try {
+            if (savedInstanceState != null) {
+                if (savedInstanceState.getString("currentFragment").equals("AppsFragment")) {
+                    getSupportFragmentManager().findFragmentByTag("appsFragment").onCreate(null);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, getSupportFragmentManager().findFragmentByTag("appsFragment"),"appsFragment")
+                            .commit();
+                }
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+
         File file = new File(getExternalFilesDir(null) + File.separator +"version.json");
         if (!file.exists()) copyAssetsDir2Phone();
 
@@ -113,6 +130,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (!getFragmentManager().popBackStackImmediate()) super.onBackPressed();
+    }
+
+    @Override
+    public void onSaveInstanceState (@NotNull Bundle bundle) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        try {
+            if (getSupportFragmentManager().findFragmentById(R.id.content_frame).getClass().equals(AppsFragment.class)) {
+                bundle.putString("currentFragment", "AppsFragment");
+            }
+            while (!transaction.isEmpty()) {
+                transaction.remove(getSupportFragmentManager().findFragmentById(R.id.content_frame));
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        super.onSaveInstanceState(bundle);
     }
 
     @Override
@@ -187,6 +221,14 @@ public class MainActivity extends AppCompatActivity {
             shouldCheckUpdate = false;
             getJsonFromInternet(this,false);
         }
+    }
+
+    public void reload () {
+        Intent intent = getIntent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+        overridePendingTransition(0,0);
+        startActivity(intent);
     }
 
 }

@@ -29,7 +29,7 @@ class JsonDetailFragment private constructor() : PreferenceFragmentCompat() {
             val jsonObject = JSONObject(jsonString!!)
             val detailPreferenceCategory : PreferenceCategory = findPreference("JSONDetail")!!
             for (key in jsonObject.keys()) {
-                val preference = Preference(activity)
+                val preference = Preference(activity!!)
                 preference.title = key
                 preference.summary = jsonObject.optString(key)
                 detailPreferenceCategory.addItemFromInflater(preference)
