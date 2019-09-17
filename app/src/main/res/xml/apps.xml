@@ -15,13 +15,14 @@
 			android:key="useCustomize"
 			>
 		</androidx.preference.SwitchPreferenceCompat>
-		<androidx.preference.Preference
+		<androidx.preference.EditTextPreference
 			android:title="远程仓库地址"
 			android:key="onlineGit"
 			android:summary="https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/"
+			android:defaultValue="https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/"
 			android:dependency="useCustomize"
 			>
-		</androidx.preference.Preference>
+		</androidx.preference.EditTextPreference>
 		<androidx.preference.Preference
 			android:title="编辑本地仓库配置文件"
 			android:key="editJSON"

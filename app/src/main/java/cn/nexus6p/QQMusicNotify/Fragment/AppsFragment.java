@@ -30,6 +30,7 @@ import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 
 import static android.content.Context.MODE_WORLD_READABLE;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.bindEditTextSummary;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.downloadFileFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.editFile;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getAssetsString;
@@ -43,6 +44,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.apps);
         setWorldReadable(getActivity());
+        bindEditTextSummary(findPreference("onlineGit"));
         boolean PMEnabled = getSharedPreferenceOnUI(getActivity()).getBoolean("pm",true);
         try {
             JSONArray jsonArray = GeneralUtils.getSupportPackages();
