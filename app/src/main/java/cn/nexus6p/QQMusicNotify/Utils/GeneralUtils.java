@@ -157,7 +157,7 @@ final public class GeneralUtils {
                     fragment.startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(fragment.getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
-                    intent.setData(Uri.parse("www.coolapk.com/"+link));
+                    intent.setData(Uri.parse("http://www.coolapk.com/"+link));
                     fragment.startActivity(intent);
                     e.printStackTrace();
                 }
