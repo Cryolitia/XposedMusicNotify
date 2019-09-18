@@ -64,9 +64,9 @@
 		android:title="故障排除"
 		>
 		<androidx.preference.Preference
-			android:title="SeLinux"
+			android:title="SELinux"
 			android:key="selinux"
-			android:summary="将SeLinux状态更改为Permissive"
+			android:summary="如果SELinux工作在Enforcing下，所有功能将不工作或默认开启"
 			>
 		</androidx.preference.Preference>
 		<androidx.preference.Preference

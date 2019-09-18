@@ -15,7 +15,13 @@
     },
     {
         "app": "com.tencent.qqmusiclocalplayer",
-        "name": "轻听"
+        "name": "轻听",
+        "supportedVersion": [
+            {
+                "versionName": "1.2.2.3",
+                "versionCode": "27"
+            }
+        ]
     },
     {
         "app": "com.sing.client",

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Keep;
 
@@ -14,6 +15,7 @@ import java.lang.ref.WeakReference;
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.SELinuxHelper;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
@@ -28,9 +30,12 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 public class initHook implements IXposedHookLoadPackage {
 
     private static WeakReference<JSONArray> jsonArrayWeakReference = new WeakReference<>(null);
+    private boolean isSELinuxEnable=false;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+        isSELinuxEnable = SELinuxHelper.isSELinuxEnforced();
+        XposedBridge.log("SELinux状态："+isSELinuxEnable);
         if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
             findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
             return;
@@ -52,6 +57,7 @@ public class initHook implements IXposedHookLoadPackage {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     super.afterHookedMethod(param);
                     Context context = (Context) param.args[0];
+                    if (isSELinuxEnable) Toast.makeText(context,"原生音乐通知：SELinux状态为Enforcing，所有模块功能将默认启动",Toast.LENGTH_SHORT).show();
                     XposedBridge.log("原生音乐通知：加载包" + lpparam.packageName);
                     final ClassLoader classLoader = (context.getClassLoader());
                     if (classLoader == null) {
@@ -65,7 +71,7 @@ public class initHook implements IXposedHookLoadPackage {
             });
         }
 
-        if (getXSharedPreference().getBoolean("styleModify", false)) {
+        if (isSELinuxEnable||getXSharedPreference().getBoolean("styleModify", false)) {
             XposedBridge.log("原生音乐通知：加载包"+lpparam.packageName);
             if (lpparam.packageName.equals("com.android.systemui")&& getXSharedPreference().getBoolean("miuiModify",true)) {
                 try {
@@ -93,7 +99,7 @@ public class initHook implements IXposedHookLoadPackage {
             Log.d("原生音乐通知","加载配置文件失败："+packageName);
             return false;
         }
-        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && getXSharedPreference().getBoolean(packageName + ".enabled", true));
+        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (isSELinuxEnable || getXSharedPreference().getBoolean(packageName + ".enabled", true)));
     }
 
 }

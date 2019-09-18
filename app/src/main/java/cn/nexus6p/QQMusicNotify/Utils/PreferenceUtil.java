@@ -1,5 +1,7 @@
 package cn.nexus6p.QQMusicNotify.Utils;
 
+import android.content.SharedPreferences;
+
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
@@ -67,5 +69,7 @@ final public class PreferenceUtil {
         }
         return preferences;
     }
+
+
 
 }
