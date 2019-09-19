@@ -13,7 +13,9 @@ import org.json.JSONArray;
 import java.lang.ref.WeakReference;
 
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
+import cn.nexus6p.QQMusicNotify.SharedPreferences.XSharedPreference;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.SELinuxHelper;
 import de.robv.android.xposed.XC_MethodHook;
@@ -23,7 +25,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.qiwu.MusicNotification.NotificationHook;
 
-import static cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil.getXSharedPreference;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 @Keep
@@ -34,7 +35,7 @@ public class initHook implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
-        isSELinuxEnable = SELinuxHelper.isSELinuxEnforced();
+        //isSELinuxEnable = SELinuxHelper.isSELinuxEnforced();
         XposedBridge.log("SELinux状态："+isSELinuxEnable);
         if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
             findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
@@ -71,9 +72,9 @@ public class initHook implements IXposedHookLoadPackage {
             });
         }
 
-        if (isSELinuxEnable||getXSharedPreference().getBoolean("styleModify", false)) {
+        if (isSELinuxEnable||PreferenceUtil.getPreference().getBoolean("styleModify", false)) {
             XposedBridge.log("原生音乐通知：加载包"+lpparam.packageName);
-            if (lpparam.packageName.equals("com.android.systemui")&& getXSharedPreference().getBoolean("miuiModify",true)) {
+            if (lpparam.packageName.equals("com.android.systemui")&& PreferenceUtil.getPreference().getBoolean("miuiModify",true)) {
                 try {
                     new cn.nexus6p.removewhitenotificationforbugme.main().handleLoadPackage(lpparam);
                 } catch (Throwable e) {
@@ -99,7 +100,7 @@ public class initHook implements IXposedHookLoadPackage {
             Log.d("原生音乐通知","加载配置文件失败："+packageName);
             return false;
         }
-        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (isSELinuxEnable || getXSharedPreference().getBoolean(packageName + ".enabled", true)));
+        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (isSELinuxEnable || PreferenceUtil.getPreference().getBoolean(packageName + ".enabled", true)));
     }
 
 }

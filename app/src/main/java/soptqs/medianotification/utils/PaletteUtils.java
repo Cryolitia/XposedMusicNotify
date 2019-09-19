@@ -12,9 +12,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XSharedPreferences;
-
-import static cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil.getXSharedPreference;
 
 public class PaletteUtils {
 
@@ -24,7 +23,7 @@ public class PaletteUtils {
     }
 
     public static Palette.Swatch getSwatch(Context context, Palette palette) {
-        XSharedPreferences prefs = getXSharedPreference();
+        SharedPreferences prefs = PreferenceUtil.getPreference();
 
         if (palette == null)
             return new Palette.Swatch(Color.parseColor(prefs.getString(PreferenceUtils.PREF_CUSTOM_COLOR, "#FFFFFF")), 1);
@@ -58,7 +57,7 @@ public class PaletteUtils {
 
     @ColorInt
     public static int getTextColor(Context context, Palette palette, Palette.Swatch swatch) {
-            XSharedPreferences prefs = getXSharedPreference();
+            SharedPreferences prefs = PreferenceUtil.getPreference();
         if (prefs.getBoolean(PreferenceUtils.PREF_HIGH_CONTRAST_TEXT, false)) {
             if (ColorUtils.isColorLight(swatch.getRgb()))
                 return Color.BLACK;

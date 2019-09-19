@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.session.MediaSession;
 
@@ -27,22 +28,22 @@ public class cnkuwoplayer extends BasicNotification {
 
     @Override
     public void init() {
-        PreferenceUtil preferenceUtil = new PreferenceUtil("cn.kuwo.player");
-        String className = preferenceUtil.getStringFromJson("class");
-        String methodName = preferenceUtil.getStringFromJson("method");
-        int iconID = preferenceUtil.getIntFromJson("iconID");
-        String contextField = preferenceUtil.getStringFromJson("contextField");
-        String preSongIntentName = preferenceUtil.getStringFromJson("preSongIntent");
-        String playSongIntentName = preferenceUtil.getStringFromJson("playSongIntent");
-        String nextSongIntentName = preferenceUtil.getStringFromJson("nextSongIntent");
-        String IntentHandleActivity = preferenceUtil.getStringFromJson("IntentHandleActivity");
-        String getStatusClass = preferenceUtil.getStringFromJson("getStatusClass");
-        String getStatusMethod = preferenceUtil.getStringFromJson("getStatusMethod");
-        String getStatusMethod2 = preferenceUtil.getStringFromJson("getStatusMethod2");
-        String playProxyStatusClass = preferenceUtil.getStringFromJson("playProxyStatusClass");
-        String playProxyStatusField = preferenceUtil.getStringFromJson("playProxyStatusField");
-        extraActionIcon = preferenceUtil.getIntFromJson("extraActionIcon");
-        String extraActionIntentName = preferenceUtil.getStringFromJson("extraActionIntent");
+        SharedPreferences preference = PreferenceUtil.getJSONPreference("cn.kuwo.player");
+        String className = preference.getString("class","");
+        String methodName = preference.getString("method","");
+        int iconID = preference.getInt("iconID",-1);
+        String contextField = preference.getString("contextField","");
+        String preSongIntentName = preference.getString("preSongIntent","");
+        String playSongIntentName = preference.getString("playSongIntent","");
+        String nextSongIntentName = preference.getString("nextSongIntent","");
+        String IntentHandleActivity = preference.getString("IntentHandleActivity","");
+        String getStatusClass = preference.getString("getStatusClass","");
+        String getStatusMethod = preference.getString("getStatusMethod","");
+        String getStatusMethod2 = preference.getString("getStatusMethod2","");
+        String playProxyStatusClass = preference.getString("playProxyStatusClass","");
+        String playProxyStatusField = preference.getString("playProxyStatusField","");
+        extraActionIcon = preference.getInt("extraActionIcon",-1);
+        String extraActionIntentName = preference.getString("extraActionIntent","");
 
         final Class notifyClazz = XposedHelpers.findClass(className,classLoader);
         findAndHookMethod(notifyClazz, methodName, Bitmap.class, String.class,String.class,String.class, new XC_MethodReplacement() {
@@ -52,6 +53,7 @@ public class cnkuwoplayer extends BasicNotification {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     channelID = "music";
                     NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_HIGH);
+                    channel.enableVibration(false);
                     ((NotificationManager) GeneralUtils.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
                 }
                 basicParam.setIconID(iconID);

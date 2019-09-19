@@ -25,12 +25,12 @@ import java.util.List;
 import cn.nexus6p.QQMusicNotify.Base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XSharedPreferences;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getContext;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
-import static cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil.getXSharedPreference;
 
 public class NotificationUtils {
 
@@ -83,7 +83,7 @@ public class NotificationUtils {
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
                 //.setDeleteIntent(PendingIntent.getService(this, 0, deleteIntent, 0))
 //                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle())
-                .setOngoing(isPlaying || getXSharedPreference().getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
+                .setOngoing(isPlaying || PreferenceUtil.getPreference().getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
                 .setVisibility(VISIBILITY_PUBLIC);
 
         if (deleteIntent!=null) builder.setDeleteIntent(deleteIntent);

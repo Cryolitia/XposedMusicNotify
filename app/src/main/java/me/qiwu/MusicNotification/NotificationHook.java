@@ -27,6 +27,7 @@ import cn.nexus6p.QQMusicNotify.Base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
@@ -71,7 +72,7 @@ public class NotificationHook {
                     }*/
 
                     BasicParam basicParam = new BasicParam(
-                            getContext(),resId,title,subtitle,getLargeIcon(notification),new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT),null
+                            getContext(),resId,title,subtitle,getLargeIcon(notification), PreferenceUtil.getPreference().getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT),null
                     );
                     basicParam.setContentIntent(notification.contentIntent);
                     basicParam.setDeleteIntent(notification.deleteIntent);

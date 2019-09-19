@@ -46,7 +46,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.detail)
         setWorldReadable(activity)
         val list = ArrayList<String>()
-        if (arguments==null) throw RuntimeException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
+        if (arguments==null) throw IllegalAccessException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
         val packageName = arguments!!.getString("packageName")
         val appPreference = findPreference<Preference>("app")
         val packageManager = activity!!.packageManager
@@ -68,6 +68,10 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
         val enabled : Boolean = getSharedPreferenceOnUI(activity!!).getBoolean("$packageName.enabled",true)
         enablePreference!!.key = "$packageName.enabled"
         enablePreference.isChecked = enabled
+        enablePreference.setOnPreferenceChangeListener { preference, newValue ->
+            preferenceChangeListener(preference, newValue)
+            true
+        }
         findPreference<Preference>("taichi")!!.isVisible = HookStatue.isExpModuleActive(activity)
         val file = File(activity!!.getExternalFilesDir(null).toString() + File.separator + packageName + ".json")
         try {
@@ -88,7 +92,12 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                     }
                     supportedVersionPreference.summary = list.toString()
                     findPreference<Preference>("refresh")!!.setOnPreferenceClickListener {
-                        if (list.contains(packageInfo.versionName)) downloadFileFromInternet("$packageName/$versionCode/$packageName.json",activity as MainActivity)
+                        if (list.contains(packageInfo.versionName)) {
+                            if (!getSharedPreferenceOnUI(activity).getBoolean("network", true)) {
+                                Toast.makeText(activity, "联网已禁用", Toast.LENGTH_SHORT).show()
+                            }
+                            else downloadFileFromInternet("$packageName/$versionCode/$packageName.json", activity as MainActivity)
+                        }
                         else activity!!.toast("未适配的版本").show()
                         true
                     }

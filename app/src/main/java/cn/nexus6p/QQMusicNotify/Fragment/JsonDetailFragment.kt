@@ -23,7 +23,7 @@ class JsonDetailFragment private constructor() : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.json_detail)
-        if (arguments==null) throw RuntimeException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
+        if (arguments==null) throw IllegalAccessException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
         try {
             val jsonString = arguments!!.getString("jsonString")
             val jsonObject = JSONObject(jsonString!!)
@@ -38,4 +38,5 @@ class JsonDetailFragment private constructor() : PreferenceFragmentCompat() {
             e.printStackTrace()
         }
     }
+
 }

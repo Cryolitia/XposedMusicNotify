@@ -25,6 +25,7 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import android.os.Environment;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ import java.nio.charset.StandardCharsets;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.SharedPreferences.JSONPreference;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
@@ -75,45 +77,11 @@ final public class GeneralUtils {
         return getMoudleContext(getContext());
     }
 
-    /*public static Notification  buildMusicNotificationWithoutAction (BasicParam basicParam, RemoteViews remoteViews, PendingIntent contentIntent, String channelID, PendingIntent deleteIntent) {
-        if (Build.VERSION.SDK_INT >= 26 && channelID!=null) {
-            Notification.Builder builder = new Notification.Builder(basicParam.getContext(),channelID)
-                    .setSmallIcon(basicParam.getIconID())
-                    .setContentTitle(basicParam.getTitleString())
-                    .setContentText(basicParam.getTextString())
-                    .setCategory(NotificationCompat.CATEGORY_STATUS)
-                    .setVisibility(Notification.VISIBILITY_PUBLIC)
-                    .setOngoing(basicParam.getStatue())
-                    .setCustomContentView(remoteViews)
-                    .setCustomBigContentView(remoteViews)
-                    .setContentIntent(contentIntent)
-                    .setDeleteIntent(deleteIntent);
-            //if (basicParam.getToken()!=null) builder.setStyle(new Notification.DecoratedMediaCustomViewStyle().setMediaSession(basicParam.getToken()));
-            return builder.build();
-        }
-        NotificationCompat.Builder builder= new NotificationCompat.Builder(basicParam.getContext())
-                .setSmallIcon(basicParam.getIconID())
-                .setContentTitle(basicParam.getTitleString())
-                .setContentText(basicParam.getTextString())
-                .setCategory(NotificationCompat.CATEGORY_STATUS)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setOngoing(basicParam.getStatue())
-                .setPriority(Notification.PRIORITY_MAX)
-                .setContent(remoteViews)
-                .setCustomBigContentView(remoteViews)
-                .setCustomContentView(remoteViews)
-                .setContentIntent(contentIntent)
-                .setDeleteIntent(deleteIntent);
-        //if (basicParam.getToken()!=null) builder.setStyle(new androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle().setMediaSession(MediaSessionCompat.Token.fromToken(basicParam.getToken())));
-        return builder.build();
-    }*/
-
     public static JSONArray getSupportPackages () {
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(getAssetsString("packages.json"));
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return jsonArray;
     }
@@ -140,7 +108,6 @@ final public class GeneralUtils {
                 stringBuilder.append(line);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
         return stringBuilder.toString();
@@ -194,7 +161,7 @@ final public class GeneralUtils {
     }
 
     public static void setWorldReadable(Context context) {
-        try {
+        /*try {
             File dataDir = new File(context.getApplicationInfo().dataDir);
             File prefsDir = new File(dataDir, "shared_prefs");
             File prefsFile = new File(prefsDir, BuildConfig.APPLICATION_ID + "_preferences.xml");
@@ -206,7 +173,7 @@ final public class GeneralUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public static void editFile (File file, Context activity) {
@@ -358,6 +325,19 @@ final public class GeneralUtils {
         SharedPreferences sharedPreferences = context.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_PRIVATE);
         setWorldReadable(context);
         return sharedPreferences;
+    }
+
+    public static void preferenceChangeListener(Preference preference, Object newValue) {
+        //Log.d("JSONPreference","begin");
+        JSONPreference jsonPreference = JSONPreference.Companion.setter();
+        //Log.d("JSONPreference",jsonPreference.jsonObject.toString());
+        try {
+            jsonPreference.jsonObject.putOpt(preference.getKey(),newValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        jsonPreference.commit();
+        //Log.d("JSONPreference",jsonPreference.jsonObject.toString());
     }
 
 }

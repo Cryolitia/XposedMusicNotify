@@ -52,6 +52,9 @@ import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
+
+    int i = 0;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
         addPreferencesFromResource(R.xml.settings);
@@ -61,7 +64,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         jumpToLink(this,"telegram","https://t.me/NeuronDevelopChannel",false);
 
         Preference preference = findPreference("statue");
-        if (HookStatue.isEnabled()) preference.setSummary("Xposed已激活");
+        if (HookStatue.isEnabled()) {
+            preference.setSummary("Xposed已激活");
+            preference.setOnPreferenceClickListener(preference13 -> {
+                if (i++>10) {
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ExperimentalFragment()).addToBackStack(ExperimentalFragment.class.getSimpleName() ).commit();
+                    i=0;
+                }
+                return true;
+            });
+        }
         else if (HookStatue.isExpModuleActive(getActivity())) {
             preference.setSummary("太极已激活");
             Preference taichiProblemPreference = findPreference("taichiProblem");
@@ -217,7 +229,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference("selinux").setOnPreferenceClickListener(preference1 -> {
+        /*findPreference("selinux").setOnPreferenceClickListener(preference1 -> {
             if (!Shell.rootAccess()) {
                 Toast.makeText(getActivity(),"未检测到Root权限",Toast.LENGTH_SHORT).show();
                 return true;
@@ -227,7 +239,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Toast.makeText(getActivity(),result.getErr().toString(),Toast.LENGTH_LONG).show();
                 return true;
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle("SeLinux").setMessage("当前状态： "+result.getOut().get(0));
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity()).setTitle("SeLinux").setMessage("当前状态： "+result.getOut().get(0));
             if (result.getOut().get(0).contains("Permissive")) {
                 builder.setPositiveButton("确定",null).setNegativeButton("取消",null).create().show();
                 return true;
@@ -238,7 +250,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 else Toast.makeText(getActivity(),result1.getErr().toString(),Toast.LENGTH_LONG).show();
             }).setNegativeButton("取消",null).create().show();
             return true;
-        });
+        });*/
 
         SwitchPreferenceCompat pmPreference = (SwitchPreferenceCompat) findPreference("pm");
         if (pmPreference.isChecked()) {

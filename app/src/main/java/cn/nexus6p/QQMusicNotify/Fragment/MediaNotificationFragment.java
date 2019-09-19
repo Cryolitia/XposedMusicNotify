@@ -18,6 +18,7 @@ import cn.nexus6p.QQMusicNotify.R;
 import static android.content.Context.MODE_WORLD_READABLE;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.preferenceChangeListener;
 import static cn.nexus6p.QQMusicNotify. Utils.GeneralUtils.setWorldReadable;
 
 public class MediaNotificationFragment extends PreferenceFragmentCompat {
@@ -31,6 +32,17 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
         preference.setSummary(preference.getEntry());
         preference.setOnPreferenceChangeListener((preference1, newValue) -> {
             preference.setSummary(strings[Integer.parseInt(newValue.toString())]);
+            preferenceChangeListener(preference1,newValue);
+            return true;
+        });
+
+        findPreference("inverseTextColors").setOnPreferenceChangeListener((preference1, newValue) -> {
+            preferenceChangeListener(preference1,newValue);
+            return true;
+        });
+
+        findPreference("highContrastText").setOnPreferenceChangeListener((preference1, newValue) -> {
+            preferenceChangeListener(preference1,newValue);
             return true;
         });
 
@@ -41,6 +53,7 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
             GradientDrawable drawable = (GradientDrawable) getContext().getDrawable(R.drawable.color_drawable);
             drawable.setColor(Color.parseColor((String)newValue));
             colorPreference.setIcon(drawable);
+            preferenceChangeListener(preference1,newValue);
             return true;
         });
         GradientDrawable drawable = (GradientDrawable) getContext().getDrawable(R.drawable.color_drawable);

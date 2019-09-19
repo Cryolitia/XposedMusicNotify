@@ -64,7 +64,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
                 //switchPreference.setChecked(true);
                 preference.setTitle(jsonArray.getJSONObject(i).getString("name"));
                 preference.setSummary(packageName);
-                preference.setKey(packageName+".enabled");
+                //preference.setKey(packageName+".enabled");
                 preference.setOnPreferenceClickListener(preference1 -> {
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, DetailFragment.Companion.newInstance(packageName)).addToBackStack(DetailFragment.class.getSimpleName() ).commit();
                     return true;

@@ -25,6 +25,7 @@ import java.util.List;
 import cn.nexus6p.QQMusicNotify.Base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XSharedPreferences;
 import me.qiwu.MusicNotification.ColorUtil;
 import cn.nexus6p.QQMusicNotify.R;
@@ -78,7 +79,7 @@ public abstract class BasicNotification extends BasicInit {
             NotificationCompat.Action extraAction = new NotificationCompat.Action.Builder(extraActionIcon, "桌面歌词", PendingIntent.getBroadcast(basicParam.getContext(), 0, extraActionIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
             actions.add(extraAction);
         }
-        if (new XSharedPreferences("cn.nexus6p.QQMusicNotify").getBoolean("styleModify",false)) {
+        if (PreferenceUtil.getPreference().getBoolean("styleModify",false)) {
             /*if (basicParam.getBitmap()==null) {
                 RemoteViews remoteViews = getContentView(basicParam.getTitleString().toString(),basicParam.getTextString().toString());
                 return GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
@@ -125,7 +126,7 @@ public abstract class BasicNotification extends BasicInit {
     }
 
     private RemoteViews getContentView(String title,String subtitle){
-        int backgroundColor = Color.parseColor(new XSharedPreferences(BuildConfig.APPLICATION_ID).getString("customColor","#000000"));
+        int backgroundColor = Color.parseColor(PreferenceUtil.getPreference().getString("customColor","#000000"));
         int textColor = Color.WHITE;
         if (basicParam.getBitmap()!=null){
             int[] colors = ColorUtil.getColor(basicParam.getBitmap());

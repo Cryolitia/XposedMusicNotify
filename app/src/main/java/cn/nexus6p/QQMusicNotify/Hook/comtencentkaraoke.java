@@ -3,6 +3,7 @@ package cn.nexus6p.QQMusicNotify.Hook;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Parcelable;
@@ -26,20 +27,20 @@ public class comtencentkaraoke extends BasicViewNotification {
 
     @Override
     public void init() {
-        PreferenceUtil preferenceUtil = new PreferenceUtil("com.tencent.karaoke");
-        className = preferenceUtil.getStringFromJson("class");
-        methodName = preferenceUtil.getStringFromJson("method");
-        titleID = preferenceUtil.getIntFromJson("titleID");
-        textID = preferenceUtil.getIntFromJson("textID");
-        bitmapID = preferenceUtil.getIntFromJson("bitmapID");
-        basicParam.setIconID(preferenceUtil.getIntFromJson("iconID"));
-        String playSongInfoClass = preferenceUtil.getStringFromJson("playSongInfoClass");
-        String intentClass = preferenceUtil.getStringFromJson("intentClass");
-        String preSongField = preferenceUtil.getStringFromJson("preSongField");
-        String playSongField = preferenceUtil.getStringFromJson("playSongField");
-        String nextSongField = preferenceUtil.getStringFromJson("nextSongField");
-        String deleteField = preferenceUtil.getStringFromJson("deleteField");
-        String IntentHandleActivity = preferenceUtil.getStringFromJson("IntentHandleActivity");
+        SharedPreferences preference = PreferenceUtil.getJSONPreference("com.tencent.karaoke");
+        className = preference.getString("class","");
+        methodName = preference.getString("method","");
+        titleID = preference.getInt("titleID",-1);
+        textID = preference.getInt("textID",-1);
+        bitmapID = preference.getInt("bitmapID",-1);
+        basicParam.setIconID(preference.getInt("iconID",-1));
+        String playSongInfoClass = preference.getString("playSongInfoClass","");
+        String intentClass = preference.getString("intentClass","");
+        String preSongField = preference.getString("preSongField","");
+        String playSongField = preference.getString("playSongField","");
+        String nextSongField = preference.getString("nextSongField","");
+        String deleteField = preference.getString("deleteField","");
+        String IntentHandleActivity = preference.getString("IntentHandleActivity","");
 
         Class playInfoClazz = XposedHelpers.findClass(playSongInfoClass, classLoader);
         XposedHelpers.findAndHookMethod(className, classLoader, methodName, Context.class, playInfoClazz, int.class, new XC_MethodHook() {
