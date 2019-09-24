@@ -1,0 +1,17 @@
+{
+  "versionName": "6.10.1.273",
+  "versionCode": "376",
+  "class": "com.tencent.karaoke.common.media.w",
+  "method": "a",
+  "titleID": "7f0917c2",
+  "textID": "7f0917c0",
+  "bitmapID": "7f0917bd",
+  "iconID": "7f080d38",
+  "playSongInfoClass": "com.tencent.karaoke.common.media.player.PlaySongInfo",
+  "intentClass": "com.tencent.karaoke.common.k",
+  "preSongField": "e",
+  "playSongField": "b",
+  "nextSongField": "f",
+  "deleteField": "c",
+  "IntentHandleActivity": "com.tencent.karaoke.widget.intent.IntentHandleActivity"
+}
