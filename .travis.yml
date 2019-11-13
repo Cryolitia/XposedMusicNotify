@@ -1,0 +1,13 @@
+language: c
+
+branches:
+  only:
+      - gh-pages
+
+script:
+  - git clone https://github.com/singleNeuron/XposedMusicNotify.git github -b gh-pages --depth=1
+  - git clone https://git.dev.tencent.com/Neuron/XposedMusicNotify.git coding
+  - rm -rf ./github/.git
+  - mv ./coding/.git ./github/.git
+  - cd ./github
+  - git push "https://Neuron:${Token}@git.dev.tencent.com/Neuron/XposedMusicNotify.git" master:master
