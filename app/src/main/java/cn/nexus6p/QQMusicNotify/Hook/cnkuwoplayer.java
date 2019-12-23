@@ -52,7 +52,7 @@ public class cnkuwoplayer extends BasicNotification {
                 super.afterHookedMethod(param);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     channelID = "music";
-                    NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_HIGH);
+                    NotificationChannel channel = new NotificationChannel(channelID, "音乐通知",NotificationManager.IMPORTANCE_DEFAULT);
                     channel.enableVibration(false);
                     ((NotificationManager) GeneralUtils.getContext().getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
                 }

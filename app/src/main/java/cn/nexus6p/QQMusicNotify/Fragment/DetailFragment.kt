@@ -165,6 +165,16 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             true
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getSharedPreferenceOnUI(activity).getBoolean("styleModify",false)) {
+            findPreference<Preference>("channelSetting")!!.setOnPreferenceClickListener {
+                val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, "music")
+                if (activity!!.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) startActivity(intent)
+                true
+            }
+        } else findPreference<Preference>("channelSetting")!!.isVisible = false
+
         setWorldReadable(activity)
     }
 }

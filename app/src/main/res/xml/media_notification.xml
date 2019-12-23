@@ -31,7 +31,7 @@
             android:key="author3"/>
         <androidx.preference.Preference
             android:title="捐赠"
-            android:summary="现在我为这款应用已经写了超过3000行代码，总数占了整款应用的30%。维护这款应用，为他添加新功能花费我很多的时间，有时修复一个bug要花费一整天。所以如果您能捐赠我一点余头的话我真的会很感谢。谢谢您"
+            android:summary="此链接为捐赠Soptq，非本模块作者神经元。\n现在我为这款应用已经写了超过3000行代码，总数占了整款应用的30%。维护这款应用，为他添加新功能花费我很多的时间，有时修复一个bug要花费一整天。所以如果您能捐赠我一点余头的话我真的会很感谢。谢谢您"
             android:key="alipay2"/>
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

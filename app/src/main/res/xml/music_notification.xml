@@ -2,17 +2,18 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.preference.PreferenceCategory android:title="模块设置">
         <androidx.preference.SwitchPreferenceCompat android:title="启用" android:key="styleModify" android:defaultValue="false" />
-        <androidx.preference.SwitchPreferenceCompat android:title="保持音乐通知不被划去" android:key="always_show" android:defaultValue="false" android:dependency="styleModify" />
-        <SwitchPreference android:title="MIUI/Flyme通知去白边"  android:key="miuiModify" android:defaultValue="true" android:dependency="styleModify"/>
+        <androidx.preference.SwitchPreferenceCompat android:title="保持音乐通知不被划去" android:key="always_show" android:defaultValue="false" />
+        <androidx.preference.SwitchPreferenceCompat android:title="MIUI/Flyme通知去白边"  android:key="miuiModify" android:defaultValue="false" />
+        <androidx.preference.SwitchPreferenceCompat android:title="MIUI通知强制展开" android:summary="来自CustoMIUIzer" android:key="miuiForceExpand" android:defaultValue="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="常见问题">
         <androidx.preference.Preference android:title="怎么使用这个模块" android:summary="Xposed或EdXposed直接激活模块，太极用户激活后需要将使用的音乐软件添加到太极内。激活模块后系统音乐通知将变成安卓O样式，请在音乐软件内将通知栏样式改为系统样式，比如：网易云音乐设置--通知栏样式--系统样式，否则不生效。" />
-        <androidx.preference.Preference android:title="为什么用了之后通知有白边" android:summary="定制系统的原因，魅族和MIUI都有，可以尝试打开上面的开关，MIUI也可以使用主题或刷入面具模块解决。" android:key="magiskMoudle" />
-        <androidx.preference.Preference android:title="为什么用了之后通知下半部分不显示" android:summary="MIUI系统的原因，不是模块的问题，可以使用主题或刷入面具模块解决。" android:key="magiskMoudle2"/>
+        <androidx.preference.Preference android:title="为什么用了之后通知有白边" android:summary="定制系统的原因，魅族和MIUI都有，可以尝试打开上面的开关解决。" android:key="magiskMoudle" />
+        <androidx.preference.Preference android:title="为什么用了之后通知下半部分不显示" android:summary="MIUI系统的原因，不是模块的问题，可以尝试打开上面开关解决。" android:key="magiskMoudle2"/>
         <androidx.preference.Preference android:title="为什么用了之后通知部分按钮显示不全" android:summary="dpi过小，自行调整至合适的dpi"/>
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="其他">
         <androidx.preference.Preference android:title="查看源码" android:key="github2" />
-        <androidx.preference.Preference android:title="支持我" android:key="alipay" />
+        <androidx.preference.Preference android:title="支持我" android:summary="此链接为捐赠祈无，非本模块作者神经元。" android:key="alipay" />
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

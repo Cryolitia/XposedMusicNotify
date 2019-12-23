@@ -2,12 +2,16 @@ package cn.nexus6p.QQMusicNotify.Fragment;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -16,8 +20,10 @@ import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import android.os.Environment;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
@@ -44,7 +50,6 @@ public class AppsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.apps);
         setWorldReadable(getActivity());
-        bindEditTextSummary(findPreference("onlineGit"));
         boolean PMEnabled = getSharedPreferenceOnUI(getActivity()).getBoolean("pm",true);
         try {
             JSONArray jsonArray = GeneralUtils.getSupportPackages();
@@ -71,31 +76,6 @@ public class AppsFragment extends PreferenceFragmentCompat {
                 });
                 ((PreferenceCategory) findPreference("app")).addPreference(preference);
             }
-            boolean showNetease = false;
-            try {
-                showNetease = getActivity().getPackageManager().getPackageInfo("com.netease.cloudmusic", 0)!=null;
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (showNetease) {
-                Preference Preference = new Preference(getActivity(),null);
-                Preference.setTitle("网易云音乐");
-                try {
-                    Preference.setIcon(getActivity().getPackageManager().getApplicationIcon("com.netease.cloudmusic"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Preference.setSummary("com.netease.cloudmusic");
-                Preference.setOnPreferenceClickListener(preference1 -> {
-                    Shell.Result result = Shell.su("am start -n com.netease.cloudmusic/com.netease.cloudmusic.activity.SettingActivity").exec();
-                    if (result.isSuccess()) Toast.makeText(getContext(),"请在设置中通知栏样式设置为系统样式",Toast.LENGTH_LONG).show();
-                    else {
-                        Toast.makeText(getContext(),"请检查root权限："+result.getErr().toString(),Toast.LENGTH_LONG).show();
-                    }
-                    return true;
-                });
-                ((PreferenceCategory) findPreference("app")).addItemFromInflater(Preference);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,6 +100,30 @@ public class AppsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        String[] urls = {"https://xposedmusicnotify.singleneuron.me/config/","https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/","https://cn.xposedmusicnotify.singleneuron.me/config/"};
+        SharedPreferences sharedPreferences = getSharedPreferenceOnUI(getActivity());
+        ListPreference listPreference = findPreference("onlineGitIndex");
+        listPreference.setSummary(sharedPreferences.getString("onlineGitIndex","0").equals("3")?sharedPreferences.getString("onlineGit","https://xposedmusicnotify.singleneuron.me/config/"):urls[Integer.valueOf(sharedPreferences.getString("onlineGitIndex","0"))]);
+        listPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (newValue.equals("3")) {
+                final EditText editText = new EditText(getActivity());
+                editText.setText(sharedPreferences.getString("onlineGitIndex","0").equals("3")?sharedPreferences.getString("onlineGit","https://xposedmusicnotify.singleneuron.me/config/"):urls[Integer.valueOf(sharedPreferences.getString("onlineGitIndex","0"))]);
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                builder.setTitle("设置自定义仓库地址")
+                        .setView(editText)
+                        .setPositiveButton("确定", (dialog, which) -> {
+                            String url = editText.getText().toString();
+                            sharedPreferences.edit().putString("onlineGit",url).apply();
+                            listPreference.setSummary(url);
+                        })
+                        .show();
+            } else {
+                String url = urls[Integer.valueOf((String)newValue)];
+                sharedPreferences.edit().putString("onlineGit",url).apply();
+                listPreference.setSummary(url);
+            }
+            return true;
+        });
         setWorldReadable(getActivity());
 
     }

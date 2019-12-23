@@ -58,6 +58,11 @@
 			>
 		</androidx.preference.Preference>
 		<androidx.preference.Preference
+			android:title="打开通知渠道设置"
+			android:key="channelSetting"
+			>
+		</androidx.preference.Preference>
+		<androidx.preference.Preference
 			android:title="添加到太极"
 			android:key="taichi"
 			app:isPreferenceVisible="false"

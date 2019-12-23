@@ -50,7 +50,7 @@ public class main {
         }
     }
 
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    public static void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
         if (!lpparam.packageName.equals("com.android.systemui")) return;
         final ClassLoader classLoader = lpparam.classLoader;
         XposedHelpers.findAndHookMethod(Application.class.getName(), classLoader, "attach", Context.class, new XC_MethodHook() {

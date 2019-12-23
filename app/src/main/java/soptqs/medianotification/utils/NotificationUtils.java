@@ -106,7 +106,7 @@ public class NotificationUtils {
             appName = moduleContext.getString(R.string.app_name);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            builder.setPriority(NotificationManager.IMPORTANCE_MAX);
+            builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
         else builder.setPriority(Notification.PRIORITY_MAX);
 
         for (NotificationCompat.Action action : actions) {
@@ -121,7 +121,7 @@ public class NotificationUtils {
             builder.setCustomBigContentView(getContentView(false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel("music", "Music", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel notificationChannel = new NotificationChannel("music", "Music", NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.enableVibration(false);
             notificationManager.createNotificationChannel(notificationChannel);
             builder.setChannelId("music");

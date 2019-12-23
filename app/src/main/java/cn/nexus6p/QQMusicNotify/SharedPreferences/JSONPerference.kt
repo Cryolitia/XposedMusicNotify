@@ -17,7 +17,10 @@ class JSONPreference private constructor() : BasePreference() {
         fun get(packageName:String) : JSONPreference {
             require(packageName != "") { "PackageName should not be null" }
             val jsonPreference =  JSONPreference()
-            jsonPreference.jsonObject = JSONObject(GeneralUtils.getAssetsString("$packageName.json"))
+            try {
+                jsonPreference.jsonObject = JSONObject(GeneralUtils.getAssetsString("$packageName.json"))
+            } catch (e : Exception) {
+            }
             return jsonPreference
         }
         fun setter() : JSONPreference {
@@ -30,15 +33,27 @@ class JSONPreference private constructor() : BasePreference() {
     }
 
     override fun getBoolean(p0: String?, p1: Boolean): Boolean {
-        return jsonObject.optBoolean(p0,p1)
+        return try {
+            jsonObject.optBoolean(p0, p1)
+        } catch (e:Exception) {
+            p1
+        }
     }
 
     override fun getInt(p0: String?, p1: Int): Int {
-        return Integer.parseInt(jsonObject.optString(p0,p1.toString()),16)
+        return try {
+            Integer.parseInt(jsonObject.optString(p0,p1.toString()),16)
+        } catch (e:Exception) {
+            p1
+        }
     }
 
     override fun getString(p0: String?, p1: String?): String? {
-        return jsonObject.optString(p0, p1 ?: "")
+        return try {
+            jsonObject.optString(p0, p1 ?: "")
+        } catch (e:Exception) {
+            p1
+        }
     }
 
     fun commit() {

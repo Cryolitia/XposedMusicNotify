@@ -2,7 +2,6 @@ package cn.nexus6p.QQMusicNotify;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,17 +12,16 @@ import org.json.JSONArray;
 import java.lang.ref.WeakReference;
 
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
-import cn.nexus6p.QQMusicNotify.SharedPreferences.XSharedPreference;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.SELinuxHelper;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.qiwu.MusicNotification.NotificationHook;
+import name.mikanoshi.customiuizer.mods.System;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
@@ -39,6 +37,23 @@ public class initHook implements IXposedHookLoadPackage {
         XposedBridge.log("SELinux状态："+isSELinuxEnable);
         if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
             findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
+            return;
+        }
+        if (lpparam.packageName.equals("com.android.systemui")) {
+            if (PreferenceUtil.getPreference().getBoolean("miuiModify",false)) {
+                try {
+                    cn.nexus6p.removewhitenotificationforbugme.main.handleLoadPackage(lpparam);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (PreferenceUtil.getPreference().getBoolean("miuiForceExpand",false)) {
+                try {
+                    System.ExpandNotificationsHook(lpparam);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             return;
         }
         /*if (getXSharedPreference().getBoolean("forceO",false)) {
@@ -74,14 +89,6 @@ public class initHook implements IXposedHookLoadPackage {
 
         if (isSELinuxEnable||PreferenceUtil.getPreference().getBoolean("styleModify", false)) {
             XposedBridge.log("原生音乐通知：加载包"+lpparam.packageName);
-            if (lpparam.packageName.equals("com.android.systemui")&& PreferenceUtil.getPreference().getBoolean("miuiModify",true)) {
-                try {
-                    new cn.nexus6p.removewhitenotificationforbugme.main().handleLoadPackage(lpparam);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-                return;
-            }
             try {
                 new NotificationHook().init(lpparam.packageName);
             } catch (Exception e) {

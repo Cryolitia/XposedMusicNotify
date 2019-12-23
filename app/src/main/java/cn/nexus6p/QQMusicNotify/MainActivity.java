@@ -2,6 +2,7 @@ package cn.nexus6p.QQMusicNotify;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,15 +53,25 @@ public class MainActivity extends AppCompatActivity {
 
         //if (savedInstanceState!=null) shouldCheckUpdate = savedInstanceState.getBoolean("shouldCheckUpdate",true);
 
+        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        /*switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                // Night mode is not active, we're using the light theme
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active, we're using dark theme
+                break;
+        }*/
+
         boolean isNightMode = getSharedPreferenceOnUI(this).getBoolean("forceNight", false);
         int nightMode = isNightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-        @ColorInt int colorInt = Color.parseColor(isNightMode ? "#212121" : "#F5F5F5");
+        @ColorInt int colorInt = Color.parseColor(currentNightMode==Configuration.UI_MODE_NIGHT_YES?"#212121":isNightMode ? "#212121" : "#F5F5F5");
 
         mToolbar = findViewById(R.id.toolbar_preference);
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mToolbar.setBackgroundColor(colorInt);
         setSupportActionBar(mToolbar);
-        getWindow().setStatusBarColor(Color.parseColor(isNightMode ? "#212121" : "#F5F5F5"));
+        getWindow().setStatusBarColor(colorInt);
         View docker = getWindow().getDecorView();
         int ui = docker.getSystemUiVisibility();
         if (!isNightMode) {
@@ -112,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(stringBuilder.toString());
             if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode",false)) && jsonObject.optInt("code") < BuildConfig.VERSION_CODE) copyAssetsDir2Phone();
             else checkUpdate();
+            if (jsonObject.optInt("code")<17) {
+                new File ("/data/data/cn.nexus6p.QQMusicNotify/shared_prefs/cn.nexus6p.QQMusicNotify_preferences.xml").delete();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             checkUpdate();

@@ -161,7 +161,7 @@ final public class GeneralUtils {
     }
 
     public static void setWorldReadable(Context context) {
-        /*try {
+        try {
             File dataDir = new File(context.getApplicationInfo().dataDir);
             File prefsDir = new File(dataDir, "shared_prefs");
             File prefsFile = new File(prefsDir, BuildConfig.APPLICATION_ID + "_preferences.xml");
@@ -173,7 +173,7 @@ final public class GeneralUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public static void editFile (File file, Context activity) {
@@ -196,7 +196,7 @@ final public class GeneralUtils {
     //抄的https://www.jianshu.com/p/4e12da9866a0
     public static void getJsonFromInternet (MainActivity activity,boolean shouldShowToast) {
         if (isCheckingUpdate) return;
-        final String url = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/master/app/src/main/assets/config/version.json";
+        final String url = "https://xposedmusicnotify.singleneuron.me/config/version.json";
         if (!getSharedPreferenceOnUI(activity).getBoolean("network",false)) {
             if(shouldShowToast) Toast.makeText(activity,"联网已禁用，无法检查新版本",Toast.LENGTH_SHORT).show();
             return;
@@ -274,9 +274,8 @@ final public class GeneralUtils {
         new Thread(() -> {
             try {
                 isDownloading = true;
-                String address = "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/";
                 SharedPreferences sharedPreferences = getSharedPreferenceOnUI(context);
-                if (sharedPreferences.getBoolean("useCustomize",false)) address = sharedPreferences.getString("onlineGit","https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/");
+                String address = sharedPreferences.getString("onlineGit","https://xposedmusicnotify.singleneuron.me/config/");
                 URL url = new URL(address+locate);
                 String fileName = locate.substring(locate.lastIndexOf("/")+1);
                 HttpURLConnection connection =(HttpURLConnection) url.openConnection();

@@ -28,8 +28,6 @@ public class MusicNotificationFragment extends PreferenceFragmentCompat {
         setWorldReadable(getActivity());
         //GeneralUtils.bindPreference(this,"styleModify","always_show");
 
-        GeneralUtils.jumpToLink(this,"magiskMoudle","feed/11103560",true);
-        GeneralUtils.jumpToLink(this,"magiskMoudle2","feed/11103560",true);
         GeneralUtils.jumpToLink(this,"github2","https://github.com/Qiwu2542284182/MusicNotification",false);
         if (HookStatue.isExpModuleActive(getActivity())) {
             findPreference("miuiModify").setSummary("仅太极·阳有效，请将SystemUI加入太极");

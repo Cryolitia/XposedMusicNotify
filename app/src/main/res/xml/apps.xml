@@ -10,19 +10,15 @@
 			android:key="refreshPackage"
 			>
 		</androidx.preference.Preference>
-		<androidx.preference.SwitchPreferenceCompat
-			android:title="使用自定义远程仓库"
-			android:key="useCustomize"
-			>
-		</androidx.preference.SwitchPreferenceCompat>
-		<androidx.preference.EditTextPreference
+		<androidx.preference.ListPreference
 			android:title="远程仓库地址"
-			android:key="onlineGit"
-			android:summary="https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/"
-			android:defaultValue="https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/"
-			android:dependency="useCustomize"
+			android:key="onlineGitIndex"
+			android:summary="https://xposedmusicnotify.singleneuron.me/config/"
+			android:defaultValue="0"
+			android:entries="@array/array_onlineGit"
+			android:entryValues="@array/array_onlineGit_int"
 			>
-		</androidx.preference.EditTextPreference>
+		</androidx.preference.ListPreference>
 		<androidx.preference.Preference
 			android:title="编辑本地仓库配置文件"
 			android:key="editJSON"

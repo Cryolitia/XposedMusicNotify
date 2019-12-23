@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicViewNotification;
+import cn.nexus6p.QQMusicNotify.SharedPreferences.JSONPreference;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
@@ -34,7 +35,6 @@ public class comtencentkaraoke extends BasicViewNotification {
         textID = preference.getInt("textID",-1);
         bitmapID = preference.getInt("bitmapID",-1);
         basicParam.setIconID(preference.getInt("iconID",-1));
-        String playSongInfoClass = preference.getString("playSongInfoClass","");
         String intentClass = preference.getString("intentClass","");
         String preSongField = preference.getString("preSongField","");
         String playSongField = preference.getString("playSongField","");
@@ -42,8 +42,16 @@ public class comtencentkaraoke extends BasicViewNotification {
         String deleteField = preference.getString("deleteField","");
         String IntentHandleActivity = preference.getString("IntentHandleActivity","");
 
-        Class playInfoClazz = XposedHelpers.findClass(playSongInfoClass, classLoader);
-        XposedHelpers.findAndHookMethod(className, classLoader, methodName, Context.class, playInfoClazz, int.class, new XC_MethodHook() {
+        JSONArray params = ((JSONPreference) preference).jsonObject.optJSONArray("params");
+        Object[] objects = new Object[params.length()+1];
+        try {
+            for (int i = 0; i < params.length(); i++) {
+                objects[i] = (params.get(i).toString().equals("int")) ? int.class : XposedHelpers.findClass(params.get(i).toString(), classLoader);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        objects[params.length()] = new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
@@ -54,19 +62,22 @@ public class comtencentkaraoke extends BasicViewNotification {
                 if (mTOKEN == null)
                     mTOKEN = new MediaSession(basicParam.getContext(), "Karaoke media button").getSessionToken();
                 basicParam.setToken(mTOKEN);
-                preSongIntent = new Intent((String)XposedHelpers.getStaticObjectField(XposedHelpers.findClass(intentClass,classLoader),preSongField)).putExtra("play_current_song", playSongInfo);
-                playIntent = new Intent((String)XposedHelpers.getStaticObjectField(XposedHelpers.findClass(intentClass,classLoader),playSongField)).putExtra("play_current_song", playSongInfo);
-                nextSongIntent = new Intent((String)XposedHelpers.getStaticObjectField(XposedHelpers.findClass(intentClass,classLoader),nextSongField)).putExtra("play_current_song", playSongInfo);
+                preSongIntent = new Intent((String) XposedHelpers.getStaticObjectField(XposedHelpers.findClass(intentClass, classLoader), preSongField)).putExtra("play_current_song", playSongInfo);
+                playIntent = new Intent((String) XposedHelpers.getStaticObjectField(XposedHelpers.findClass(intentClass, classLoader), playSongField)).putExtra("play_current_song", playSongInfo);
+                nextSongIntent = new Intent((String) XposedHelpers.getStaticObjectField(XposedHelpers.findClass(intentClass, classLoader), nextSongField)).putExtra("play_current_song", playSongInfo);
                 contentIntent = new Intent("com.tencent.karaoke.action.PLAYER");
                 contentIntent.setData(Uri.parse("qmkege://"))
                         .putExtra("action", "notification_player")
-                        .putExtra("from","from_notification")
+                        .putExtra("from", "from_notification")
                         .setClassName(basicParam.getContext(), XposedHelpers.findClass(intentClass, classLoader).getCanonicalName())
                         .addCategory("android.intent.category.DEFAULT");
                 XposedBridge.log("加载方法完毕");
                 param.setResult(viewBuild());
             }
-        });
+        };
+
+        XposedHelpers.findAndHookMethod(className, classLoader, methodName, objects);
+
     }
 
 }

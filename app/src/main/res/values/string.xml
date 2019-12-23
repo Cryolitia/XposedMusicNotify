@@ -26,4 +26,16 @@
         <item>4</item>
         <item>5</item>
     </string-array>
+    <string-array name="array_onlineGit">
+        <item>Cloudflare CDN(推荐)</item>
+        <item>Github(不推荐，无法保证速度且中国大陆极有可能无法访问)</item>
+        <item>Coding(中国大陆访问备选)</item>
+        <item>自定义(仅限调试)</item>
+    </string-array>
+    <string-array name="array_onlineGit_int">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
