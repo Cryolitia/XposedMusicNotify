@@ -1,0 +1,2 @@
+# Privacy Policy  
+The software XposedMusicNotify is fully open-source on GIthub, even the configuration file is distributed by Github Pages so it can't upload anything. It also don't have any ads, because I don't care about your persenal data or profit at all. So Just enjoy it.
