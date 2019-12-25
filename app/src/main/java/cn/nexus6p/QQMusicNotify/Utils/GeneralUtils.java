@@ -297,7 +297,12 @@ final public class GeneralUtils {
                         }
                         context.runOnUiThread(() -> {
                             Toast.makeText(context,"成功",Toast.LENGTH_LONG).show();
-                            context.reload();
+                            try {
+                                context.reload();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                context.finish();
+                            }
                         });
                     }
                     if (fileOutputStream != null) {

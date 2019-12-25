@@ -15,6 +15,7 @@ import cn.nexus6p.QQMusicNotify.SharedPreferences.JSONPreference;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 
 import static android.content.Context.MODE_WORLD_READABLE;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
@@ -46,6 +47,8 @@ public class MusicNotificationFragment extends PreferenceFragmentCompat {
             return true;
         });
         jumpToAlipay(this,"alipay","fkx00337aktbgg6hgq64ae2?t=1542355035868");
+
+        if (PreferenceUtil.isGooglePlay) findPreference("alipay").setVisible(false);
 
         setWorldReadable(getActivity());
 

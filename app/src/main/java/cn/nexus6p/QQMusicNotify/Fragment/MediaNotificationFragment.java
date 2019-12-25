@@ -14,6 +14,7 @@ import java.util.List;
 
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 
 import static android.content.Context.MODE_WORLD_READABLE;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
@@ -62,6 +63,8 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
 
         jumpToLink(this,"author3","https://github.com/Soptq",false);
         jumpToAlipay(this,"alipay2","FKX02896EL8F1WS3RV8183");
+
+        if (PreferenceUtil.isGooglePlay) findPreference("alipay2").setVisible(false);
 
         setWorldReadable(getActivity());
 
