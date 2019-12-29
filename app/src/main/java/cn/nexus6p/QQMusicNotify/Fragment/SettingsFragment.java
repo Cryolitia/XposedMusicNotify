@@ -113,7 +113,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
-        if (BuildConfig.VERSION_NAME.contains("canary") || BuildConfig.VERSION_NAME.contains("NIGHTLY"))
+        if (BuildConfig.VERSION_NAME.contains("canary") || BuildConfig.VERSION_NAME.contains("NIGHTLY") || BuildConfig.VERSION_NAME.contains("beta") || BuildConfig.VERSION_NAME.contains("alpha") || BuildConfig.VERSION_NAME.contains("α") || BuildConfig.VERSION_NAME.contains("β"))
             Toast.makeText(getActivity(), "您正在使用未经完全测试的版本，使用风险自负\n测试版本不代表最终品质", Toast.LENGTH_LONG).show();
         findPreference("qqqun").setOnPreferenceClickListener(preference1 -> {
             /*

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
@@ -50,6 +52,11 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
         EditTextPreference colorPreference = (EditTextPreference) findPreference("customColor");
         colorPreference.setSummary(colorPreference.getText());
         colorPreference.setOnPreferenceChangeListener((preference1, newValue) -> {
+            if (!newValue.toString().matches("\\#[0-9a-fA-F]{6}")) {
+                Log.d("newValue",newValue.toString());
+                Toast.makeText(getActivity(),"请输入16进制RGB颜色",Toast.LENGTH_LONG).show();
+                return false;
+            }
             colorPreference.setSummary((CharSequence) newValue);
             GradientDrawable drawable = (GradientDrawable) getContext().getDrawable(R.drawable.color_drawable);
             drawable.setColor(Color.parseColor((String)newValue));

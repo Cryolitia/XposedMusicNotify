@@ -124,7 +124,7 @@ final public class GeneralUtils {
                     fragment.startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(fragment.getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
-                    intent.setData(Uri.parse("http://www.coolapk.com/"+link));
+                    intent.setData(Uri.parse(PreferenceUtil.isGooglePlay?"https://github.com/singleNeuron":"http://www.coolapk.com/"+link));
                     fragment.startActivity(intent);
                     e.printStackTrace();
                 }
@@ -223,7 +223,7 @@ final public class GeneralUtils {
                                             .setNegativeButton("取消",null)
                                             .setPositiveButton("下载", (dialogInterface, i) -> {
                                                 Intent localIntent = new Intent("android.intent.action.VIEW");
-                                                localIntent.setData(Uri.parse("https://github.com/singleNeuron/XposedMusicNotify/releases"));
+                                                localIntent.setData(Uri.parse(PreferenceUtil.isGooglePlay?"https://play.google.com/store/apps/details?id=cn.nexus6p.QQMusicNotify":"https://github.com/singleNeuron/XposedMusicNotify/releases"));
                                                 activity.startActivity(localIntent);
                                             })
                                             .create()
