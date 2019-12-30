@@ -1,0 +1,19 @@
+{
+  "versionName": "9.2.8.2",
+  "versionCode": "9282",
+  "class": "cn.kuwo.mod.notification.manager.KwNotificationManager",
+  "method": "getPlayNotification",
+  "iconID": "7f020dff",
+  "contextField": "mContext",
+  "preSongIntent": "kuwo.play.pre",
+  "playSongIntent": "kuwo.play.playing",
+  "nextSongIntent": "kuwo.play.next",
+  "IntentHandleActivity": "cn.kuwo.player.activities.EntryActivity",
+  "getStatusClass": "cn.kuwo.a.b.b",
+  "getStatusMethod": "r",
+  "getStatusMethod2": "getStatus",
+  "playProxyStatusClass": "cn.kuwo.service.PlayProxy$Status",
+  "playProxyStatusField": "PLAYING",
+  "extraActionIcon": "7f020646",
+  "extraActionIntent": "kuwo.desklrc.enable"
+}
