@@ -116,15 +116,16 @@ public class NotificationUtils {
         if (smallIcon == null)
             smallIcon = ImageUtils.getVectorBitmap(moduleContext, R.drawable.ic_music);
 
+        if (actions.size() > 0) builder.setCustomBigContentView(getContentView(false));
         builder.setCustomContentView(getContentView(true));
-        if (actions.size() > 0)
-            builder.setCustomBigContentView(getContentView(false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel("music", "Music", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel("music1", "音乐通知", NotificationManager.IMPORTANCE_LOW);
             notificationChannel.enableVibration(false);
+            notificationChannel.setSound(null,null);
+            notificationManager.deleteNotificationChannel("music");
             notificationManager.createNotificationChannel(notificationChannel);
-            builder.setChannelId("music");
+            builder.setChannelId("music1");
         }
 
         return builder.build();
@@ -132,24 +133,24 @@ public class NotificationUtils {
 
     private RemoteViews getContentView(boolean isCollapsed) {
             RemoteViews remoteViews = new RemoteViews(moduleContext.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
-            remoteViews = remoteViewSetting(remoteViews);
+            remoteViews = remoteViewSetting(remoteViews, isCollapsed);
             return remoteViews;
     }
 
-    private RemoteViews remoteViewSetting(RemoteViews remoteViews) {
+    private RemoteViews remoteViewSetting(RemoteViews remoteViews,boolean isCollapsed) {
         remoteViews.setTextViewText(R.id.appName, appName);
         remoteViews.setTextViewText(R.id.title, title);
         remoteViews.setTextViewText(R.id.subtitle, subtitle);
 
         remoteViews.setViewVisibility(R.id.largeIcon, View.VISIBLE);
         remoteViews.setImageViewBitmap(R.id.largeIcon, largeIcon);
-        Palette palette = PaletteUtils.getPalette(moduleContext, largeIcon);
-        Palette.Swatch swatch = PaletteUtils.getSwatch(moduleContext, palette);
+        Palette palette = PaletteUtils.getPalette(largeIcon);
+        Palette.Swatch swatch = PaletteUtils.getSwatch(palette);
 
-        int color = PaletteUtils.getTextColor(moduleContext, palette, swatch);
+        int color = PaletteUtils.getTextColor(palette, swatch);
         remoteViews.setInt(R.id.image, "setBackgroundColor", swatch.getRgb());
         remoteViews.setInt(R.id.foregroundImage, "setColorFilter", swatch.getRgb());
-        remoteViews.setInt(R.id.arrow, "setColorFilter", color);
+        //remoteViews.setInt(R.id.arrow, "setColorFilter", color);
         remoteViews.setImageViewBitmap(R.id.smallIcon, ImageUtils.setBitmapColor(smallIcon, color));
         remoteViews.setTextColor(R.id.appName, color);
         remoteViews.setTextColor(R.id.title, color);
@@ -161,7 +162,7 @@ public class NotificationUtils {
 
         remoteViews.setInt(R.id.content, "setBackgroundResource", selectableItemBackground);
 
-        for (int i = 0; i < 5; i++) {
+        if (!isCollapsed) for (int i = 0; i < 5; i++) {
             int id = -1;
             switch (i) {
                 case 0:

@@ -64,14 +64,6 @@
                 android:singleLine="true"
                 android:textSize="12sp" />
 
-            <ImageView
-                android:id="@+id/arrow"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_collapse"
-                tools:ignore="VectorDrawableCompat" />
-
         </LinearLayout>
 
         <TextView
