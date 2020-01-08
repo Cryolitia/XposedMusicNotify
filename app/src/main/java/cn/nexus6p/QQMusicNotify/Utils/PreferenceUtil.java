@@ -15,11 +15,16 @@ import de.robv.android.xposed.XSharedPreferences;
 
 final public class PreferenceUtil {
 
-    public static boolean isGooglePlay = false;
+    public static boolean isGooglePlay = true;
 
     public static SharedPreferences getPreference() {
-        return JSONPreference.Companion.get("setting");
-        //return XSharedPreference.Companion.get();
+        try {
+            if (GeneralUtils.getMoudleContext().getApplicationInfo().targetSdkVersion<24) return XSharedPreference.Companion.get();
+            else return XSharedPreference.Companion.get();
+        } catch (Exception e) {
+            //return JSONPreference.Companion.get("setting");
+            return XSharedPreference.Companion.get();
+        }
     }
 
     public static SharedPreferences getJSONPreference(String packageName) {

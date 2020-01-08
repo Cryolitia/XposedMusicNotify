@@ -40,6 +40,7 @@ import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuGeneralPublicLicense30;
@@ -250,17 +251,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity()).setTitle("SeLinux").setMessage("当前状态： " + result.getOut().get(0));
-            if (result.getOut().get(0).contains("Permissive")) {
+            if ((!PreferenceUtil.isGooglePlay)&&result.getOut().get(0).contains("Permissive")) {
                 builder.setPositiveButton("确定", null).setNegativeButton("取消", null).create().show();
-                return true;
+
             }
-            builder.setPositiveButton("设为Permissive", (dialogInterface, i) -> {
-                Shell.Result result1 = Shell.su("setenforce 0").exec();
-                if (result1.isSuccess())
-                    Toast.makeText(getActivity(), "成功", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), result1.getErr().toString(), Toast.LENGTH_LONG).show();
-            }).setNegativeButton("取消", null).create().show();
+            else {
+                builder.setPositiveButton("设为Permissive", (dialogInterface, i) -> {
+                    Shell.Result result1 = Shell.su("setenforce 0").exec();
+                    if (result1.isSuccess())
+                        Toast.makeText(getActivity(), "成功", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), result1.getErr().toString(), Toast.LENGTH_LONG).show();
+                }).setNegativeButton("取消", null).create().show();
+            }
             return true;
         });
 

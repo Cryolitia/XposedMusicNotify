@@ -44,6 +44,10 @@
         {
             "versionName": "9.2.4.1",
             "versionCode": "9241"
+         },
+         {
+            "versionName": "9.2.8.2",
+            "versionCode": "9282"
          }
     ]
     }
