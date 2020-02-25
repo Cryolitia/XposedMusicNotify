@@ -64,12 +64,6 @@
 		android:title="故障排除"
 		>
 		<androidx.preference.Preference
-			android:title="SELinux"
-			android:key="selinux"
-			android:summary="如果SELinux工作在Enforcing下，所有功能将不工作或默认开启"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
 			android:title="存储重定向"
 			android:summary="如果安装了存储重定向，请允许所有播放软件读取/sdcard/Android/data/cn.nexus6p.QQMusicNotify"
 			android:key="redirectStorage"
