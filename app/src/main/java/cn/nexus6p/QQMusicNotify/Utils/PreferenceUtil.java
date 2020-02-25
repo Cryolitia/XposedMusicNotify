@@ -15,7 +15,7 @@ import de.robv.android.xposed.XSharedPreferences;
 
 final public class PreferenceUtil {
 
-    public static boolean isGooglePlay = true;
+    public static boolean isGooglePlay = false;
 
     public static SharedPreferences getPreference() {
         try {

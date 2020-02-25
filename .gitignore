@@ -57,6 +57,5 @@ freeline_project_description.json
 
 .idea/
 
-gradle.properties
 app/debug/output.json
 .vscode/

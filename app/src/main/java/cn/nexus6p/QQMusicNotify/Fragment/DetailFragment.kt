@@ -61,7 +61,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
         appPreference.title = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName!!,0))
         appPreference.icon = packageManager.getApplicationIcon(packageName)
         findPreference<Preference>("versionName")!!.summary = packageInfo!!.versionName
-        val versionCode : Long = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) packageInfo.longVersionCode
+        @Suppress("DEPRECATION") val versionCode : Long = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) packageInfo.longVersionCode
         else packageInfo.versionCode.toLong()
         findPreference<Preference>("versionCode")!!.summary = versionCode.toString()
         val enablePreference  = findPreference<SwitchPreferenceCompat>("enable")

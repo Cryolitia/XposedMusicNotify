@@ -5,6 +5,7 @@ import cn.nexus6p.QQMusicNotify.BuildConfig
 import de.robv.android.xposed.XSharedPreferences
 import java.lang.ref.WeakReference
 
+@Deprecated(message = "Using Content Provider instead in 2.9")
 class XSharedPreference {
 
     private var preferences : XSharedPreferences = XSharedPreferences(BuildConfig.APPLICATION_ID)

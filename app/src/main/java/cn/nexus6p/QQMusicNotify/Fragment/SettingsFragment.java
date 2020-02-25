@@ -240,7 +240,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference("selinux").setOnPreferenceClickListener(preference1 -> {
+        /*findPreference("selinux").setOnPreferenceClickListener(preference1 -> {
             if (!Shell.rootAccess()) {
                 Toast.makeText(getActivity(), "未检测到Root权限", Toast.LENGTH_SHORT).show();
                 return true;
@@ -265,7 +265,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }).setNegativeButton("取消", null).create().show();
             }
             return true;
-        });
+        });*/
 
         try {
             Shell.Result result0 = Shell.su("getenforce").exec();

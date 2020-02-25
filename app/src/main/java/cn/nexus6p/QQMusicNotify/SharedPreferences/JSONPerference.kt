@@ -9,6 +9,7 @@ import java.io.PrintStream
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 
+@Deprecated(message = "Using Content Provider instead in 2.9")
 class JSONPreference private constructor() : BasePreference() {
 
     lateinit var jsonObject : JSONObject
