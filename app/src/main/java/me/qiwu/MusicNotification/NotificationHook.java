@@ -1,43 +1,28 @@
 package me.qiwu.MusicNotification;
 
-import android.app.AndroidAppHelper;
 import android.app.Notification;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
-import android.media.session.MediaSession;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.res.ResourcesCompat;
-
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicParam;
-import cn.nexus6p.QQMusicNotify.BuildConfig;
-import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
-import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import soptqs.medianotification.utils.ImageUtils;
 import soptqs.medianotification.utils.NotificationUtils;
 
-import static android.app.Notification.EXTRA_MEDIA_SESSION;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getContext;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
 
 
 /**
@@ -47,21 +32,20 @@ import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
 public class NotificationHook {
 
 
-
-    public void init(String packageName){
+    public void init(String packageName) {
         XposedHelpers.findAndHookMethod(Notification.Builder.class, "build", new XC_MethodHook() {
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                Notification notification = (Notification)param.getResult();
-                if (isMediaNotification(notification)){
+                Notification notification = (Notification) param.getResult();
+                if (isMediaNotification(notification)) {
                     Bundle extras = NotificationCompat.getExtras(notification);
-                    Log.d("MusicNotification",extras.toString());
+                    Log.d("MusicNotification", extras.toString());
                     String title = extras.get(NotificationCompat.EXTRA_TITLE).toString();
                     String subtitle = extras.get(NotificationCompat.EXTRA_TEXT).toString();
-                    title = title==null|| title.equals("") ? "未知音乐":title;
-                    subtitle = subtitle==null || subtitle.equals("") ? "未知艺术家":subtitle;
+                    title = title == null || title.equals("") ? "未知音乐" : title;
+                    subtitle = subtitle == null || subtitle.equals("") ? "未知艺术家" : subtitle;
                     //RemoteViews remoteViews = getContentView(title,subtitle,notification);
                     int resId = getIconId(notification.getSmallIcon()) != -1 ? getIconId(notification.getSmallIcon()) : android.R.drawable.ic_dialog_info;
                     /*MediaSession.Token token = null;
@@ -72,21 +56,21 @@ public class NotificationHook {
                     }*/
 
                     BasicParam basicParam = new BasicParam(
-                            getContext(),resId,title,subtitle,getLargeIcon(notification), PreferenceUtil.getPreference().getBoolean("always_show",false)||(notification.flags == Notification.FLAG_ONGOING_EVENT),null
+                            getContext(), resId, title, subtitle, getLargeIcon(notification), PreferenceUtil.getPreference().getBoolean("always_show", false) || (notification.flags == Notification.FLAG_ONGOING_EVENT), null
                     );
                     basicParam.setContentIntent(notification.contentIntent);
                     basicParam.setDeleteIntent(notification.deleteIntent);
                     List<NotificationCompat.Action> actions = new ArrayList<>();
                     List<Bitmap> actionIcons = new ArrayList<>();
                     int actionCount = NotificationCompat.getActionCount(notification);
-                    for (int i=0; i<actionCount; i++) {
-                        NotificationCompat.Action action = NotificationCompat.getAction(notification,i);
+                    for (int i = 0; i < actionCount; i++) {
+                        NotificationCompat.Action action = NotificationCompat.getAction(notification, i);
                         try {
-                           actionIcons.add(getBitmap(getContext().getDrawable(action.icon)));
-                        } catch (Exception e){
+                            actionIcons.add(getBitmap(getContext().getDrawable(action.icon)));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        actions.add(new NotificationCompat.Action.Builder(action.icon,action.getTitle(),action.getActionIntent()).build());
+                        actions.add(new NotificationCompat.Action.Builder(action.icon, action.getTitle(), action.getActionIntent()).build());
                     }
                     Notification newNotification = new NotificationUtils().setParam(basicParam, actions, actionIcons).updateNotification();
                     param.setResult(newNotification);
@@ -152,34 +136,34 @@ public class NotificationHook {
         return remoteViews;
     }*/
 
-    private int getIconId(Icon icon){
+    private int getIconId(Icon icon) {
         int id = -1;
-        if (icon != null){
+        if (icon != null) {
             try {
-                id = (int)XposedHelpers.callMethod(icon,"getResId");
-            } catch (Exception e){
+                id = (int) XposedHelpers.callMethod(icon, "getResId");
+            } catch (Exception e) {
                 XposedBridge.log(e);
             }
         }
         return id;
     }
 
-    private Bitmap getLargeIcon(Notification notification){
+    private Bitmap getLargeIcon(Notification notification) {
         Bitmap bitmap = null;
-        if (notification.getLargeIcon()!=null){
+        if (notification.getLargeIcon() != null) {
             try {
-                bitmap = (Bitmap) XposedHelpers.callMethod(notification.getLargeIcon(),"getBitmap");
-            } catch (Exception e){
-                bitmap = BitmapFactory.decodeResource(getContext().getResources(),getIconId(notification.getLargeIcon()));
+                bitmap = (Bitmap) XposedHelpers.callMethod(notification.getLargeIcon(), "getBitmap");
+            } catch (Exception e) {
+                bitmap = BitmapFactory.decodeResource(getContext().getResources(), getIconId(notification.getLargeIcon()));
             }
         }
         return bitmap;
     }
 
 
-    private boolean isMediaNotification(Notification notification){
+    private boolean isMediaNotification(Notification notification) {
 
-        if (notification.extras.containsKey(NotificationCompat.EXTRA_MEDIA_SESSION)){
+        if (notification.extras.containsKey(NotificationCompat.EXTRA_MEDIA_SESSION)) {
             return true;
         } else if (!TextUtils.isEmpty(notification.extras.getString(Notification.EXTRA_TEMPLATE))) {
             return Notification.MediaStyle.class.getName().equals(notification.extras.getString(Notification.EXTRA_TEMPLATE));
@@ -188,7 +172,7 @@ public class NotificationHook {
     }
 
 
-    private Bitmap getBitmap(Drawable vectorDrawable){
+    private Bitmap getBitmap(Drawable vectorDrawable) {
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
                 vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

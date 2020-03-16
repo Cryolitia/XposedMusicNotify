@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.preference.PreferenceCategory
-        android:title="当前配置文件详细信息"
         android:key="JSONDetail"
-    >
-    </androidx.preference.PreferenceCategory>
+        android:title="当前配置文件详细信息" />
 </androidx.preference.PreferenceScreen>

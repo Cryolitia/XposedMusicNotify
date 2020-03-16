@@ -1,8 +1,5 @@
 package soptqs.medianotification.utils;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-
 public class PreferenceUtils {
 
     public static final String PREF_COLOR_METHOD = "colorMethod";

@@ -3,6 +3,7 @@ package soptqs.medianotification.utils;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+
 import androidx.annotation.ColorInt;
 import androidx.palette.graphics.Palette;
 
@@ -51,10 +52,9 @@ public class PaletteUtils {
     }
 
 
-
     @ColorInt
     public static int getTextColor(Palette palette, Palette.Swatch swatch) {
-            SharedPreferences prefs = PreferenceUtil.getPreference();
+        SharedPreferences prefs = PreferenceUtil.getPreference();
         if (prefs.getBoolean(PreferenceUtils.PREF_HIGH_CONTRAST_TEXT, false)) {
             if (ColorUtils.isColorLight(swatch.getRgb()))
                 return Color.BLACK;
@@ -110,13 +110,10 @@ public class PaletteUtils {
 
     private static Palette.Swatch getBestPaletteSwatchFrom(List<Palette.Swatch> swatches) {
         if (swatches == null) return null;
-        return Collections.max(swatches, new Comparator<Palette.Swatch>() {
-            @Override
-            public int compare(Palette.Swatch opt1, Palette.Swatch opt2) {
-                int a = opt1 == null ? 0 : opt1.getPopulation();
-                int b = opt2 == null ? 0 : opt2.getPopulation();
-                return a - b;
-            }
+        return Collections.max(swatches, (opt1, opt2) -> {
+            int a = opt1 == null ? 0 : opt1.getPopulation();
+            int b = opt2 == null ? 0 : opt2.getPopulation();
+            return a - b;
         });
     }
 
@@ -124,7 +121,8 @@ public class PaletteUtils {
         Palette.Swatch highestSwatch = null;
         for (Palette.Swatch swatch : swatches) {
             if (swatch != null) {
-                if (highestSwatch == null || swatch.getPopulation() > highestSwatch.getPopulation()) highestSwatch = swatch;
+                if (highestSwatch == null || swatch.getPopulation() > highestSwatch.getPopulation())
+                    highestSwatch = swatch;
             }
         }
         return highestSwatch;

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.preference.SwitchPreferenceCompat
-        android:key="debugMode"
-        android:title="Debug Mode"
-        android:summary="打开后将禁用自动更新检查及解压配置文件"
         android:defaultValue="false"
-        >
-    </androidx.preference.SwitchPreferenceCompat>
+        android:key="debugMode"
+        android:summary="打开后将禁用自动更新检查及解压配置文件"
+        android:title="Debug Mode" />
 </androidx.preference.PreferenceScreen>

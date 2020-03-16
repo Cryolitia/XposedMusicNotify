@@ -10,11 +10,12 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.Log;
+
 import androidx.annotation.DrawableRes;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
-import android.util.Log;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import static android.content.ContentValues.TAG;
 
@@ -42,9 +43,6 @@ public class ImageUtils {
         }
 
         if (drawable != null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-                drawable = (DrawableCompat.wrap(drawable)).mutate();
-
             Bitmap result = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(result);
             drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -112,12 +110,10 @@ public class ImageUtils {
     }
 
     /**
-
-     * @param bitmap      原图
-     * @return  缩放截取正中部分后的位图。
+     * @param bitmap 原图
+     * @return 缩放截取正中部分后的位图。
      */
-    public static Bitmap centerSquareScaleBitmap(Bitmap bitmap)
-    {
+    public static Bitmap centerSquareScaleBitmap(Bitmap bitmap) {
 
 
         int edgeLength;
@@ -127,18 +123,16 @@ public class ImageUtils {
         int yTopLeft;
 
 
-        if(null == bitmap)
-        {
-            return  null;
+        if (null == bitmap) {
+            return null;
         }
 
         Bitmap result = bitmap;
 
-        if (widthOrg >= heightOrg) edgeLength = heightOrg;
-                else edgeLength = widthOrg;
+        edgeLength = Math.min(widthOrg, heightOrg);
 
 
-        if (widthOrg >=0 || heightOrg >= 0) {
+        if (widthOrg >= 0 || heightOrg >= 0) {
             //从图中截取正中间的正方形部分。
             if (widthOrg != heightOrg) {
 //                edgeLength = heightOrg;
@@ -146,8 +140,8 @@ public class ImageUtils {
                 yTopLeft = (heightOrg - edgeLength) / 2;
                 try {
                     result = Bitmap.createBitmap(bitmap, xTopLeft, yTopLeft, edgeLength - 1, edgeLength - 1, null, false);
-                }catch (Exception e) {
-                    Log.e(TAG, "centerSquareScaleBitmap: Error croping "+ e );
+                } catch (Exception e) {
+                    Log.e(TAG, "centerSquareScaleBitmap: Error croping " + e);
                 }
                 return result;
             } else if (widthOrg == heightOrg) {
@@ -207,9 +201,6 @@ public class ImageUtils {
 //
 //        return resultBitmap;
 //    }
-
-
-
 
 
 }

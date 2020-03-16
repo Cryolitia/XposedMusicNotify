@@ -1,77 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	>
-	<androidx.preference.PreferenceCategory
-		android:title="软件包信息"
-		>
-		<androidx.preference.Preference
-			android:key="app"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="版本名"
-			android:key="versionName"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="版本号"
-			android:key="versionCode"
-			>
-		</androidx.preference.Preference>
-	</androidx.preference.PreferenceCategory>
-	<androidx.preference.PreferenceCategory
-		android:title="模块配置"
-		>
-		<androidx.preference.SwitchPreferenceCompat
-			android:title="启用"
-			android:key="enable"
-			android:defaultValue="true"
-			>
-		</androidx.preference.SwitchPreferenceCompat>
-		<androidx.preference.Preference
-			android:title="当前配置文件"
-			android:key="nowVersion"
-			android:icon="@drawable/ic_cancel"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="支持版本"
-			android:key="supportedVersion"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="刷新本地缓存"
-			android:key="refresh"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="强行停止进程"
-			android:key="forceStop"
-			android:summary="需要Root"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="打开系统详细信息界面"
-			android:key="openSetting"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="打开通知渠道设置"
-			android:key="channelSetting"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="添加到太极"
-			android:key="taichi"
-			app:isPreferenceVisible="false"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="编辑配置文件"
-			android:key="editjson"
-			>
-		</androidx.preference.Preference>
-	</androidx.preference.PreferenceCategory>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.preference.PreferenceCategory android:title="软件包信息">
+        <androidx.preference.Preference android:key="app" />
+        <androidx.preference.Preference
+            android:key="versionName"
+            android:title="版本名" />
+        <androidx.preference.Preference
+            android:key="versionCode"
+            android:title="版本号" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="模块配置">
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="enable"
+            android:title="启用" />
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_cancel"
+            android:key="nowVersion"
+            android:title="当前配置文件" />
+        <androidx.preference.Preference
+            android:key="supportedVersion"
+            android:title="支持版本" />
+        <androidx.preference.Preference
+            android:key="refresh"
+            android:title="刷新本地缓存" />
+        <androidx.preference.Preference
+            android:key="forceStop"
+            android:summary="需要Root"
+            android:title="强行停止进程" />
+        <androidx.preference.Preference
+            android:key="openSetting"
+            android:title="打开系统详细信息界面" />
+        <androidx.preference.Preference
+            android:key="channelSetting"
+            android:title="打开通知渠道设置" />
+        <androidx.preference.Preference
+            android:key="taichi"
+            android:title="添加到太极"
+            app:isPreferenceVisible="false" />
+        <androidx.preference.Preference
+            android:key="editjson"
+            android:title="编辑配置文件" />
+    </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

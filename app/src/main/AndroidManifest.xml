@@ -4,15 +4,17 @@
     package="cn.nexus6p.QQMusicNotify"
     android:installLocation="internalOnly"
     android:versionCode="25"
-    android:versionName="2.8.1">
-    <uses-permission android:name="android.permission.INTERNET"/>
+    android:versionName="2.9">
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="@string/app_name"
-        tools:ignore="GoogleAppIndexingWarning"
         android:allowBackup="false"
         android:icon="@drawable/icon"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/googleBlue">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,12 +33,13 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="cn.nexus6p.QQMusicNotify.fileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+
         <meta-data
             android:name="xposedmodule"
             android:value="true" />

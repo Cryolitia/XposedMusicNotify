@@ -11,11 +11,9 @@ import android.os.Parcelable;
 import androidx.annotation.Keep;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicViewNotification;
 import cn.nexus6p.QQMusicNotify.SharedPreferences.JSONPreference;
-import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -29,21 +27,21 @@ public class comtencentkaraoke extends BasicViewNotification {
     @Override
     public void init() {
         SharedPreferences preference = PreferenceUtil.getJSONPreference("com.tencent.karaoke");
-        className = preference.getString("class","");
-        methodName = preference.getString("method","");
-        titleID = preference.getInt("titleID",-1);
-        textID = preference.getInt("textID",-1);
-        bitmapID = preference.getInt("bitmapID",-1);
-        basicParam.setIconID(preference.getInt("iconID",-1));
-        String intentClass = preference.getString("intentClass","");
-        String preSongField = preference.getString("preSongField","");
-        String playSongField = preference.getString("playSongField","");
-        String nextSongField = preference.getString("nextSongField","");
-        String deleteField = preference.getString("deleteField","");
-        String IntentHandleActivity = preference.getString("IntentHandleActivity","");
+        className = preference.getString("class", "");
+        methodName = preference.getString("method", "");
+        titleID = preference.getInt("titleID", -1);
+        textID = preference.getInt("textID", -1);
+        bitmapID = preference.getInt("bitmapID", -1);
+        basicParam.setIconID(preference.getInt("iconID", -1));
+        String intentClass = preference.getString("intentClass", "");
+        String preSongField = preference.getString("preSongField", "");
+        String playSongField = preference.getString("playSongField", "");
+        String nextSongField = preference.getString("nextSongField", "");
+        String deleteField = preference.getString("deleteField", "");
+        String IntentHandleActivity = preference.getString("IntentHandleActivity", "");
 
         JSONArray params = ((JSONPreference) preference).jsonObject.optJSONArray("params");
-        Object[] objects = new Object[params.length()+1];
+        Object[] objects = new Object[params.length() + 1];
         try {
             for (int i = 0; i < params.length(); i++) {
                 objects[i] = (params.get(i).toString().equals("int")) ? int.class : XposedHelpers.findClass(params.get(i).toString(), classLoader);

@@ -1,54 +1,66 @@
 [
-    {
-        "app": "com.tencent.karaoke",
-        "name": "全民K歌",
-        "supportedVersion": [
-            {
-                "versionName": "6.7.8.278",
-                "versionCode": "356"
-            },
-            {
-                "versionName": "6.9.8.278",
-                "versionCode": "371"
-            },{
-                "versionName": "6.10.1.273",
-                "versionCode": "376"
-            },{
-                "versionName": "6.15.28.278",
-                "versionCode": "438"
-            }
-        ]
-    },
-    {
-        "app": "com.tencent.qqmusiclocalplayer",
-        "name": "轻听",
-        "supportedVersion": [
-            {
-                "versionName": "1.2.2.3",
-                "versionCode": "27"
-            }
-        ]
-    },
-    {
-        "app": "com.sing.client",
-        "name": "5Sing"
-    },
-    {
+  {
+    "app": "com.tencent.karaoke",
+    "name": "全民K歌",
+    "supportedVersion": [
+      {
+        "versionName": "6.7.8.278",
+        "versionCode": "356"
+      },
+      {
+        "versionName": "6.9.8.278",
+        "versionCode": "371"
+      },
+      {
+        "versionName": "6.10.1.273",
+        "versionCode": "376"
+      },
+      {
+        "versionName": "6.15.28.278",
+        "versionCode": "438"
+      }
+    ]
+  },
+  {
+    "app": "com.tencent.qqmusiclocalplayer",
+    "name": "轻听",
+    "supportedVersion": [
+      {
+        "versionName": "1.2.2.3",
+        "versionCode": "27"
+      }
+    ]
+  },
+  {
+    "app": "com.sing.client",
+    "name": "5Sing"
+  },
+  {
     "app": "cn.kuwo.player",
     "name": "酷我音乐",
     "supportedVersion": [
-        {
-           "versionName": "9.2.4.0",
-           "versionCode": "9240"
-        },
-        {
-            "versionName": "9.2.4.1",
-            "versionCode": "9241"
-         },
-         {
-            "versionName": "9.2.8.2",
-            "versionCode": "9282"
-         }
+      {
+        "versionName": "9.2.4.0",
+        "versionCode": "9240"
+      },
+      {
+        "versionName": "9.2.4.1",
+        "versionCode": "9241"
+      },
+      {
+        "versionName": "9.2.8.2",
+        "versionCode": "9282"
+      }
     ]
-    }
+  },
+  {
+    "app": "me.singleneuron.originalmusicnotification_debugtool",
+    "name": "原生音乐通知调试器",
+    "supportedVersion": [
+      {
+        "versionName": "1.0",
+        "versionCode": "1"
+      }
+    ]
+  }
 ]

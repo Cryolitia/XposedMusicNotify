@@ -2,6 +2,7 @@ package me.qiwu.MusicNotification;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+
 import androidx.annotation.ColorInt;
 import androidx.palette.graphics.Palette;
 
@@ -10,35 +11,35 @@ import androidx.palette.graphics.Palette;
  */
 
 public class ColorUtil {
-    public static int[] getColor(Bitmap bitmap){
+    public static int[] getColor(Bitmap bitmap) {
         int backgroundColor = Color.BLACK;
         int textColor = Color.WHITE;
-        if (bitmap != null){
+        if (bitmap != null) {
             Palette palette = Palette.from(bitmap).generate();
             Palette.Swatch swatch = palette.getDominantSwatch();
-            if (swatch!=null){
+            if (swatch != null) {
                 backgroundColor = swatch.getRgb();
-                textColor = getTextColor(palette,backgroundColor);
+                textColor = getTextColor(palette, backgroundColor);
             }
         }
-        return new int[]{backgroundColor,textColor};
+        return new int[]{backgroundColor, textColor};
     }
 
-    private static int getTextColor(Palette palette,int color){
+    private static int getTextColor(Palette palette, int color) {
         boolean isLightColor = isColorLight(color);
         int textColor = isLightColor ? palette.getDarkMutedColor(Color.BLACK) : palette.getLightMutedColor(palette.getLightVibrantColor(Color.WHITE));
-        if (getDifference(color,textColor)<100){
-            textColor = getReadableColor(color,textColor);
+        if (getDifference(color, textColor) < 100) {
+            textColor = getReadableColor(color, textColor);
         }
         return textColor;
     }
 
-    private static int getReadableColor(int backgroundColor,int textColor){
+    private static int getReadableColor(int backgroundColor, int textColor) {
         boolean isLight = isColorLight(backgroundColor);
         for (int i = 0; getDifference(textColor, backgroundColor) < 100 && i < 100; i++) {
             textColor = getMixedColor(textColor, isLight ? Color.BLACK : Color.WHITE);
         }
-        if (getDifference(textColor,backgroundColor) < 100){
+        if (getDifference(textColor, backgroundColor) < 100) {
             return isLight ? Color.BLACK : Color.WHITE;
         }
         return textColor;

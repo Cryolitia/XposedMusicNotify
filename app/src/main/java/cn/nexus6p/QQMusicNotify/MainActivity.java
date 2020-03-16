@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         boolean isNightMode = getSharedPreferenceOnUI(this).getBoolean("forceNight", false);
         int nightMode = isNightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-        @ColorInt int colorInt = Color.parseColor(currentNightMode==Configuration.UI_MODE_NIGHT_YES?"#212121":isNightMode ? "#212121" : "#F5F5F5");
+        @ColorInt int colorInt = Color.parseColor(currentNightMode == Configuration.UI_MODE_NIGHT_YES ? "#212121" : isNightMode ? "#212121" : "#F5F5F5");
 
         mToolbar = findViewById(R.id.toolbar_preference);
         mToolbar.setTitle(getResources().getString(R.string.app_name));
@@ -121,11 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 stringBuilder.append(line);
             }
             JSONObject jsonObject = new JSONObject(stringBuilder.toString());
-            if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode",false)) && jsonObject.optInt("code") < BuildConfig.VERSION_CODE) copyAssetsDir2Phone();
+            if (jsonObject.optInt("code") < 25) getExternalFilesDir(null).delete();
+            if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode", false)) && jsonObject.optInt("code") < BuildConfig.VERSION_CODE)
+                copyAssetsDir2Phone();
             else checkUpdate();
-            if (jsonObject.optInt("code")<17) {
-                new File ("/data/data/cn.nexus6p.QQMusicNotify/shared_prefs/cn.nexus6p.QQMusicNotify_preferences.xml").delete();
-            }
         } catch (Exception e) {
             e.printStackTrace();
             checkUpdate();
@@ -137,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!getFragmentManager().popBackStackImmediate()) super.onBackPressed();
+        if (!getSupportFragmentManager().popBackStackImmediate()) super.onBackPressed();
     }
 
     @Override
@@ -183,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     for (String filePath : fileList) {
                         Log.d("copyAssets2Phone", filePath);
-                        if (filePath == "device_features") continue;
+                        if (filePath.equals("device_features")) continue;
                         InputStream inputStream = getAssets().open("config/" + filePath);
                         File file = new File(getExternalFilesDir(null) + File.separator + filePath);
                         Log.i("copyAssets2Phone", "file:" + file);
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("MusicNotify", "文件复制完毕");
                         runOnUiThread(() -> progressDialog.incrementProgressBy(1));
                     }
-                    runOnUiThread(()->{
+                    runOnUiThread(() -> {
                         progressDialog.dismiss();
                         Toast.makeText(this, "资源文件解压完毕", Toast.LENGTH_SHORT).show();
                         checkUpdate();
@@ -222,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
     版权声明：本文为博主原创文章，转载请附上博文链接！*/
 
     private void checkUpdate() {
-        if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode",false)) && shouldCheckUpdate) {
+        if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode", false)) && shouldCheckUpdate) {
             shouldCheckUpdate = false;
             getJsonFromInternet(this, false);
         }

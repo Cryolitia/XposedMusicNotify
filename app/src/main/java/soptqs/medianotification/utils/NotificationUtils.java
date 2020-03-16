@@ -6,13 +6,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -23,14 +19,12 @@ import androidx.palette.graphics.Palette;
 import java.util.List;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicParam;
-import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
-import de.robv.android.xposed.XSharedPreferences;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getContext;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getModuleContext;
 
 public class NotificationUtils {
 
@@ -60,14 +54,14 @@ public class NotificationUtils {
         deleteIntent = basicParam.getDeleteIntent();
         iconID = basicParam.getIconID();
         appContext = getContext();
-        moduleContext = getMoudleContext();
+        moduleContext = getModuleContext();
         /*if (largeIcon==null) {
             GradientDrawable drawable = (GradientDrawable) getMoudleContext().getDrawable(R.drawable.color_drawable);
             drawable.setColor(Color.parseColor(new XSharedPreferences(BuildConfig.APPLICATION_ID).getString("customColor","#000000")));
             largeIcon = ImageUtils.drawableToBitmap(drawable);
         }*/
         try {
-            smallIcon = ((BitmapDrawable) appContext.getResources().getDrawable(basicParam.getIconID(),null)).getBitmap();
+            smallIcon = ((BitmapDrawable) appContext.getResources().getDrawable(basicParam.getIconID(), null)).getBitmap();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,7 +80,7 @@ public class NotificationUtils {
                 .setOngoing(isPlaying || PreferenceUtil.getPreference().getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
                 .setVisibility(VISIBILITY_PUBLIC);
 
-        if (deleteIntent!=null) builder.setDeleteIntent(deleteIntent);
+        if (deleteIntent != null) builder.setDeleteIntent(deleteIntent);
         if (contentIntent != null)
             builder.setContentIntent(contentIntent);
         /*else {
@@ -122,7 +116,7 @@ public class NotificationUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel("music1", "音乐通知", NotificationManager.IMPORTANCE_LOW);
             notificationChannel.enableVibration(false);
-            notificationChannel.setSound(null,null);
+            notificationChannel.setSound(null, null);
             notificationManager.deleteNotificationChannel("music");
             notificationManager.createNotificationChannel(notificationChannel);
             builder.setChannelId("music1");
@@ -132,12 +126,12 @@ public class NotificationUtils {
     }
 
     private RemoteViews getContentView(boolean isCollapsed) {
-            RemoteViews remoteViews = new RemoteViews(moduleContext.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
-            remoteViews = remoteViewSetting(remoteViews, isCollapsed);
-            return remoteViews;
+        RemoteViews remoteViews = new RemoteViews(moduleContext.getPackageName(), isCollapsed ? R.layout.layout_notification_collapsed : R.layout.layout_notification_expanded);
+        remoteViews = remoteViewSetting(remoteViews, isCollapsed);
+        return remoteViews;
     }
 
-    private RemoteViews remoteViewSetting(RemoteViews remoteViews,boolean isCollapsed) {
+    private RemoteViews remoteViewSetting(RemoteViews remoteViews, boolean isCollapsed) {
         remoteViews.setTextViewText(R.id.appName, appName);
         remoteViews.setTextViewText(R.id.title, title);
         remoteViews.setTextViewText(R.id.subtitle, subtitle);
@@ -191,7 +185,7 @@ public class NotificationUtils {
             remoteViews.setViewVisibility(id, View.VISIBLE);
             remoteViews.setImageViewBitmap(id, actionIcons.get(i));
             remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
-            remoteViews.setInt(id,"setColorFilter", color);
+            remoteViews.setInt(id, "setColorFilter", color);
             remoteViews.setOnClickPendingIntent(id, action.getActionIntent());
         }
         return remoteViews;

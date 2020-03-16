@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="ContentDescription">
 
     <RelativeLayout
         android:id="@+id/image"
@@ -33,13 +34,13 @@
         android:id="@+id/app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:layout_marginEnd="66dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="12dp">
+        android:paddingTop="12dp"
+        android:paddingEnd="12dp">
 
         <ImageView
             android:id="@+id/smallIcon"
@@ -63,12 +64,12 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/app"
         android:layout_alignParentStart="true"
         android:orientation="vertical"
-        android:layout_below="@id/app"
-        android:paddingBottom="2dp"
+        android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:paddingStart="12dp">
+        android:paddingBottom="2dp">
 
         <TextView
             android:id="@+id/title"
@@ -84,11 +85,11 @@
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:ellipsize="end"
             android:lines="1"
             android:singleLine="true"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

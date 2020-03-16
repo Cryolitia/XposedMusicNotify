@@ -1,6 +1,5 @@
 package cn.nexus6p.QQMusicNotify.Fragment;
 
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,36 +10,23 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
-import android.widget.ImageView;
-import android.widget.Toast;
-
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.topjohnwu.superuser.Shell;
 
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
-import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.R;
-import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
+import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuGeneralPublicLicense30;
@@ -195,7 +181,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("MediaNotification", "https://github.com/Soptq/MediaNotification/tree/Coolapk", "Soptq", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("去除通知栏白色边框", "https://github.com/singleNeuron/XposedRemoveNotificationWhiteFrame", "Copyright 2019 神经元", new MITLicense()));
             notices.addNotice(new Notice("QQ净化", "https://github.com/zpp0196/QQPurify", "zpp0196", new ApacheSoftwareLicense20()));
-            notices.addNotice(new Notice("CustoMIUIzer","https://code.highspec.ru/Mikanoshi/CustoMIUIzer", "Mikanoshi", new GnuGeneralPublicLicense30()));
+            notices.addNotice(new Notice("CustoMIUIzer", "https://code.highspec.ru/Mikanoshi/CustoMIUIzer", "Mikanoshi", new GnuGeneralPublicLicense30()));
             new LicensesDialog.Builder(Objects.requireNonNull(getContext()))
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
@@ -267,27 +253,29 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });*/
 
-        try {
+        /*try {
             Shell.Result result0 = Shell.su("getenforce").exec();
             if (result0.getOut().get(0).contains("Permissive")) findPreference("selinux").setVisible(false);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         SwitchPreferenceCompat pmPreference = (SwitchPreferenceCompat) findPreference("pm");
         if (pmPreference.isChecked()) {
             PackageManager packageManager = getActivity().getPackageManager();
             List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
             boolean isChimiInstall = false;
-            boolean isRedirectStorageInstall = false;
+            //boolean isRedirectStorageInstall = false;
             for (PackageInfo packageInfo : packageInfos) {
-                if (packageInfo.packageName.equalsIgnoreCase("chili.xposed.chimi"))
+                if (packageInfo.packageName.equalsIgnoreCase("chili.xposed.chimi")) {
                     isChimiInstall = true;
-                if (packageInfo.packageName.equalsIgnoreCase("moe.shizuku.redirectstorage"))
-                    isRedirectStorageInstall = true;
+                    break;
+                }
+                //if (packageInfo.packageName.equalsIgnoreCase("moe.shizuku.redirectstorage"))
+                //isRedirectStorageInstall = true;
             }
             if (!isChimiInstall) findPreference("chimi").setVisible(false);
-            if (!isRedirectStorageInstall) findPreference("redirectStorage").setVisible(false);
+            //if (!isRedirectStorageInstall) findPreference("redirectStorage").setVisible(false);
         }
 
         findPreference("forceNight").setOnPreferenceChangeListener((preference1, newValue) -> {

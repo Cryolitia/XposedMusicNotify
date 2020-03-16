@@ -1,6 +1,7 @@
 package soptqs.medianotification.utils;
 
 import android.graphics.Color;
+
 import androidx.annotation.ColorInt;
 
 public class ColorUtils {

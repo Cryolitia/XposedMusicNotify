@@ -1,147 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
-	<androidx.preference.PreferenceCategory
-		android:title="设置"
-		android:key="settings"
-		>
-		<androidx.preference.Preference
-			android:title="播放器"
-			android:key="apps"
-			android:dependency="pm"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="全局模式"
-			android:key="music_notification"
-			android:summary="适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.PreferenceScreen
-			android:enabled="true"
-			android:title="自定义通知样式"
-			android:key="media_notification"
-			android:summary="启用全局样式修改后可用，来自媒体通知"
-			>
-		</androidx.preference.PreferenceScreen>
-		<androidx.preference.SwitchPreferenceCompat
-			android:title="显示桌面图标"
-			android:key="showIcon"
-			android:defaultValue="true"
-			/>
-		<androidx.preference.SwitchPreferenceCompat
-			android:title="强制使用暗色主题"
-			android:key="forceNight"
-			android:defaultValue="false"
-			>
-		</androidx.preference.SwitchPreferenceCompat>
-		<androidx.preference.Preference
-			android:title="重新解压配置文件"
-			android:key="reUnzip"
-			android:summary="一般情况下无需使用"
-			>
-		</androidx.preference.Preference>
-	</androidx.preference.PreferenceCategory>
-	<androidx.preference.PreferenceCategory
-		android:title="隐私"
-		>
-		<androidx.preference.SwitchPreferenceCompat
-			android:title="允许读取已安装的应用"
-			android:key="pm"
-			android:summary="开启后可提供更好的体验与适配，不会上传至服务器"
-			android:defaultValue="true"
-			>
-		</androidx.preference.SwitchPreferenceCompat>
-		<androidx.preference.SwitchPreferenceCompat
-			android:title="允许联网"
-			android:key="network"
-			android:summary="自动获取最新的适配文件"
-			android:defaultValue="true"
-			>
-		</androidx.preference.SwitchPreferenceCompat>
-	</androidx.preference.PreferenceCategory>
-	<androidx.preference.PreferenceCategory
-		android:title="故障排除"
-		>
-		<androidx.preference.Preference
-			android:title="存储重定向"
-			android:summary="如果安装了存储重定向，请允许所有播放软件读取/sdcard/Android/data/cn.nexus6p.QQMusicNotify"
-			android:key="redirectStorage"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="吃米"
-			android:summary="有报告称吃米可能与此模块有不良的相互作用，如此模块工作不正常请尝试禁用吃米并重启"
-			android:key="chimi"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="更新后无效"
-			android:summary="请在更新后重新勾选模块并重启手机"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="太极"
-			android:summary="如果EdXposed/Xposed等用户报告此模块工作正常但不在您的太极上工作。很大可能是太极的适配引擎又出现了问题/压根就没支持"
-			android:key="taichiProblem"
-			app:isPreferenceVisible="false"
-			>
-		</androidx.preference.Preference>
-	</androidx.preference.PreferenceCategory>
-	<androidx.preference.PreferenceCategory
-		android:title="关于"
-		>
-		<androidx.preference.Preference
-			android:icon="@drawable/singleneuron"
-			android:title="作者"
-			android:key="author"
-			android:summary="神经元"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="特别感谢"
-			android:summary="部分代码合并自祈无的MusicNotification、Soptq的MediaNotification\n感谢卖动绘制图标"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="版本"
-			android:key="version"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="状态"
-			android:key="statue"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="联系作者"
-			android:key="connect"
-			android:summary="liziyuan0720@gmail.com"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="加入QQ群"
-			android:key="qqqun"
-			android:summary="951343825"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="Telegram频道/群组"
-			android:key="telegram"
-			android:summary="@NeuronDevelopChannel"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:icon="@drawable/github"
-			android:title="项目地址"
-			android:key="github"
-			android:summary="https://github.com/singleNeuron/QQMusicNotify"
-			>
-		</androidx.preference.Preference>
-		<androidx.preference.Preference
-			android:title="开放源代码许可"
-			android:key="openSource"
-			>
-		</androidx.preference.Preference>
-	</androidx.preference.PreferenceCategory>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.preference.PreferenceCategory
+        android:key="settings"
+        android:title="设置">
+        <androidx.preference.Preference
+            android:dependency="pm"
+            android:key="apps"
+            android:title="播放器" />
+        <androidx.preference.Preference
+            android:key="music_notification"
+            android:summary="适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用"
+            android:title="全局模式" />
+        <androidx.preference.PreferenceScreen
+            android:enabled="true"
+            android:key="media_notification"
+            android:summary="启用全局样式修改后可用，来自媒体通知"
+            android:title="自定义通知样式" />
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="showIcon"
+            android:title="显示桌面图标" />
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="forceNight"
+            android:title="强制使用暗色主题" />
+        <androidx.preference.Preference
+            android:key="reUnzip"
+            android:summary="一般情况下无需使用"
+            android:title="重新解压配置文件" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="隐私">
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pm"
+            android:summary="开启后可提供更好的体验与适配，不会上传至服务器"
+            android:title="允许读取已安装的应用" />
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="network"
+            android:summary="自动获取最新的适配文件"
+            android:title="允许联网" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="故障排除">
+        <!--<androidx.preference.Preference
+            android:title="存储重定向"
+            android:summary="如果安装了存储重定向，请允许所有播放软件读取/sdcard/Android/data/cn.nexus6p.QQMusicNotify"
+            android:key="redirectStorage"
+            >
+        </androidx.preference.Preference>-->
+        <androidx.preference.Preference
+            android:key="chimi"
+            android:summary="有报告称吃米可能与此模块有不良的相互作用，如此模块工作不正常请尝试禁用吃米并重启"
+            android:title="吃米" />
+        <androidx.preference.Preference
+            android:summary="请在更新后重新勾选模块并重启手机"
+            android:title="更新后无效" />
+        <androidx.preference.Preference
+            android:key="taichiProblem"
+            android:summary="如果EdXposed/Xposed等用户报告此模块工作正常但不在您的太极上工作。很大可能是太极的适配引擎又出现了问题/压根就没支持"
+            android:title="太极"
+            app:isPreferenceVisible="false" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="关于">
+        <androidx.preference.Preference
+            android:icon="@drawable/singleneuron"
+            android:key="author"
+            android:summary="神经元"
+            android:title="作者" />
+        <androidx.preference.Preference
+            android:summary="部分代码合并自祈无的MusicNotification、Soptq的MediaNotification\n感谢卖动绘制图标"
+            android:title="特别感谢" />
+        <androidx.preference.Preference
+            android:key="version"
+            android:title="版本" />
+        <androidx.preference.Preference
+            android:key="statue"
+            android:title="状态" />
+        <androidx.preference.Preference
+            android:key="connect"
+            android:summary="liziyuan0720@gmail.com"
+            android:title="联系作者" />
+        <androidx.preference.Preference
+            android:key="qqqun"
+            android:summary="951343825"
+            android:title="加入QQ群" />
+        <androidx.preference.Preference
+            android:key="telegram"
+            android:summary="\@NeuronDevelopChannel"
+            android:title="Telegram频道/群组" />
+        <androidx.preference.Preference
+            android:icon="@drawable/github"
+            android:key="github"
+            android:summary="https://github.com/singleNeuron/QQMusicNotify"
+            android:title="项目地址" />
+        <androidx.preference.Preference
+            android:key="openSource"
+            android:title="开放源代码许可" />
+    </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

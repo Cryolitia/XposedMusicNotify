@@ -11,18 +11,12 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 
-import static android.content.Context.MODE_WORLD_READABLE;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.preferenceChangeListener;
-import static cn.nexus6p.QQMusicNotify. Utils.GeneralUtils.setWorldReadable;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 public class MediaNotificationFragment extends PreferenceFragmentCompat {
     @Override
@@ -35,11 +29,11 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
         preference.setSummary(preference.getEntry());
         preference.setOnPreferenceChangeListener((preference1, newValue) -> {
             preference.setSummary(strings[Integer.parseInt(newValue.toString())]);
-            preferenceChangeListener(preference1,newValue);
+            //preferenceChangeListener(preference1,newValue);
             return true;
         });
 
-        findPreference("inverseTextColors").setOnPreferenceChangeListener((preference1, newValue) -> {
+        /*findPreference("inverseTextColors").setOnPreferenceChangeListener((preference1, newValue) -> {
             preferenceChangeListener(preference1,newValue);
             return true;
         });
@@ -47,29 +41,29 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
         findPreference("highContrastText").setOnPreferenceChangeListener((preference1, newValue) -> {
             preferenceChangeListener(preference1,newValue);
             return true;
-        });
+        });*/
 
         EditTextPreference colorPreference = (EditTextPreference) findPreference("customColor");
         colorPreference.setSummary(colorPreference.getText());
         colorPreference.setOnPreferenceChangeListener((preference1, newValue) -> {
             if (!newValue.toString().matches("\\#[0-9a-fA-F]{6}")) {
-                Log.d("newValue",newValue.toString());
-                Toast.makeText(getActivity(),"请输入16进制RGB颜色",Toast.LENGTH_LONG).show();
+                Log.d("newValue", newValue.toString());
+                Toast.makeText(getActivity(), "请输入16进制RGB颜色", Toast.LENGTH_LONG).show();
                 return false;
             }
             colorPreference.setSummary((CharSequence) newValue);
             GradientDrawable drawable = (GradientDrawable) getContext().getDrawable(R.drawable.color_drawable);
-            drawable.setColor(Color.parseColor((String)newValue));
+            drawable.setColor(Color.parseColor((String) newValue));
             colorPreference.setIcon(drawable);
-            preferenceChangeListener(preference1,newValue);
+            //preferenceChangeListener(preference1,newValue);
             return true;
         });
         GradientDrawable drawable = (GradientDrawable) getContext().getDrawable(R.drawable.color_drawable);
         drawable.setColor(Color.parseColor(colorPreference.getText()));
         findPreference("customColor").setIcon(drawable);
 
-        jumpToLink(this,"author3","https://github.com/Soptq",false);
-        jumpToAlipay(this,"alipay2","FKX02896EL8F1WS3RV8183");
+        jumpToLink(this, "author3", "https://github.com/Soptq", false);
+        jumpToAlipay(this, "alipay2", "FKX02896EL8F1WS3RV8183");
 
         if (PreferenceUtil.isGooglePlay) findPreference("alipay2").setVisible(false);
 

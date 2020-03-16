@@ -1,39 +1,20 @@
 package cn.nexus6p.QQMusicNotify.Utils;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.AndroidAppHelper;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.session.MediaSession;
 import android.net.Uri;
-import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreferenceCompat;
-
-import android.os.Environment;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.jetbrains.anko.ToastsKt;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,60 +28,61 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
-import cn.nexus6p.QQMusicNotify.R;
-import cn.nexus6p.QQMusicNotify.SharedPreferences.JSONPreference;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
 
-    public static Context getContext () {
+    private static boolean isCheckingUpdate = false;
+    private static boolean isDownloading = false;
+
+    public static Context getContext() {
         return AndroidAppHelper.currentApplication().getApplicationContext();
     }
 
-    public static Context getMoudleContext (Context context) {
-        Context moudleContext = null;
+    public static Context getModuleContext(Context context) {
+        Context moduleContext = null;
         try {
-            moudleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+            moduleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
         } catch (PackageManager.NameNotFoundException e) {
             XposedBridge.log(e);
         }
-        return moudleContext;
+        return moduleContext;
     }
 
-    public static Context getMoudleContext () {
-        return getMoudleContext(getContext());
+    public static Context getModuleContext() {
+        return getModuleContext(getContext());
     }
 
-    public static JSONArray getSupportPackages () {
+    public static JSONArray getSupportPackages(Context context) {
         JSONArray jsonArray = null;
         try {
-            jsonArray = new JSONArray(getAssetsString("packages.json"));
+            jsonArray = new JSONArray(getAssetsString("packages.json", context));
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return jsonArray;
     }
 
-    public static boolean isStringInJSONArray (String string,JSONArray jsonArray) {
-        if (jsonArray==null) return false;
-        for (int i=0;i<jsonArray.length();i++) {
+    public static boolean isStringInJSONArray(String string, JSONArray jsonArray) {
+        if (jsonArray == null) return false;
+        for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 if (jsonArray.getJSONObject(i).getString("app").equals(string)) return true;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } return false;
+        }
+        return false;
     }
 
-    public static String getAssetsString(String fileName) {
+    public static String getAssetsString(String fileName, Context context) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            @SuppressLint("SdCardPath") File file = new File("/sdcard/Android/data/cn.nexus6p.QQMusicNotify/files/" +fileName);
+            File file = new File(context.getExternalFilesDir(null) + File.separator + fileName);
             //File file = new File(Environment.getExternalStorageDirectory().getPath()+File.separator+"Android/data/cn.nexus6p.QQMusicNotify/files/" +fileName);
             BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             String line;
@@ -113,18 +95,18 @@ final public class GeneralUtils {
         return stringBuilder.toString();
     }
 
-    public static void jumpToLink (PreferenceFragmentCompat fragment,String preference,String link,boolean isCoolapk) {
+    public static void jumpToLink(PreferenceFragmentCompat fragment, String preference, String link, boolean isCoolapk) {
         fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
             Intent intent = new Intent();
             intent.setAction("android.intent.action.VIEW");
             if (isCoolapk) {
                 intent.setData(Uri.parse(link));
                 try {
-                    intent.setData(Uri.parse("coolmarket://"+link));
+                    intent.setData(Uri.parse("coolmarket://" + link));
                     fragment.startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(fragment.getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
-                    intent.setData(Uri.parse(PreferenceUtil.isGooglePlay?"https://github.com/singleNeuron":"http://www.coolapk.com/"+link));
+                    intent.setData(Uri.parse(PreferenceUtil.isGooglePlay ? "https://github.com/singleNeuron" : "http://www.coolapk.com/" + link));
                     fragment.startActivity(intent);
                     e.printStackTrace();
                 }
@@ -136,7 +118,7 @@ final public class GeneralUtils {
         });
     }
 
-    public static void bindEditTextSummary (EditTextPreference preference) {
+    public static void bindEditTextSummary(EditTextPreference preference) {
         preference.setSummary(preference.getText());
         preference.setOnPreferenceChangeListener((preference1, newValue) -> {
             preference.setSummary((CharSequence) newValue);
@@ -144,17 +126,16 @@ final public class GeneralUtils {
         });
     }
 
-    public static void jumpToAlipay (PreferenceFragmentCompat fragment,String preference,String link) {
+    public static void jumpToAlipay(PreferenceFragmentCompat fragment, String preference, String link) {
         fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
             Intent localIntent = new Intent();
             localIntent.setAction("android.intent.action.VIEW");
-            localIntent.setData(Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + "https://qr.alipay.com/"+link));
-            if (localIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null)
-            {
+            localIntent.setData(Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + "https://qr.alipay.com/" + link));
+            if (localIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
                 fragment.startActivity(localIntent);
                 return true;
             }
-            localIntent.setData(Uri.parse(("https://qr.alipay.com/"+link).toLowerCase()));
+            localIntent.setData(Uri.parse(("https://qr.alipay.com/" + link).toLowerCase()));
             fragment.startActivity(localIntent);
             return true;
         });
@@ -176,14 +157,14 @@ final public class GeneralUtils {
         }
     }
 
-    public static void editFile (File file, Context activity) {
+    public static void editFile(File file, Context activity) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = FileProvider.getUriForFile(activity,BuildConfig.APPLICATION_ID+".fileProvider",file);
-        intent.setDataAndType(uri,"text/*");
+        Uri uri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID + ".fileProvider", file);
+        intent.setDataAndType(uri, "text/*");
         try {
             activity.startActivity(intent);
         } catch (Exception e) {
@@ -191,44 +172,44 @@ final public class GeneralUtils {
         }
     }
 
-    private static boolean isCheckingUpdate = false;
-
     //抄的https://www.jianshu.com/p/4e12da9866a0
-    public static void getJsonFromInternet (MainActivity activity,boolean shouldShowToast) {
+    public static void getJsonFromInternet(MainActivity activity, boolean shouldShowToast) {
         if (isCheckingUpdate) return;
         final String url = "https://xposedmusicnotify.singleneuron.me/config/version.json";
-        if (!getSharedPreferenceOnUI(activity).getBoolean("network",false)) {
-            if(shouldShowToast) Toast.makeText(activity,"联网已禁用，无法检查新版本",Toast.LENGTH_SHORT).show();
+        if (!getSharedPreferenceOnUI(activity).getBoolean("network", false)) {
+            if (shouldShowToast)
+                Toast.makeText(activity, "联网已禁用，无法检查新版本", Toast.LENGTH_SHORT).show();
             return;
         }
         new Thread(() -> {
             try {
                 isCheckingUpdate = true;
-                HttpURLConnection conn=(HttpURLConnection) new URL(url).openConnection();
+                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
                 conn.setConnectTimeout(3000);
                 conn.setRequestMethod("GET");
-                if (conn.getResponseCode()==200) {
-                    InputStream inputStream=conn.getInputStream();
-                    byte[]jsonBytes=convertIsToByteArray(inputStream);
-                    String json=new String(jsonBytes);
-                    if (json.length()>0) {
+                if (conn.getResponseCode() == 200) {
+                    InputStream inputStream = conn.getInputStream();
+                    byte[] jsonBytes = convertIsToByteArray(inputStream);
+                    String json = new String(jsonBytes);
+                    if (json.length() > 0) {
                         activity.runOnUiThread(() -> {
                             try {
                                 JSONObject jsonObject = new JSONObject(json);
                                 int versionCode = jsonObject.optInt("code");
-                                if (versionCode> BuildConfig.VERSION_CODE) {
+                                if (versionCode > BuildConfig.VERSION_CODE) {
                                     new MaterialAlertDialogBuilder(activity)
                                             .setTitle("发现新版本")
                                             .setMessage(jsonObject.optString("name"))
-                                            .setNegativeButton("取消",null)
+                                            .setNegativeButton("取消", null)
                                             .setPositiveButton("下载", (dialogInterface, i) -> {
                                                 Intent localIntent = new Intent("android.intent.action.VIEW");
-                                                localIntent.setData(Uri.parse(PreferenceUtil.isGooglePlay?"https://play.google.com/store/apps/details?id=cn.nexus6p.QQMusicNotify":"https://github.com/singleNeuron/XposedMusicNotify/releases"));
+                                                localIntent.setData(Uri.parse(PreferenceUtil.isGooglePlay ? "https://play.google.com/store/apps/details?id=cn.nexus6p.QQMusicNotify" : "https://github.com/singleNeuron/XposedMusicNotify/releases"));
                                                 activity.startActivity(localIntent);
                                             })
                                             .create()
                                             .show();
-                                } else activity.runOnUiThread(() -> Toast.makeText(activity,"检查更新成功，当前已是最新版本",Toast.LENGTH_SHORT).show());
+                                } else
+                                    activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新成功，当前已是最新版本", Toast.LENGTH_SHORT).show());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -236,10 +217,10 @@ final public class GeneralUtils {
                         return;
                     }
                 }
-                activity.runOnUiThread(() -> Toast.makeText(activity,"检查更新时出错",Toast.LENGTH_SHORT).show());
+                activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新时出错", Toast.LENGTH_SHORT).show());
             } catch (Exception e) {
                 e.printStackTrace();
-                activity.runOnUiThread(() -> Toast.makeText(activity,"检查更新时出错："+e.getMessage(),Toast.LENGTH_LONG).show());
+                activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新时出错：" + e.getMessage(), Toast.LENGTH_LONG).show());
             } finally {
                 try {
                     Thread.sleep(5000);
@@ -251,12 +232,12 @@ final public class GeneralUtils {
         }).start();
     }
 
-    private static byte[] convertIsToByteArray (InputStream inputStream) {
-        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+    private static byte[] convertIsToByteArray(InputStream inputStream) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length;
         try {
-            while ((length=inputStream.read(buffer))!=-1) {
+            while ((length = inputStream.read(buffer)) != -1) {
                 baos.write(buffer, 0, length);
             }
             inputStream.close();
@@ -267,36 +248,34 @@ final public class GeneralUtils {
         return baos.toByteArray();
     }
 
-    private static boolean isDownloading = false;
-
-    public static void downloadFileFromInternet (String locate, MainActivity context) {
+    public static void downloadFileFromInternet(String locate, MainActivity context) {
         if (isDownloading) return;
         new Thread(() -> {
             try {
                 isDownloading = true;
                 SharedPreferences sharedPreferences = getSharedPreferenceOnUI(context);
-                String address = sharedPreferences.getString("onlineGit","https://xposedmusicnotify.singleneuron.me/config/");
-                URL url = new URL(address+locate);
-                String fileName = locate.substring(locate.lastIndexOf("/")+1);
-                HttpURLConnection connection =(HttpURLConnection) url.openConnection();
+                String address = sharedPreferences.getString("onlineGit", "https://xposedmusicnotify.singleneuron.me/config/");
+                URL url = new URL(address + locate);
+                String fileName = locate.substring(locate.lastIndexOf("/") + 1);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setReadTimeout(5000);
                 connection.setConnectTimeout(5000);
-                connection.setRequestProperty("Charset","UTF-8");
+                connection.setRequestProperty("Charset", "UTF-8");
                 connection.setRequestMethod("GET");
-                if (connection.getResponseCode()==200) {
+                if (connection.getResponseCode() == 200) {
                     InputStream inputStream = connection.getInputStream();
                     FileOutputStream fileOutputStream = null;
-                    if (inputStream!=null) {
-                        File file = new File(context.getExternalFilesDir(null)+File.separator +fileName);
+                    if (inputStream != null) {
+                        File file = new File(context.getExternalFilesDir(null) + File.separator + fileName);
                         if (file.exists()) file.delete();
                         fileOutputStream = new FileOutputStream(file);
                         byte[] buf = new byte[1024];
                         int ch;
                         while ((ch = inputStream.read(buf)) != -1) {
-                            fileOutputStream.write(buf,0,ch);
+                            fileOutputStream.write(buf, 0, ch);
                         }
                         context.runOnUiThread(() -> {
-                            Toast.makeText(context,"成功",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
                             try {
                                 context.reload();
                             } catch (Exception e) {
@@ -312,7 +291,7 @@ final public class GeneralUtils {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                context.runOnUiThread(() -> Toast.makeText(context,e.toString(),Toast.LENGTH_LONG).show());
+                context.runOnUiThread(() -> Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show());
             } finally {
                 try {
                     Thread.sleep(5000);
@@ -324,15 +303,16 @@ final public class GeneralUtils {
         }).start();
     }
 
-    public static SharedPreferences getSharedPreferenceOnUI (Context context) {
+    public static SharedPreferences getSharedPreferenceOnUI(Context context) {
         setWorldReadable(context);
         SharedPreferences sharedPreferences = context.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_PRIVATE);
         setWorldReadable(context);
         return sharedPreferences;
     }
 
+    @Deprecated
     public static void preferenceChangeListener(Preference preference, Object newValue) {
-        //Log.d("JSONPreference","begin");
+        /*//Log.d("JSONPreference","begin");
         JSONPreference jsonPreference = JSONPreference.Companion.setter();
         //Log.d("JSONPreference",jsonPreference.jsonObject.toString());
         try {
@@ -341,7 +321,7 @@ final public class GeneralUtils {
             e.printStackTrace();
         }
         jsonPreference.commit();
-        //Log.d("JSONPreference",jsonPreference.jsonObject.toString());
+        //Log.d("JSONPreference",jsonPreference.jsonObject.toString());*/
     }
 
 }

@@ -10,8 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
-import android.media.session.MediaSession;
 import android.os.Build;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.view.View;
@@ -22,20 +20,18 @@ import androidx.core.app.NotificationCompat;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.nexus6p.QQMusicNotify.Base.BasicParam;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
+import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
-import de.robv.android.xposed.XSharedPreferences;
 import me.qiwu.MusicNotification.ColorUtil;
-import cn.nexus6p.QQMusicNotify.R;
 import soptqs.medianotification.utils.NotificationUtils;
 
 import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
 import static android.app.Notification.FLAG_NO_CLEAR;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getMoudleContext;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getModuleContext;
 
 public abstract class BasicNotification extends BasicInit {
 
@@ -63,7 +59,7 @@ public abstract class BasicNotification extends BasicInit {
                         android.R.drawable.ic_media_pause :
                         //Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_pause)) :
                         android.R.drawable.ic_media_play
-                        //Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_play))
+                //Icon.createWithBitmap(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_play))
                 , basicParam.getStatue() ? "暂停" : "播放"
                 , PendingIntent.getBroadcast(basicParam.getContext(), 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
         NotificationCompat.Action nextAction = new NotificationCompat.Action.Builder(
@@ -79,24 +75,25 @@ public abstract class BasicNotification extends BasicInit {
             NotificationCompat.Action extraAction = new NotificationCompat.Action.Builder(extraActionIcon, "桌面歌词", PendingIntent.getBroadcast(basicParam.getContext(), 0, extraActionIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
             actions.add(extraAction);
         }
-        if (PreferenceUtil.getPreference().getBoolean("styleModify",false)) {
+        if (PreferenceUtil.getPreference().getBoolean("styleModify", false)) {
             /*if (basicParam.getBitmap()==null) {
                 RemoteViews remoteViews = getContentView(basicParam.getTitleString().toString(),basicParam.getTextString().toString());
                 return GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
             }*/
             basicParam.setContentIntent(PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
             actionIcons.clear();
-            actionIcons.add(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_skip_previous));
+            actionIcons.add(BitmapFactory.decodeResource(getModuleContext().getResources(), R.drawable.ic_skip_previous));
             actionIcons.add(basicParam.getStatue() ?
                     //android.R.drawable.ic_media_pause :
-                    BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_pause) :
+                    BitmapFactory.decodeResource(getModuleContext().getResources(), R.drawable.ic_pause) :
                     //android.R.drawable.ic_media_play
-                    BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_play));
-            actionIcons.add(BitmapFactory.decodeResource(getMoudleContext().getResources(), R.drawable.ic_skip_next));
-            if (hasExtraAction) actionIcons.add(BitmapFactory.decodeResource(basicParam.getContext().getResources(), extraActionIcon));
-            return new NotificationUtils().setParam(basicParam,actions,actionIcons).updateNotification();
+                    BitmapFactory.decodeResource(getModuleContext().getResources(), R.drawable.ic_play));
+            actionIcons.add(BitmapFactory.decodeResource(getModuleContext().getResources(), R.drawable.ic_skip_next));
+            if (hasExtraAction)
+                actionIcons.add(BitmapFactory.decodeResource(basicParam.getContext().getResources(), extraActionIcon));
+            return new NotificationUtils().setParam(basicParam, actions, actionIcons).updateNotification();
         } else {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(basicParam.getContext(),channelID)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(basicParam.getContext(), channelID)
                     .setContentTitle(basicParam.getTitleString())
                     .setContentText(basicParam.getTextString())
                     .setSmallIcon(basicParam.getIconID())
@@ -114,52 +111,53 @@ public abstract class BasicNotification extends BasicInit {
             if (hasExtraAction)
                 builder.addAction(actions.get(3));
             if (basicParam.getBitmap() == null) builder.setColor(Color.BLACK);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O&&channelID!=null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && channelID != null) {
                 builder.setChannelId(channelID);
             }
             Notification notification = builder.build();
-            if (basicParam.getStatue()) notification.flags = FLAG_FOREGROUND_SERVICE | FLAG_NO_CLEAR;
+            if (basicParam.getStatue())
+                notification.flags = FLAG_FOREGROUND_SERVICE | FLAG_NO_CLEAR;
             contentIntent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             notification.contentIntent = PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             return notification;
         }
     }
 
-    private RemoteViews getContentView(String title,String subtitle){
-        int backgroundColor = Color.parseColor(PreferenceUtil.getPreference().getString("customColor","#000000"));
+    private RemoteViews getContentView(String title, String subtitle) {
+        int backgroundColor = Color.parseColor(PreferenceUtil.getPreference().getString("customColor", "#000000"));
         int textColor = Color.WHITE;
-        if (basicParam.getBitmap()!=null){
+        if (basicParam.getBitmap() != null) {
             int[] colors = ColorUtil.getColor(basicParam.getBitmap());
             backgroundColor = colors[0];
             textColor = colors[1];
         }
-        RemoteViews remoteViews = new RemoteViews(getMoudleContext(basicParam.getContext()).getPackageName(),R.layout.notifition_layout);
+        RemoteViews remoteViews = new RemoteViews(GeneralUtils.getModuleContext(basicParam.getContext()).getPackageName(), R.layout.notifition_layout);
 
-        remoteViews.setTextViewText(R.id.appName,basicParam.getContext().getPackageManager().getApplicationLabel(AndroidAppHelper.currentApplicationInfo()));
-        remoteViews.setTextViewText(R.id.title,title);
-        remoteViews.setTextViewText(R.id.subtitle,subtitle);
+        remoteViews.setTextViewText(R.id.appName, basicParam.getContext().getPackageManager().getApplicationLabel(AndroidAppHelper.currentApplicationInfo()));
+        remoteViews.setTextViewText(R.id.title, title);
+        remoteViews.setTextViewText(R.id.subtitle, subtitle);
         //remoteViews.setImageViewIcon(R.id.smallIcon,notification.getSmallIcon());
 
 
         remoteViews.setImageViewBitmap(
-                R.id.smallIcon,basicParam.getIconID() != -1
+                R.id.smallIcon, basicParam.getIconID() != -1
                         ? getBitmap(basicParam.getContext().getDrawable(basicParam.getIconID()))
                         //        :null
-                        : getBitmap(getMoudleContext(basicParam.getContext()).getDrawable(R.drawable.ic_music))
+                        : getBitmap(GeneralUtils.getModuleContext(basicParam.getContext()).getDrawable(R.drawable.ic_music))
         );
 
-        remoteViews.setTextColor(R.id.appName,textColor);
-        remoteViews.setTextColor(R.id.title,textColor);
-        remoteViews.setTextColor(R.id.subtitle,textColor);
-        remoteViews.setImageViewBitmap(R.id.largeIcon,basicParam.getBitmap());
-        remoteViews.setInt(R.id.smallIcon,"setColorFilter",textColor);
-        remoteViews.setInt(R.id.foregroundImage,"setColorFilter", backgroundColor);
+        remoteViews.setTextColor(R.id.appName, textColor);
+        remoteViews.setTextColor(R.id.title, textColor);
+        remoteViews.setTextColor(R.id.subtitle, textColor);
+        remoteViews.setImageViewBitmap(R.id.largeIcon, basicParam.getBitmap());
+        remoteViews.setInt(R.id.smallIcon, "setColorFilter", textColor);
+        remoteViews.setInt(R.id.foregroundImage, "setColorFilter", backgroundColor);
         remoteViews.setInt(R.id.background, "setBackgroundColor", backgroundColor);
         TypedArray typedArray = basicParam.getContext().obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
         int selectableItemBackground = typedArray.getResourceId(0, 0);
         typedArray.recycle();
-        int actionIconID=-1;
-        for (int i = 0;i<=2;i++) {
+        int actionIconID = -1;
+        for (int i = 0; i <= 2; i++) {
             switch (i) {
                 case 0:
                     actionIconID = //android.R.drawable.ic_media_previous;
@@ -176,17 +174,17 @@ public abstract class BasicNotification extends BasicInit {
                             R.drawable.ic_skip_next;
                     break;
             }
-            int id = getMoudleContext(basicParam.getContext()).getResources().getIdentifier("ic_" + i, "id", BuildConfig.APPLICATION_ID);
+            int id = GeneralUtils.getModuleContext(basicParam.getContext()).getResources().getIdentifier("ic_" + i, "id", BuildConfig.APPLICATION_ID);
             NotificationCompat.Action action = actions.get(i);
             remoteViews.setViewVisibility(id, View.VISIBLE);
-            remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(getMoudleContext(basicParam.getContext()).getResources(), actionIconID));
+            remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(GeneralUtils.getModuleContext(basicParam.getContext()).getResources(), actionIconID));
             remoteViews.setOnClickPendingIntent(id, action.actionIntent);
             remoteViews.setInt(id, "setColorFilter", textColor);
             remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
             // XposedBridge.log("资源："+action.getIcon());
         }
         if (hasExtraAction) {
-            int id = getMoudleContext(basicParam.getContext()).getResources().getIdentifier("ic_" + 3, "id", BuildConfig.APPLICATION_ID);
+            int id = GeneralUtils.getModuleContext(basicParam.getContext()).getResources().getIdentifier("ic_" + 3, "id", BuildConfig.APPLICATION_ID);
             NotificationCompat.Action action = actions.get(3);
             remoteViews.setViewVisibility(id, View.VISIBLE);
             remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(basicParam.getContext().getResources(), extraActionIcon));
@@ -197,7 +195,7 @@ public abstract class BasicNotification extends BasicInit {
         return remoteViews;
     }
 
-    private Bitmap getBitmap(Drawable vectorDrawable){
+    private Bitmap getBitmap(Drawable vectorDrawable) {
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
                 vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

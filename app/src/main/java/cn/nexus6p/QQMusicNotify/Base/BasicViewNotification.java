@@ -9,10 +9,6 @@ import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-import org.json.JSONObject;
-
-import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
-
 public abstract class BasicViewNotification extends BasicNotification {
 
     public Notification oldNotification;
@@ -21,15 +17,17 @@ public abstract class BasicViewNotification extends BasicNotification {
     public int bitmapID;
     public String className = "";
     public String methodName = "";
-    protected BasicViewNotification() { }
 
-    public final Notification viewBuild () {
-        if (oldNotification==null) {
-            Log.e("QQMusicNotify","oldNotification should not be null!");
+    protected BasicViewNotification() {
+    }
+
+    public final Notification viewBuild() {
+        if (oldNotification == null) {
+            Log.e("QQMusicNotify", "oldNotification should not be null!");
             return null;
         }
         RemoteViews remoteViews = oldNotification.bigContentView;
-        View view = remoteViews.apply(basicParam.getContext(),null);
+        View view = remoteViews.apply(basicParam.getContext(), null);
         TextView titleTextView = view.findViewById(titleID);
         TextView textTextView = view.findViewById(textID);
         ImageView imageView = view.findViewById(bitmapID);

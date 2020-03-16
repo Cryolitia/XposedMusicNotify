@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:baselineAligned="false">
 
     <RelativeLayout
         android:id="@+id/image"
@@ -13,20 +13,20 @@
         android:layout_alignParentEnd="true">
 
         <ImageView
-        android:id="@+id/largeIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+            android:id="@+id/largeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
 
 
         <ImageView
-        android:id="@+id/foregroundImage"
-        android:layout_width="96dp"
-        android:layout_height="match_parent"
-        android:layout_alignStart="@id/largeIcon"
-        android:src="@drawable/background_image" />
+            android:id="@+id/foregroundImage"
+            android:layout_width="96dp"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@id/largeIcon"
+            android:src="@drawable/background_image" />
 
     </RelativeLayout>
 
@@ -36,10 +36,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:orientation="vertical"
-        android:paddingBottom="12dp"
         android:paddingStart="16dp"
+        android:paddingTop="16dp"
         android:paddingEnd="144dp"
-        android:paddingTop="16dp">
+        android:paddingBottom="12dp">
 
         <LinearLayout
             android:layout_width="wrap_content"

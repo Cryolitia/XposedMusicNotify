@@ -1,7 +1,6 @@
 package cn.nexus6p.QQMusicNotify.SharedPreferences
 
 import android.content.SharedPreferences
-import java.lang.RuntimeException
 
 abstract class BasePreference : SharedPreferences {
 

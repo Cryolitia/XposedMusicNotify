@@ -23,26 +23,27 @@ public class comsingclient extends BasicViewNotification {
     @Override
     public void init() {
 
-        Class songClazz = XposedHelpers.findClass("com.sing.client.model.Song",classLoader);
-        XposedHelpers.findAndHookMethod("com.kugou.common.player.manager.b", classLoader, "h",songClazz, new XC_MethodHook() {
+        Class songClazz = XposedHelpers.findClass("com.sing.client.model.Song", classLoader);
+        XposedHelpers.findAndHookMethod("com.kugou.common.player.manager.b", classLoader, "h", songClazz, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                oldNotification = (Notification) XposedHelpers.getObjectField(param.thisObject,"b");
-                basicParam.setContext ((Context) XposedHelpers.getObjectField(param.thisObject,"a"));
+                oldNotification = (Notification) XposedHelpers.getObjectField(param.thisObject, "b");
+                basicParam.setContext((Context) XposedHelpers.getObjectField(param.thisObject, "a"));
                 basicParam.setIconID(0x7f0207f1);
                 titleID = 0x7f100bf8;
                 textID = 0x7f100bf9;
                 bitmapID = 0x7f100bf7;
-                View view = oldNotification.bigContentView.apply(basicParam.getContext(),null);
+                View view = oldNotification.bigContentView.apply(basicParam.getContext(), null);
                 try {
-                    basicParam.setBitmap(((BitmapDrawable)((ImageView) view.findViewById(bitmapID)).getDrawable()).getBitmap());
+                    basicParam.setBitmap(((BitmapDrawable) ((ImageView) view.findViewById(bitmapID)).getDrawable()).getBitmap());
                     basicParam.setTextString(((TextView) view.findViewById(titleID)).getText());
                     basicParam.setTextString(((TextView) view.findViewById(textID)).getText());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (mTOKEN==null) mTOKEN = new MediaSession(basicParam.getContext(),"MediaSessionHelper").getSessionToken();
+                if (mTOKEN == null)
+                    mTOKEN = new MediaSession(basicParam.getContext(), "MediaSessionHelper").getSessionToken();
                 basicParam.setToken(mTOKEN);
                 playIntent = new Intent("com.sing.client.click_action_pause");
                 preSongIntent = new Intent("com.sing.client.click_action_pre");
@@ -50,9 +51,9 @@ public class comsingclient extends BasicViewNotification {
                 hasExtraAction = false;
                 extraActionIcon = 0x7f020207;
                 extraActionIntent = new Intent("com.sing.client.click_action_lyric");
-                contentIntent = new Intent().putExtra("isFrom","isFromPlay").setClass(basicParam.getContext(),XposedHelpers.findClass("com.sing.client.play.ui.PlayerActivity",classLoader));
+                contentIntent = new Intent().putExtra("isFrom", "isFromPlay").setClass(basicParam.getContext(), XposedHelpers.findClass("com.sing.client.play.ui.PlayerActivity", classLoader));
                 intentRequestID = 5;
-                XposedHelpers.setObjectField(param.thisObject,"b",build());
+                XposedHelpers.setObjectField(param.thisObject, "b", build());
             }
         });
     }
