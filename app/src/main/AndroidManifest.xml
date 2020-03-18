@@ -30,6 +30,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <activity
+            android:name=".BackgroundActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/noDisplay">
+        </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="cn.nexus6p.QQMusicNotify.fileProvider"
@@ -39,6 +44,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <provider
+            android:authorities="cn.nexus6p.QQMusicNotify.provider"
+            android:name=".ContentProvider"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:directBootAware="true"
+            tools:ignore="ExportedContentProvider" />
 
         <meta-data
             android:name="xposedmodule"

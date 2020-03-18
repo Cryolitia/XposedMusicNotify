@@ -13,7 +13,7 @@ import androidx.annotation.Keep;
 import org.json.JSONArray;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicViewNotification;
-import cn.nexus6p.QQMusicNotify.SharedPreferences.JSONPreference;
+import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -26,7 +26,7 @@ public class comtencentkaraoke extends BasicViewNotification {
 
     @Override
     public void init() {
-        SharedPreferences preference = PreferenceUtil.getJSONPreference("com.tencent.karaoke");
+        SharedPreferences preference = PreferenceUtil.getJSONPreference("com.tencent.karaoke", basicParam.getContext());
         className = preference.getString("class", "");
         methodName = preference.getString("method", "");
         titleID = preference.getInt("titleID", -1);
@@ -40,7 +40,7 @@ public class comtencentkaraoke extends BasicViewNotification {
         String deleteField = preference.getString("deleteField", "");
         String IntentHandleActivity = preference.getString("IntentHandleActivity", "");
 
-        JSONArray params = ((JSONPreference) preference).jsonObject.optJSONArray("params");
+        JSONArray params = ((ContentProviderPreference) preference).jsonObject.optJSONArray("params");
         Object[] objects = new Object[params.length() + 1];
         try {
             for (int i = 0; i < params.length(); i++) {

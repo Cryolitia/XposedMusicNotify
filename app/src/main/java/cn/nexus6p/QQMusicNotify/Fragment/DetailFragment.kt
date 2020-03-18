@@ -36,7 +36,6 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.detail)
-        setWorldReadable(activity)
         val list = ArrayList<String>()
         if (arguments == null) throw IllegalAccessException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
         val packageName = arguments!!.getString("packageName")
@@ -64,7 +63,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             preferenceChangeListener(preference, newValue)
             true
         }*/
-        findPreference<Preference>("taichi")!!.isVisible = HookStatue.isExpModuleActive(activity)
+        findPreference<Preference>("taichi")!!.isVisible = HookStatue.isExpModuleActive(activity) > 0
         val file = File(activity!!.getExternalFilesDir(null).toString() + File.separator + packageName + ".json")
         try {
             val supportedVersionPreference = findPreference<Preference>("supportedVersion")
@@ -165,6 +164,5 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             }
         } else findPreference<Preference>("channelSetting")!!.isVisible = false
 
-        setWorldReadable(activity)
     }
 }

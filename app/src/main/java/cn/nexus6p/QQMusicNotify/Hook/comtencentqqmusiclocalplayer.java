@@ -32,7 +32,7 @@ public class comtencentqqmusiclocalplayer extends BasicNotification {
                 basicParam.setIconID(0x7f020099);
                 basicParam.setContext((Context) param.args[0]);
                 basicParam.setBitmap((Bitmap) param.args[2]);
-                basicParam.setStatue((!(Boolean) XposedHelpers.callStaticMethod(clazzO, "a") && ((Boolean) XposedHelpers.callStaticMethod(clazzO, "e") || (Boolean) XposedHelpers.callStaticMethod(clazzO, "b"))));
+                basicParam.setStatue((!(Boolean) XposedHelpers.callStaticMethod(clazzO, "a") && (XposedHelpers.callStaticMethod(clazzO, "e") || XposedHelpers.callStaticMethod(clazzO, "b"))));
                 if (mTOKEN == null)
                     mTOKEN = new MediaSession(basicParam.getContext(), "mbr").getSessionToken();
                 basicParam.setToken(mTOKEN);

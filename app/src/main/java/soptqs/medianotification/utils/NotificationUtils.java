@@ -77,7 +77,7 @@ public class NotificationUtils {
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
                 //.setDeleteIntent(PendingIntent.getService(this, 0, deleteIntent, 0))
 //                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle())
-                .setOngoing(isPlaying || PreferenceUtil.getPreference().getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
+                .setOngoing(isPlaying || PreferenceUtil.getPreference(getContext()).getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
                 .setVisibility(VISIBILITY_PUBLIC);
 
         if (deleteIntent != null) builder.setDeleteIntent(deleteIntent);
@@ -139,9 +139,9 @@ public class NotificationUtils {
         remoteViews.setViewVisibility(R.id.largeIcon, View.VISIBLE);
         remoteViews.setImageViewBitmap(R.id.largeIcon, largeIcon);
         Palette palette = PaletteUtils.getPalette(largeIcon);
-        Palette.Swatch swatch = PaletteUtils.getSwatch(palette);
+        Palette.Swatch swatch = PaletteUtils.getSwatch(palette, getContext());
 
-        int color = PaletteUtils.getTextColor(palette, swatch);
+        int color = PaletteUtils.getTextColor(palette, swatch, getContext());
         remoteViews.setInt(R.id.image, "setBackgroundColor", swatch.getRgb());
         remoteViews.setInt(R.id.foregroundImage, "setColorFilter", swatch.getRgb());
         //remoteViews.setInt(R.id.arrow, "setColorFilter", color);

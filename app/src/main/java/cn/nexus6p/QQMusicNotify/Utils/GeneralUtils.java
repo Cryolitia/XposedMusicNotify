@@ -1,13 +1,16 @@
 package cn.nexus6p.QQMusicNotify.Utils;
 
 import android.app.AndroidAppHelper;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -32,6 +35,7 @@ import java.net.URL;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
+import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
@@ -60,7 +64,7 @@ final public class GeneralUtils {
     public static JSONArray getSupportPackages(Context context) {
         JSONArray jsonArray = null;
         try {
-            jsonArray = new JSONArray(getAssetsString("packages.json", context));
+            jsonArray = new JSONArray(((ContentProviderPreference) PreferenceUtil.getJSONPreference("packages", context)).getOriginalJsonString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -141,7 +145,7 @@ final public class GeneralUtils {
         });
     }
 
-    public static void setWorldReadable(Context context) {
+    /*public static void setWorldReadable(Context context) {
         try {
             File dataDir = new File(context.getApplicationInfo().dataDir);
             File prefsDir = new File(dataDir, "shared_prefs");
@@ -155,7 +159,7 @@ final public class GeneralUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static void editFile(File file, Context activity) {
         Intent intent = new Intent();
@@ -181,15 +185,29 @@ final public class GeneralUtils {
                 Toast.makeText(activity, "联网已禁用，无法检查新版本", Toast.LENGTH_SHORT).show();
             return;
         }
-        new Thread(() -> {
+        AlertDialog alertDialog = null;
+        if (shouldShowToast) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(activity);
+            builder.setTitle("检查更新中...");
+            builder.setCancelable(false);
+            ProgressBar progressBar = new ProgressBar(activity);
+            builder.setView(progressBar);
+            alertDialog = builder.create();
+        }
+        AlertDialog finalAlertDialog = alertDialog;
+        Thread thread = new Thread(() -> {
             try {
                 isCheckingUpdate = true;
                 HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-                conn.setConnectTimeout(3000);
+                conn.setConnectTimeout(5000);
                 conn.setRequestMethod("GET");
                 if (conn.getResponseCode() == 200) {
                     InputStream inputStream = conn.getInputStream();
                     byte[] jsonBytes = convertIsToByteArray(inputStream);
+                    if (Thread.currentThread().isInterrupted()) {
+                        activity.runOnUiThread(() -> Toast.makeText(activity, "操作被取消", Toast.LENGTH_SHORT).show());
+                        return;
+                    }
                     String json = new String(jsonBytes);
                     if (json.length() > 0) {
                         activity.runOnUiThread(() -> {
@@ -197,6 +215,7 @@ final public class GeneralUtils {
                                 JSONObject jsonObject = new JSONObject(json);
                                 int versionCode = jsonObject.optInt("code");
                                 if (versionCode > BuildConfig.VERSION_CODE) {
+                                    if (shouldShowToast) finalAlertDialog.dismiss();
                                     new MaterialAlertDialogBuilder(activity)
                                             .setTitle("发现新版本")
                                             .setMessage(jsonObject.optString("name"))
@@ -208,8 +227,8 @@ final public class GeneralUtils {
                                             })
                                             .create()
                                             .show();
-                                } else
-                                    activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新成功，当前已是最新版本", Toast.LENGTH_SHORT).show());
+                                } else if (shouldShowToast) finalAlertDialog.dismiss();
+                                activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新成功，当前已是最新版本", Toast.LENGTH_SHORT).show());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -217,9 +236,17 @@ final public class GeneralUtils {
                         return;
                     }
                 }
-                activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新时出错", Toast.LENGTH_SHORT).show());
+                if (shouldShowToast) finalAlertDialog.dismiss();
+                activity.runOnUiThread(() -> {
+                    try {
+                        Toast.makeText(activity, "网络连接错误：" + conn.getResponseMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             } catch (Exception e) {
                 e.printStackTrace();
+                if (shouldShowToast) finalAlertDialog.dismiss();
                 activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新时出错：" + e.getMessage(), Toast.LENGTH_LONG).show());
             } finally {
                 try {
@@ -229,7 +256,12 @@ final public class GeneralUtils {
                 }
                 isCheckingUpdate = false;
             }
-        }).start();
+        });
+        if (shouldShowToast) {
+            alertDialog.setButton(Dialog.BUTTON_NEGATIVE, "取消", (dialog, which) -> thread.interrupt());
+            alertDialog.show();
+        }
+        thread.start();
     }
 
     private static byte[] convertIsToByteArray(InputStream inputStream) {
@@ -238,6 +270,7 @@ final public class GeneralUtils {
         int length;
         try {
             while ((length = inputStream.read(buffer)) != -1) {
+                if (Thread.currentThread().isInterrupted()) return null;
                 baos.write(buffer, 0, length);
             }
             inputStream.close();
@@ -304,24 +337,15 @@ final public class GeneralUtils {
     }
 
     public static SharedPreferences getSharedPreferenceOnUI(Context context) {
-        setWorldReadable(context);
-        SharedPreferences sharedPreferences = context.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_PRIVATE);
-        setWorldReadable(context);
-        return sharedPreferences;
+        return context.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_PRIVATE);
     }
 
-    @Deprecated
-    public static void preferenceChangeListener(Preference preference, Object newValue) {
-        /*//Log.d("JSONPreference","begin");
-        JSONPreference jsonPreference = JSONPreference.Companion.setter();
-        //Log.d("JSONPreference",jsonPreference.jsonObject.toString());
-        try {
-            jsonPreference.jsonObject.putOpt(preference.getKey(),newValue);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        jsonPreference.commit();
-        //Log.d("JSONPreference",jsonPreference.jsonObject.toString());*/
+    public static void deviceContextPreferenceChangeListener(Preference preference, Object newValue, Context strongeContext) {
+        Context deviceContext = strongeContext.createDeviceProtectedStorageContext();
+        SharedPreferences deviceProtectedSharedPreferences = deviceContext.getSharedPreferences("deviceProtected", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = deviceProtectedSharedPreferences.edit();
+        editor.putBoolean(preference.getKey(), (Boolean) newValue);
+        editor.apply();
     }
 
 }

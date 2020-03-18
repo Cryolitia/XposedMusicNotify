@@ -14,7 +14,6 @@ import android.util.Log;
 
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import static android.content.ContentValues.TAG;
@@ -55,7 +54,7 @@ public class ImageUtils {
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable == null)
-            return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
+            return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 
         Bitmap bitmap;
 

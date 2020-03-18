@@ -6,10 +6,15 @@ android {
 
     defaultConfig {
         applicationId "me.singleneuron.originalmusicnotification_debugtool"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -21,5 +26,10 @@ android {
 
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
+    implementation 'com.github.topjohnwu.libsu:core:2.5.0'
 }

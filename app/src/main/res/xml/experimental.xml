@@ -5,4 +5,9 @@
         android:key="debugMode"
         android:summary="打开后将禁用自动更新检查及解压配置文件"
         android:title="Debug Mode" />
+    <androidx.preference.SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="fakeTaichi"
+        android:summary="强制模拟为太极激活，非太极用户打开后可能有想不到的惊喜"
+        android:title="Fake Taichi" />
 </androidx.preference.PreferenceScreen>

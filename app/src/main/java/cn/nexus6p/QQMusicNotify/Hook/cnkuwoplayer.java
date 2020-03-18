@@ -28,7 +28,7 @@ public class cnkuwoplayer extends BasicNotification {
 
     @Override
     public void init() {
-        SharedPreferences preference = PreferenceUtil.getJSONPreference("cn.kuwo.player");
+        SharedPreferences preference = PreferenceUtil.getJSONPreference("cn.kuwo.player", basicParam.getContext());
         String className = preference.getString("class", "");
         String methodName = preference.getString("method", "");
         int iconID = preference.getInt("iconID", -1);

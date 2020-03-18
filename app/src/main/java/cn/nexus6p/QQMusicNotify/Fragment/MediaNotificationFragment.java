@@ -16,16 +16,14 @@ import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 public class MediaNotificationFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
         addPreferencesFromResource(cn.nexus6p.QQMusicNotify.R.xml.media_notification);
-        setWorldReadable(getActivity());
         String[] strings = getContext().getResources().getStringArray(R.array.pickColorMode);
-        ListPreference preference = (ListPreference) findPreference("colorMethod");
+        ListPreference preference = findPreference("colorMethod");
         preference.setSummary(preference.getEntry());
         preference.setOnPreferenceChangeListener((preference1, newValue) -> {
             preference.setSummary(strings[Integer.parseInt(newValue.toString())]);
@@ -43,7 +41,7 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
             return true;
         });*/
 
-        EditTextPreference colorPreference = (EditTextPreference) findPreference("customColor");
+        EditTextPreference colorPreference = findPreference("customColor");
         colorPreference.setSummary(colorPreference.getText());
         colorPreference.setOnPreferenceChangeListener((preference1, newValue) -> {
             if (!newValue.toString().matches("\\#[0-9a-fA-F]{6}")) {
@@ -66,8 +64,6 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
         jumpToAlipay(this, "alipay2", "FKX02896EL8F1WS3RV8183");
 
         if (PreferenceUtil.isGooglePlay) findPreference("alipay2").setVisible(false);
-
-        setWorldReadable(getActivity());
 
     }
 }

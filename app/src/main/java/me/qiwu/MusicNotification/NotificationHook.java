@@ -56,7 +56,7 @@ public class NotificationHook {
                     }*/
 
                     BasicParam basicParam = new BasicParam(
-                            getContext(), resId, title, subtitle, getLargeIcon(notification), PreferenceUtil.getPreference().getBoolean("always_show", false) || (notification.flags == Notification.FLAG_ONGOING_EVENT), null
+                            getContext(), resId, title, subtitle, getLargeIcon(notification), PreferenceUtil.getPreference(getContext()).getBoolean("always_show", false) || (notification.flags == Notification.FLAG_ONGOING_EVENT), null
                     );
                     basicParam.setContentIntent(notification.contentIntent);
                     basicParam.setDeleteIntent(notification.deleteIntent);

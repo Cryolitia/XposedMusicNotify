@@ -8,9 +8,9 @@ import androidx.annotation.Keep;
 
 import org.json.JSONArray;
 
-import java.lang.ref.WeakReference;
-
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
+import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -25,8 +25,6 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 @Keep
 public class initHook implements IXposedHookLoadPackage {
-
-    private static WeakReference<JSONArray> jsonArrayWeakReference = new WeakReference<>(null);
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
@@ -48,22 +46,30 @@ public class initHook implements IXposedHookLoadPackage {
                 }
 
                 if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
-                    findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
+                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
+                    findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam param) {
+                            Log.d("XposedMusicNotify", "模块已激活");
+                            return true;
+                        }
+                    });
                     return;
                 }
-                if (lpparam.packageName.equals("me.singleneuron.originalmusicnotification_debugtool")) {
-                    new cn.nexus6p.QQMusicNotify.Hook.mesingleneuronoriginalmusicnotificationdebugtool().setClassLoader(lpparam.classLoader).init();
-                }
+                /*if (lpparam.packageName.equals("me.singleneuron.originalmusicnotification_debugtool")) {
+                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
+                    new cn.nexus6p.QQMusicNotify.Hook.mesingleneuronoriginalmusicnotificationdebugtool().setClassLoader(lpparam.classLoader).setContext(context).init();
+                }*/
 
                 if (lpparam.packageName.equals("com.android.systemui")) {
-                    if (PreferenceUtil.getPreference().getBoolean("miuiModify", false)) {
+                    if (new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, null, context).getBoolean("miuiModify", false)) {
                         try {
                             cn.nexus6p.removewhitenotificationforbugme.main.handleLoadPackage(lpparam);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                    if (PreferenceUtil.getPreference().getBoolean("miuiForceExpand", false)) {
+                    if (new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, null, context).getBoolean("miuiForceExpand", false)) {
                         try {
                             System.ExpandNotificationsHook(lpparam);
                         } catch (Exception e) {
@@ -74,14 +80,14 @@ public class initHook implements IXposedHookLoadPackage {
                 }
 
                 if (isHookEnabled(lpparam.packageName, context)) {
-                    XposedBridge.log("原生音乐通知：加载包" + lpparam.packageName);
+                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
                     Class c = Class.forName("cn.nexus6p.QQMusicNotify.Hook." + lpparam.packageName.replace(".", ""));
                     HookInterface hookInterface = (HookInterface) c.newInstance();
                     hookInterface.setClassLoader(classLoader).setContext(context).init();
                 }
 
-                if (PreferenceUtil.getPreference().getBoolean("styleModify", false)) {
-                    XposedBridge.log("原生音乐通知：加载包" + lpparam.packageName);
+                if (PreferenceUtil.getPreference(context).getBoolean("styleModify", false)) {
+                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
                     try {
                         new NotificationHook().init(lpparam.packageName);
                     } catch (Exception e) {
@@ -92,20 +98,13 @@ public class initHook implements IXposedHookLoadPackage {
         });
     }
 
-    @Deprecated
     private boolean isHookEnabled(String packageName, Context context) {
-        return false;
-        /*JSONArray jsonArray = jsonArrayWeakReference.get();
+        JSONArray jsonArray = GeneralUtils.getSupportPackages(context);
         if (jsonArray == null) {
-            jsonArray= GeneralUtils.getSupportPackages(context);
-            if (jsonArray != null) jsonArrayWeakReference = new WeakReference<>(jsonArray);
-        }
-        if (jsonArray == null) {
-            Log.d("原生音乐通知", "加载配置文件失败：" + packageName);
+            Log.d("XposedMusicNotify", "加载配置文件失败：" + packageName);
             return false;
         }
-        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (PreferenceUtil.getPreference().getBoolean(packageName + ".enabled", true)));
-        */
+        return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (PreferenceUtil.getPreference(context).getBoolean(packageName + ".enabled", true)));
     }
 
 }

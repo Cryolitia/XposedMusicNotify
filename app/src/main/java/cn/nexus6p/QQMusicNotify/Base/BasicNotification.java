@@ -75,7 +75,7 @@ public abstract class BasicNotification extends BasicInit {
             NotificationCompat.Action extraAction = new NotificationCompat.Action.Builder(extraActionIcon, "桌面歌词", PendingIntent.getBroadcast(basicParam.getContext(), 0, extraActionIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
             actions.add(extraAction);
         }
-        if (PreferenceUtil.getPreference().getBoolean("styleModify", false)) {
+        if (PreferenceUtil.getPreference(basicParam.getContext()).getBoolean("styleModify", false)) {
             /*if (basicParam.getBitmap()==null) {
                 RemoteViews remoteViews = getContentView(basicParam.getTitleString().toString(),basicParam.getTextString().toString());
                 return GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
@@ -124,7 +124,7 @@ public abstract class BasicNotification extends BasicInit {
     }
 
     private RemoteViews getContentView(String title, String subtitle) {
-        int backgroundColor = Color.parseColor(PreferenceUtil.getPreference().getString("customColor", "#000000"));
+        int backgroundColor = Color.parseColor(PreferenceUtil.getPreference(basicParam.getContext()).getString("customColor", "#000000"));
         int textColor = Color.WHITE;
         if (basicParam.getBitmap() != null) {
             int[] colors = ColorUtil.getColor(basicParam.getBitmap());

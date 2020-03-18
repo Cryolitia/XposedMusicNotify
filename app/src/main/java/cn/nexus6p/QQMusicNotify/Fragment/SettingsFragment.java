@@ -26,6 +26,7 @@ import java.util.Objects;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -37,54 +38,61 @@ import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
+import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    int i = 0;
+    private int i = 0;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
         addPreferencesFromResource(R.xml.settings);
-        setWorldReadable(getActivity());
         jumpToLink(this, "author", "u/603406", true);
         jumpToLink(this, "github", "https://github.com/singleNeuron/XposedMusicNotify", false);
         jumpToLink(this, "telegram", "https://t.me/NeuronDevelopChannel", false);
 
+        findPreference("thanks").setOnPreferenceClickListener(preference13 -> {
+            if (i++ > 3) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ExperimentalFragment()).addToBackStack(ExperimentalFragment.class.getSimpleName()).commit();
+                i = 0;
+            }
+            return true;
+        });
         Preference preference = findPreference("statue");
-        if (HookStatue.isEnabled()) {
-            preference.setSummary("Xposed已激活");
-            preference.setOnPreferenceClickListener(preference13 -> {
-                if (i++ > 10) {
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ExperimentalFragment()).addToBackStack(ExperimentalFragment.class.getSimpleName()).commit();
-                    i = 0;
-                }
-                return true;
-            });
-        } else if (HookStatue.isExpModuleActive(getActivity())) {
-            preference.setSummary("太极已激活");
+        boolean fakeTaichi = GeneralUtils.getSharedPreferenceOnUI(getActivity()).getBoolean("fakeTaichi", false);
+        boolean taichi_magisk = false;
+        int ExpStatue = HookStatue.isExpModuleActive(getActivity());
+        try {
+            taichi_magisk = "1".equals(System.getProperty("taichi_magisk"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (fakeTaichi || ExpStatue == 2) {
+            preference.setSummary("太极·阴 已激活");
             Preference taichiProblemPreference = findPreference("taichiProblem");
             taichiProblemPreference.setVisible(true);
             taichiProblemPreference.setOnPreferenceClickListener(preference1 -> {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
                 ImageView imageView = new ImageView(getActivity());
                 imageView.setImageResource(R.drawable.taichi);
-                builder.setView(imageView).create().show();
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setAdjustViewBounds(true);
+                builder.setView(imageView).setPositiveButton("确定", null).create().show();
                 return true;
             });
-            /*try {
-                if (Objects.requireNonNull(System.getProperties().get("taichi_magisk")).toString().equals("1"))
+            try {
+                //Toast.makeText(getActivity(),System.getProperty("taichi_magisk"),Toast.LENGTH_LONG).show();
+                if (taichi_magisk || HookStatue.isEnabled())
                     preference.setSummary("太极·阳 已激活");
-                else {
-                    preference.setSummary("太极·阴 已激活");
-                }
             } catch (Exception e) {
+                //Toast.makeText(getActivity(),e.toString(),Toast.LENGTH_LONG).show();
                 e.printStackTrace();
-                preference.setSummary("太极·阴 已激活");
-            }*/
-        } else {
-            preference.setSummary("模块未激活，您是否已在启用模块后重启手机？");
+            }
+        } else if (HookStatue.isEnabled()) {
+            preference.setSummary("Xposed 已激活");
+        } else if (ExpStatue == 1) {
+            preference.setSummary("太极·" + (taichi_magisk ? "阳" : "阴") + " 未激活");
             preference.setOnPreferenceClickListener(preference1 -> {
                 Intent t = new Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
                 t.setData(Uri.parse("package:" + "cn.nexus6p.QQMusicNotify"));
@@ -92,11 +100,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 try {
                     startActivity(t);
                 } catch (ActivityNotFoundException e) {
-                    // TaiChi not installed.
-                    return false;
+                    preference.setSummary("模块未激活，您是否已在启用或升级模块后重启手机");
                 }
                 return true;
             });
+        } else {
+            preference.setSummary("模块未激活，您是否已在启用或升级模块后重启手机");
         }
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
@@ -128,7 +137,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         //从github.com/zpp0196/QQPurify里抄来的
-        SwitchPreferenceCompat showIcon = (SwitchPreferenceCompat) findPreference("showIcon");
+        SwitchPreferenceCompat showIcon = findPreference("showIcon");
         showIcon.setChecked(getEnable());
         showIcon.setOnPreferenceChangeListener((iconPreference, newValue) -> {
             getActivity().getPackageManager().setComponentEnabledSetting(getAlias(), getEnable() ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
@@ -206,16 +215,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        /*if (Build.VERSION.SDK_INT<Build.VERSION_CODES.O||getActivity().getPreferences(MODE_WORLD_READABLE).getBoolean("forceO",false)) {
-            SwitchPreference switchPreference = new SwitchPreference(getActivity(), null);
-            switchPreference.setTitle("修改版本为Android O");
-            switchPreference.setIconSpaceReserved(true);
-            switchPreference.setSummary("理论上可以使网易云/QQ音乐显示原生设置，未经测试，可能导致手机功能异常或无法启动，风险自负");
-            switchPreference.setKey("forceO");
-            switchPreference.setChecked(false);
-            ((PreferenceCategory) findPreference("settings")).addPreference(switchPreference);
-        }*/
-
         findPreference("reUnzip").setOnPreferenceClickListener(preference12 -> {
             try {
                 for (File file : getActivity().getExternalFilesDir(null).listFiles()) file.delete();
@@ -260,30 +259,30 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             e.printStackTrace();
         }*/
 
-        SwitchPreferenceCompat pmPreference = (SwitchPreferenceCompat) findPreference("pm");
-        if (pmPreference.isChecked()) {
-            PackageManager packageManager = getActivity().getPackageManager();
-            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
-            boolean isChimiInstall = false;
-            //boolean isRedirectStorageInstall = false;
-            for (PackageInfo packageInfo : packageInfos) {
-                if (packageInfo.packageName.equalsIgnoreCase("chili.xposed.chimi")) {
-                    isChimiInstall = true;
-                    break;
-                }
-                //if (packageInfo.packageName.equalsIgnoreCase("moe.shizuku.redirectstorage"))
-                //isRedirectStorageInstall = true;
+        //SwitchPreferenceCompat pmPreference = (SwitchPreferenceCompat) findPreference("pm");
+        //if (pmPreference.isChecked()) {
+        PackageManager packageManager = getActivity().getPackageManager();
+        List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+        boolean isChimiInstall = false;
+        //boolean isRedirectStorageInstall = false;
+        for (PackageInfo packageInfo : packageInfos) {
+            if (packageInfo.packageName.equalsIgnoreCase("chili.xposed.chimi")) {
+                isChimiInstall = true;
+                break;
             }
-            if (!isChimiInstall) findPreference("chimi").setVisible(false);
-            //if (!isRedirectStorageInstall) findPreference("redirectStorage").setVisible(false);
+            //if (packageInfo.packageName.equalsIgnoreCase("moe.shizuku.redirectstorage"))
+            //isRedirectStorageInstall = true;
         }
+        if (!isChimiInstall) findPreference("chimi").setVisible(false);
+        //if (!isRedirectStorageInstall) findPreference("redirectStorage").setVisible(false);
+        //}
 
         findPreference("forceNight").setOnPreferenceChangeListener((preference1, newValue) -> {
             getActivity().recreate();
             return true;
         });
 
-        setWorldReadable(getActivity());
+        findPreference("media_notification").setVisible(getSharedPreferenceOnUI(getActivity()).getBoolean("styleModify", true));
 
     }
 

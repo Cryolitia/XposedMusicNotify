@@ -5,7 +5,6 @@
         android:key="settings"
         android:title="设置">
         <androidx.preference.Preference
-            android:dependency="pm"
             android:key="apps"
             android:title="播放器" />
         <androidx.preference.Preference
@@ -31,11 +30,11 @@
             android:title="重新解压配置文件" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="隐私">
-        <androidx.preference.SwitchPreferenceCompat
+        <!--<androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pm"
             android:summary="开启后可提供更好的体验与适配，不会上传至服务器"
-            android:title="允许读取已安装的应用" />
+            android:title="允许读取已安装的应用" />-->
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="network"
@@ -70,6 +69,7 @@
             android:title="作者" />
         <androidx.preference.Preference
             android:summary="部分代码合并自祈无的MusicNotification、Soptq的MediaNotification\n感谢卖动绘制图标"
+            android:key="thanks"
             android:title="特别感谢" />
         <androidx.preference.Preference
             android:key="version"

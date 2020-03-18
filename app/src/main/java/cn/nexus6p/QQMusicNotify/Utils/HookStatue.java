@@ -12,13 +12,13 @@ import androidx.annotation.Keep;
 @Keep
 public class HookStatue {
     public static Boolean isEnabled() {
-        Log.d("QQNotify", "模块未激活");
+        Log.d("XposedMusicNotify", "模块未激活");
         return false;
     }
 
-    public static boolean isExpModuleActive(Context context) {
+    public static int isExpModuleActive(Context context) {
 
-        boolean isExp = false;
+        int isExp = 0;
         if (context == null) {
             throw new IllegalArgumentException("context must not be null!!");
         }
@@ -36,7 +36,7 @@ public class HookStatue {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 } catch (Throwable e1) {
-                    return false;
+                    return 0;
                 }
             }
             if (result == null) {
@@ -44,9 +44,9 @@ public class HookStatue {
             }
 
             if (result == null) {
-                return false;
+                return 0;
             }
-            isExp = result.getBoolean("active", false);
+            isExp = !result.getBoolean("active", false) ? 1 : 2;
         } catch (Throwable ignored) {
         }
         return isExp;

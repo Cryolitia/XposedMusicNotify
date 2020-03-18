@@ -1,28 +1,21 @@
 package cn.nexus6p.QQMusicNotify.Utils;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
-import cn.nexus6p.QQMusicNotify.SharedPreferences.XSharedPreference;
+import cn.nexus6p.QQMusicNotify.ContentProvider;
+import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
 
 final public class PreferenceUtil {
 
     public static boolean isGooglePlay = false;
 
-    public static SharedPreferences getPreference() {
-        try {
-            if (GeneralUtils.getModuleContext().getApplicationInfo().targetSdkVersion < 24)
-                return XSharedPreference.Companion.get();
-            else return XSharedPreference.Companion.get();
-        } catch (Exception e) {
-            //return JSONPreference.Companion.get("setting");
-            return XSharedPreference.Companion.get();
-        }
+    public static SharedPreferences getPreference(Context context) {
+        return new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_PREFERENCE, null, context);
     }
 
-    @Deprecated
-    public static SharedPreferences getJSONPreference(String packageName) {
-        ///return JSONPreference.Companion.get(packageName);
-        return null;
+    public static SharedPreferences getJSONPreference(String packageName, Context context) {
+        return new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_JSON, packageName, context);
     }
 
 }

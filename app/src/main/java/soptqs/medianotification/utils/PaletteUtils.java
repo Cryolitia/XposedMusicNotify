@@ -1,5 +1,6 @@
 package soptqs.medianotification.utils;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -8,7 +9,6 @@ import androidx.annotation.ColorInt;
 import androidx.palette.graphics.Palette;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
@@ -20,8 +20,8 @@ public class PaletteUtils {
         else return null;
     }
 
-    public static Palette.Swatch getSwatch(Palette palette) {
-        SharedPreferences prefs = PreferenceUtil.getPreference();
+    public static Palette.Swatch getSwatch(Palette palette, Context context) {
+        SharedPreferences prefs = PreferenceUtil.getPreference(context);
 
         if (palette == null)
             return new Palette.Swatch(Color.parseColor(prefs.getString(PreferenceUtils.PREF_CUSTOM_COLOR, "#FFFFFF")), 1);
@@ -53,8 +53,8 @@ public class PaletteUtils {
 
 
     @ColorInt
-    public static int getTextColor(Palette palette, Palette.Swatch swatch) {
-        SharedPreferences prefs = PreferenceUtil.getPreference();
+    public static int getTextColor(Palette palette, Palette.Swatch swatch, Context context) {
+        SharedPreferences prefs = PreferenceUtil.getPreference(context);
         if (prefs.getBoolean(PreferenceUtils.PREF_HIGH_CONTRAST_TEXT, false)) {
             if (ColorUtils.isColorLight(swatch.getRgb()))
                 return Color.BLACK;

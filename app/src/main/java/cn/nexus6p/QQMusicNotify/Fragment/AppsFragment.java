@@ -26,7 +26,6 @@ import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.downloadFileFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.editFile;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 
 public class AppsFragment extends PreferenceFragmentCompat {
@@ -34,28 +33,25 @@ public class AppsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.apps);
-        setWorldReadable(getActivity());
-        boolean PMEnabled = getSharedPreferenceOnUI(getActivity()).getBoolean("pm", true);
+        //boolean PMEnabled = getSharedPreferenceOnUI(getActivity()).getBoolean("pm", true);
         try {
             JSONArray jsonArray = GeneralUtils.getSupportPackages(this.getContext());
             for (int i = 0; i < jsonArray.length(); i++) {
                 String packageName = jsonArray.getJSONObject(i).getString("app");
                 Preference preference = new Preference(getActivity(), null);
-                if (PMEnabled) {
-                    PackageInfo packageInfo;
-                    try {
-                        packageInfo = getActivity().getPackageManager().getPackageInfo(packageName, 0);
-                    } catch (PackageManager.NameNotFoundException e) {
-                        packageInfo = null;
-                    }
-                    if (packageInfo == null) continue;
-                    else
-                        preference.setIcon(getActivity().getPackageManager().getApplicationIcon(packageName));
+                //if (PMEnabled) {
+                PackageInfo packageInfo;
+                try {
+                    packageInfo = getActivity().getPackageManager().getPackageInfo(packageName, 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    packageInfo = null;
                 }
-                //switchPreference.setChecked(true);
+                if (packageInfo == null) continue;
+                else
+                    preference.setIcon(getActivity().getPackageManager().getApplicationIcon(packageName));
+                //}
                 preference.setTitle(jsonArray.getJSONObject(i).getString("name"));
                 preference.setSummary(packageName);
-                //preference.setKey(packageName+".enabled");
                 preference.setOnPreferenceClickListener(preference1 -> {
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, DetailFragment.Companion.newInstance(packageName)).addToBackStack(DetailFragment.class.getSimpleName()).commit();
                     return true;
@@ -110,7 +106,6 @@ public class AppsFragment extends PreferenceFragmentCompat {
             }
             return true;
         });
-        setWorldReadable(getActivity());
 
     }
 

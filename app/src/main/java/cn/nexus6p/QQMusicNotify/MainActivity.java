@@ -1,22 +1,25 @@
 package cn.nexus6p.QQMusicNotify;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.Keep;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -33,7 +36,6 @@ import cn.nexus6p.QQMusicNotify.Fragment.SettingsFragment;
 
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.setWorldReadable;
 
 @Keep
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting);
-        setWorldReadable(this);
 
         //if (savedInstanceState!=null) shouldCheckUpdate = savedInstanceState.getBoolean("shouldCheckUpdate",true);
 
@@ -111,7 +112,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         File file = new File(getExternalFilesDir(null) + File.separator + "version.json");
-        if (!file.exists()) copyAssetsDir2Phone();
+        if (!file.exists()) {
+            copyAssetsDir2Phone();
+            return;
+        }
 
         StringBuilder stringBuilder = new StringBuilder();
         try {
@@ -121,7 +125,12 @@ public class MainActivity extends AppCompatActivity {
                 stringBuilder.append(line);
             }
             JSONObject jsonObject = new JSONObject(stringBuilder.toString());
-            if (jsonObject.optInt("code") < 25) getExternalFilesDir(null).delete();
+            try {
+                if (jsonObject.optInt("code") < 25)
+                    new File(getExternalFilesDir(null) + File.separator + "setting.json").delete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode", false)) && jsonObject.optInt("code") < BuildConfig.VERSION_CODE)
                 copyAssetsDir2Phone();
             else checkUpdate();
@@ -129,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             checkUpdate();
         }
-
-        setWorldReadable(this);
 
     }
 
@@ -156,28 +163,16 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(bundle);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        setWorldReadable(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        setWorldReadable(this);
-    }
-
     public void copyAssetsDir2Phone() {
         try {
             String[] fileList = getAssets().list("config");
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setCancelable(false);
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMax(fileList.length);
-            progressDialog.setTitle("资源文件解压中");
-            progressDialog.show();
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setTitle("配置文件解压中...");
+            builder.setCancelable(false);
+            ProgressBar progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+            progressBar.setMax(fileList.length);
+            builder.setView(progressBar);
+            AlertDialog alertDialog = builder.create();
             new Thread(() -> {
                 try {
                     for (String filePath : fileList) {
@@ -197,16 +192,16 @@ public class MainActivity extends AppCompatActivity {
                         inputStream.close();
                         fos.close();
                         Log.d("MusicNotify", "文件复制完毕");
-                        runOnUiThread(() -> progressDialog.incrementProgressBy(1));
+                        runOnUiThread(() -> progressBar.incrementProgressBy(1));
                     }
                     runOnUiThread(() -> {
-                        progressDialog.dismiss();
+                        alertDialog.dismiss();
                         Toast.makeText(this, "资源文件解压完毕", Toast.LENGTH_SHORT).show();
                         checkUpdate();
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    runOnUiThread(progressDialog::dismiss);
+                    runOnUiThread(alertDialog::dismiss);
                 }
             }).start();
         } catch (Exception e) {
