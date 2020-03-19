@@ -1,31 +1,18 @@
 package cn.nexus6p.QQMusicNotify.Fragment;
 
 
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import org.json.JSONArray;
 
-import java.io.File;
-
-import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
-
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.downloadFileFromInternet;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.editFile;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
 
 
 public class AppsFragment extends PreferenceFragmentCompat {
@@ -62,48 +49,8 @@ public class AppsFragment extends PreferenceFragmentCompat {
             e.printStackTrace();
         }
 
-        try {
-            String path = getActivity().getExternalFilesDir(null) + File.separator + "packages.json";
-            findPreference("editJSON").setOnPreferenceClickListener(preference -> {
-                editFile(new File(path), getActivity());
-                return true;
-            });
-            findPreference("editJSON").setSummary(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        findPreference("refreshPackage").setOnPreferenceClickListener(preference -> {
-            if (!getSharedPreferenceOnUI(getActivity()).getBoolean("network", true)) {
-                Toast.makeText(getActivity(), "联网已禁用", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            downloadFileFromInternet("packages.json", (MainActivity) getActivity());
-            return true;
-        });
-
-        String[] urls = {"https://xposedmusicnotify.singleneuron.me/config/", "https://raw.githubusercontent.com/singleNeuron/XposedMusicNotify/gh-pages/config/", "https://cn.xposedmusicnotify.singleneuron.me/config/"};
-        SharedPreferences sharedPreferences = getSharedPreferenceOnUI(getActivity());
-        ListPreference listPreference = findPreference("onlineGitIndex");
-        listPreference.setSummary(sharedPreferences.getString("onlineGitIndex", "0").equals("3") ? sharedPreferences.getString("onlineGit", "https://xposedmusicnotify.singleneuron.me/config/") : urls[Integer.parseInt(sharedPreferences.getString("onlineGitIndex", "0"))]);
-        listPreference.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (newValue.equals("3")) {
-                final EditText editText = new EditText(getActivity());
-                editText.setText(sharedPreferences.getString("onlineGitIndex", "0").equals("3") ? sharedPreferences.getString("onlineGit", "https://xposedmusicnotify.singleneuron.me/config/") : urls[Integer.parseInt(sharedPreferences.getString("onlineGitIndex", "0"))]);
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
-                builder.setTitle("设置自定义仓库地址")
-                        .setView(editText)
-                        .setPositiveButton("确定", (dialog, which) -> {
-                            String url = editText.getText().toString();
-                            sharedPreferences.edit().putString("onlineGit", url).apply();
-                            listPreference.setSummary(url);
-                        })
-                        .show();
-            } else {
-                String url = urls[Integer.parseInt((String) newValue)];
-                sharedPreferences.edit().putString("onlineGit", url).apply();
-                listPreference.setSummary(url);
-            }
+        findPreference("thirdPartySource").setOnPreferenceClickListener(preference -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ThirdPartySourceFragment()).addToBackStack(ThirdPartySourceFragment.class.getSimpleName()).commit();
             return true;
         });
 

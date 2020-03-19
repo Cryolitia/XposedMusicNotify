@@ -2,18 +2,9 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.preference.PreferenceCategory android:title="全局设置">
         <androidx.preference.Preference
-            android:key="refreshPackage"
-            android:title="刷新本地缓存" />
-        <androidx.preference.ListPreference
-            android:defaultValue="0"
-            android:entries="@array/array_onlineGit"
-            android:entryValues="@array/array_onlineGit_int"
-            android:key="onlineGitIndex"
-            android:summary="https://xposedmusicnotify.singleneuron.me/config/"
-            android:title="远程仓库地址" />
-        <androidx.preference.Preference
-            android:key="editJSON"
-            android:title="编辑本地仓库配置文件" />
+            android:key="thirdPartySource"
+            android:title="源管理"
+            android:summary="管理配置源的订阅和更新" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:key="app"

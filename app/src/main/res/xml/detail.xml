@@ -21,7 +21,7 @@
             android:title="当前配置文件" />
         <androidx.preference.Preference
             android:key="supportedVersion"
-            android:title="支持版本" />
+            android:title="默认源支持版本" />
         <androidx.preference.Preference
             android:key="refresh"
             android:title="刷新本地缓存" />

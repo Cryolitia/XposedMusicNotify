@@ -6,7 +6,6 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import org.json.JSONObject
 
@@ -20,7 +19,7 @@ class ContentProvider : ContentProvider() {
     }
 
     override fun call(method: String, arg: String?, extras: Bundle?): Bundle? {
-        Log.d("XposedMusicNotify", "ContentProvider is called")
+        //Log.d("XposedMusicNotify", "ContentProvider is called")
         val bundle = Bundle()
         if (method == CONTENT_PROVIDER_JSON) {
             //Log.d("XposedMusicNotify","getJsonFile: "+GeneralUtils.getAssetsString("$arg.json",context))

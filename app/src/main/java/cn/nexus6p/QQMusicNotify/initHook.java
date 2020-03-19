@@ -99,7 +99,7 @@ public class initHook implements IXposedHookLoadPackage {
     }
 
     private boolean isHookEnabled(String packageName, Context context) {
-        JSONArray jsonArray = GeneralUtils.getSupportPackages(context);
+        JSONArray jsonArray = PreferenceUtil.getSupportPackages(context);
         if (jsonArray == null) {
             Log.d("XposedMusicNotify", "加载配置文件失败：" + packageName);
             return false;

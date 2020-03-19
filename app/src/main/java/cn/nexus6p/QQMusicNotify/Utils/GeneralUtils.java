@@ -35,7 +35,6 @@ import java.net.URL;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
-import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
@@ -64,7 +63,7 @@ final public class GeneralUtils {
     public static JSONArray getSupportPackages(Context context) {
         JSONArray jsonArray = null;
         try {
-            jsonArray = new JSONArray(((ContentProviderPreference) PreferenceUtil.getJSONPreference("packages", context)).getOriginalJsonString());
+            jsonArray = new JSONArray(getAssetsString("packages.json", context));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -193,6 +192,8 @@ final public class GeneralUtils {
             ProgressBar progressBar = new ProgressBar(activity);
             builder.setView(progressBar);
             alertDialog = builder.create();
+            alertDialog.show();
+
         }
         AlertDialog finalAlertDialog = alertDialog;
         Thread thread = new Thread(() -> {
@@ -282,13 +283,24 @@ final public class GeneralUtils {
     }
 
     public static void downloadFileFromInternet(String locate, MainActivity context) {
+        SharedPreferences sharedPreferences = getSharedPreferenceOnUI(context);
+        String address = sharedPreferences.getString("onlineGit", "https://xposedmusicnotify.singleneuron.me/config/");
+        downloadFileFromInternet(locate, address, context, context.getExternalFilesDir(null));
+    }
+
+    public static void downloadFileFromInternet(String locate, String address, MainActivity context, File dir) {
         if (isDownloading) return;
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("下载中..." + locate);
+        builder.setCancelable(false);
+        ProgressBar progressBar = new ProgressBar(context);
+        builder.setView(progressBar);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
         new Thread(() -> {
             try {
                 isDownloading = true;
-                SharedPreferences sharedPreferences = getSharedPreferenceOnUI(context);
-                String address = sharedPreferences.getString("onlineGit", "https://xposedmusicnotify.singleneuron.me/config/");
-                URL url = new URL(address + locate);
+                URL url = new URL(address + (address.endsWith("/") ? "" : "/") + locate);
                 String fileName = locate.substring(locate.lastIndexOf("/") + 1);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setReadTimeout(5000);
@@ -299,7 +311,7 @@ final public class GeneralUtils {
                     InputStream inputStream = connection.getInputStream();
                     FileOutputStream fileOutputStream = null;
                     if (inputStream != null) {
-                        File file = new File(context.getExternalFilesDir(null) + File.separator + fileName);
+                        File file = new File(dir + File.separator + fileName);
                         if (file.exists()) file.delete();
                         fileOutputStream = new FileOutputStream(file);
                         byte[] buf = new byte[1024];
@@ -308,6 +320,7 @@ final public class GeneralUtils {
                             fileOutputStream.write(buf, 0, ch);
                         }
                         context.runOnUiThread(() -> {
+                            alertDialog.dismiss();
                             Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
                             try {
                                 context.reload();
@@ -327,6 +340,7 @@ final public class GeneralUtils {
                 context.runOnUiThread(() -> Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show());
             } finally {
                 try {
+                    context.runOnUiThread(alertDialog::dismiss);
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
