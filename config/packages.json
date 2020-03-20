@@ -16,6 +16,9 @@
             },{
                 "versionName": "6.15.28.278",
                 "versionCode": "438"
+            },{
+                "versionName": "6.19.28.278",
+                "versionCode": "482"
             }
         ]
     },
@@ -46,9 +49,29 @@
             "versionCode": "9241"
          },
          {
-            "versionName": "9.2.8.2",
-            "versionCode": "9282"
+            "versionName": "9.3.0.1",
+            "versionCode": "9301"
          }
     ]
+    },
+    {
+        "app": "me.singleneuron.originalmusicnotification_debugtool",
+        "name": "原生音乐通知调试器",
+        "supportedVersion": [
+        {
+            "versionName": "1.0",
+            "versionCode": "1"
+        }
+        ]
+    },
+    {
+        "app": "com.kugou.android",
+        "name": "酷狗音乐",
+        "supportedVersion": [
+            {
+                "versionName": "10.1.0",
+                "versionCode": "10101"
+            }
+        ]
     }
 ]
