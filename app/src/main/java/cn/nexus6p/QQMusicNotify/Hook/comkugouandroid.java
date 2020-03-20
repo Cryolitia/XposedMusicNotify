@@ -1,6 +1,9 @@
 package cn.nexus6p.QQMusicNotify.Hook;
 
 import android.os.Build;
+import android.widget.Toast;
+
+import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicInit;
 import de.robv.android.xposed.XC_MethodHook;
@@ -8,6 +11,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
+@Keep
 public class comkugouandroid extends BasicInit {
 
     @Override
@@ -22,7 +26,8 @@ public class comkugouandroid extends BasicInit {
                     Object preference = param.args[0];
                     String key = (String) XposedHelpers.callMethod(preference, "getKey");
                     XposedBridge.log("XposedMusicNotify: get key " + key);
-                    if (key.equals("USE_KG_NOTIFICATION")) param.setResult(true);
+                    Toast.makeText(basicParam.getContext(),"kugou try to remove "+key,Toast.LENGTH_SHORT).show();
+                    if (key.contains("USE_KG_NOTIFICATION")) param.setResult(true);
                 }
             });
         } catch (Exception e) {

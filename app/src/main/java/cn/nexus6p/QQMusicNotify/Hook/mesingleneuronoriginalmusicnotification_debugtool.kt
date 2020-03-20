@@ -1,6 +1,7 @@
 package cn.nexus6p.QQMusicNotify.Hook
 
 import android.util.Log
+import androidx.annotation.Keep
 import cn.nexus6p.QQMusicNotify.Base.BasicInit
 import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.ContentProvider
@@ -9,7 +10,8 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
 import org.jetbrains.anko.toast
 
-class mesingleneuronoriginalmusicnotificationdebugtool : BasicInit() {
+@Keep
+class mesingleneuronoriginalmusicnotification_debugtool : BasicInit() {
 
     override fun init() {
         XposedHelpers.findAndHookMethod("me.singleneuron.originalmusicnotification_debugtool.MainActivity", classLoader, "toHook", object : XC_MethodReplacement() {
@@ -27,6 +29,8 @@ class mesingleneuronoriginalmusicnotificationdebugtool : BasicInit() {
                 print("JSONString: $jsonString")
                 val settingJsonString: String = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_PREFERENCE, null, basicParam.context!!).getJSONString()
                 print("ModuleSettings: $settingJsonString")
+                val deveceProtectedPreference = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE,null,basicParam.context!!).getJSONString()
+                print("DeviceProtectedPreference: $deveceProtectedPreference")
                 return null
             }
 

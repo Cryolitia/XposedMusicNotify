@@ -1,1 +1,1 @@
--keep class cn.nexus6p.QQMusic.*{*;}
+-keep class cn.nexus6p.QQMusicNotify.*{*;}

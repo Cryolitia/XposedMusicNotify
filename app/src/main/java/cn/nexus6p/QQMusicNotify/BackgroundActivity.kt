@@ -2,8 +2,10 @@ package cn.nexus6p.QQMusicNotify
 
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 
+@Keep
 class BackgroundActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

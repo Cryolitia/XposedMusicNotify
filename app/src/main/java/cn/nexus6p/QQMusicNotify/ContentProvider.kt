@@ -3,12 +3,15 @@ package cn.nexus6p.QQMusicNotify
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import androidx.annotation.Keep
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import org.json.JSONObject
 
+@Keep
 class ContentProvider : ContentProvider() {
 
     companion object {
@@ -25,14 +28,13 @@ class ContentProvider : ContentProvider() {
             //Log.d("XposedMusicNotify","getJsonFile: "+GeneralUtils.getAssetsString("$arg.json",context))
             bundle.putString(BUNDLE_KEY_JSON_STRING, GeneralUtils.getAssetsString("$arg.json", context))
         } else {
-            val mContext: Context? = when (method) {
-                CONTENT_PROVIDER_PREFERENCE -> context
-                CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE -> context!!.createDeviceProtectedStorageContext()
+            val mSharedPreferences: SharedPreferences = when (method) {
+                CONTENT_PROVIDER_PREFERENCE -> GeneralUtils.getSharedPreferenceOnUI(context)
+                CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE -> context!!.createDeviceProtectedStorageContext().getSharedPreferences("deviceProtected", Context.MODE_PRIVATE);
                 else -> throw IllegalArgumentException()
             }
 
-            val sharedPreferences = GeneralUtils.getSharedPreferenceOnUI(mContext)
-            bundle.putString(BUNDLE_KEY_JSON_STRING, JSONObject(sharedPreferences.all).toString())
+            bundle.putString(BUNDLE_KEY_JSON_STRING, JSONObject(mSharedPreferences.all).toString())
 
         }
         return bundle
