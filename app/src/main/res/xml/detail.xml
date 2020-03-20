@@ -24,7 +24,7 @@
             android:title="默认源支持版本" />
         <androidx.preference.Preference
             android:key="refresh"
-            android:title="刷新本地缓存" />
+            android:title="从默认源下载当前版本配置文件" />
         <androidx.preference.Preference
             android:key="forceStop"
             android:summary="需要Root"

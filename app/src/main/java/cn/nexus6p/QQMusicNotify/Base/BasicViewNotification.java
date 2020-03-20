@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+
 public abstract class BasicViewNotification extends BasicNotification {
 
     public Notification oldNotification;
@@ -26,14 +29,18 @@ public abstract class BasicViewNotification extends BasicNotification {
             Log.e("QQMusicNotify", "oldNotification should not be null!");
             return null;
         }
-        RemoteViews remoteViews = oldNotification.bigContentView;
+        RemoteViews remoteViews = (RemoteViews) XposedHelpers.getObjectField(oldNotification,"bigContentView");
         View view = remoteViews.apply(basicParam.getContext(), null);
+        /*if (view==null) {
+            Log.e("XposedMusicNotify", "RemoteView shoud not be bull");
+            return null;
+        }*/
         TextView titleTextView = view.findViewById(titleID);
         TextView textTextView = view.findViewById(textID);
         ImageView imageView = view.findViewById(bitmapID);
-        basicParam.setBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
         basicParam.setTitleString(titleTextView.getText());
         basicParam.setTextString(textTextView.getText());
+        basicParam.setBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channelID = oldNotification.getChannelId();
         }

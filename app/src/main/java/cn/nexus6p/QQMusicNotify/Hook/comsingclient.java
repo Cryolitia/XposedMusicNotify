@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.session.MediaSession;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import androidx.annotation.Keep;
@@ -34,7 +35,8 @@ public class comsingclient extends BasicViewNotification {
                 titleID = 0x7f100bf8;
                 textID = 0x7f100bf9;
                 bitmapID = 0x7f100bf7;
-                View view = oldNotification.bigContentView.apply(basicParam.getContext(), null);
+                RemoteViews remoteViews = (RemoteViews) XposedHelpers.getObjectField(oldNotification,"bigContentView");
+                View view = remoteViews.apply(basicParam.getContext(), null);
                 try {
                     basicParam.setBitmap(((BitmapDrawable) ((ImageView) view.findViewById(bitmapID)).getDrawable()).getBitmap());
                     basicParam.setTextString(((TextView) view.findViewById(titleID)).getText());

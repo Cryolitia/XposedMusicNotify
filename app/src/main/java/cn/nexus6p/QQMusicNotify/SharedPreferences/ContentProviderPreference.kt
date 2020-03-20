@@ -23,7 +23,7 @@ class ContentProviderPreference private constructor() : BasePreference() {
         if (bundle == null) {
             this.jsonObject = JSONObject("")
         } else {
-            Log.d("XposedMusicNotify", "getBundle: $bundle")
+            //Log.d("XposedMusicNotify", "getBundle: $bundle")
             originalJsonString = bundle.getString(ContentProvider.BUNDLE_KEY_JSON_STRING)
             try {
                 if (!originalJsonString!!.startsWith('['))
@@ -43,7 +43,7 @@ class ContentProviderPreference private constructor() : BasePreference() {
     }
 
     override fun getInt(key: String?, defValue: Int): Int {
-        return jsonObject.optInt(key, defValue)
+        return jsonObject.optString(key, defValue.toString()).toInt(16)
     }
 
     override fun getString(key: String?, defValue: String?): String? {

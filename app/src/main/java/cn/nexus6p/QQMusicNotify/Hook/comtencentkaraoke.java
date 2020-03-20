@@ -29,9 +29,9 @@ public class comtencentkaraoke extends BasicViewNotification {
         SharedPreferences preference = PreferenceUtil.getJSONPreference("com.tencent.karaoke", basicParam.getContext());
         className = preference.getString("class", "");
         methodName = preference.getString("method", "");
-        titleID = preference.getInt("titleID", -1);
-        textID = preference.getInt("textID", -1);
-        bitmapID = preference.getInt("bitmapID", -1);
+        //titleID = preference.getInt("titleID", -1);
+        //textID = preference.getInt("textID", -1);
+        //bitmapID = preference.getInt("bitmapID", -1);
         basicParam.setIconID(preference.getInt("iconID", -1));
         String intentClass = preference.getString("intentClass", "");
         String preSongField = preference.getString("preSongField", "");
@@ -39,6 +39,11 @@ public class comtencentkaraoke extends BasicViewNotification {
         String nextSongField = preference.getString("nextSongField", "");
         String deleteField = preference.getString("deleteField", "");
         String IntentHandleActivity = preference.getString("IntentHandleActivity", "");
+
+        Class idClass = XposedHelpers.findClass(preference.getString("idClass",""),classLoader);
+        titleID = XposedHelpers.getStaticIntField(idClass,preference.getString("titleField",""));
+        textID = XposedHelpers.getStaticIntField(idClass,preference.getString("textField",""));
+        bitmapID = XposedHelpers.getStaticIntField(idClass,preference.getString("bitmapField",""));
 
         JSONArray params = ((ContentProviderPreference) preference).jsonObject.optJSONArray("params");
         Object[] objects = new Object[params.length() + 1];
@@ -67,7 +72,7 @@ public class comtencentkaraoke extends BasicViewNotification {
                 contentIntent.setData(Uri.parse("qmkege://"))
                         .putExtra("action", "notification_player")
                         .putExtra("from", "from_notification")
-                        .setClassName(basicParam.getContext(), XposedHelpers.findClass(intentClass, classLoader).getCanonicalName())
+                        .setClassName(basicParam.getContext(), XposedHelpers.findClass(IntentHandleActivity, classLoader).getCanonicalName())
                         .addCategory("android.intent.category.DEFAULT");
                 XposedBridge.log("加载方法完毕");
                 param.setResult(viewBuild());

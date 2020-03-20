@@ -82,12 +82,10 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                         true
                     }
                     supportedVersionPreference.summary = list.toString()
-                    findPreference<Preference>("refresh")!!.setOnPreferenceClickListener {
-                        if (list.contains(packageInfo.versionName)) {
-                            if (!getSharedPreferenceOnUI(activity).getBoolean("network", true)) {
-                                Toast.makeText(activity, "联网已禁用", Toast.LENGTH_SHORT).show()
-                            } else downloadFileFromInternet("$packageName/$versionCode/$packageName.json", activity as MainActivity)
-                        } else activity!!.toast("未适配的版本").show()
+                    if (!list.contains(packageInfo.versionName)) findPreference<Preference>("refresh")!!.isVisible = false
+                    else findPreference<Preference>("refresh")!!.setOnPreferenceClickListener {
+                            if (!getSharedPreferenceOnUI(activity).getBoolean("network", true)) Toast.makeText(activity, "联网已禁用", Toast.LENGTH_SHORT).show()
+                            else downloadFileFromInternet("$packageName/$versionCode/$packageName.json", activity as MainActivity)
                         true
                     }
                     break

@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -301,6 +303,7 @@ final public class GeneralUtils {
             try {
                 isDownloading = true;
                 URL url = new URL(address + (address.endsWith("/") ? "" : "/") + locate);
+                //Log.d("Download",url.toString());
                 String fileName = locate.substring(locate.lastIndexOf("/") + 1);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setReadTimeout(5000);
@@ -334,7 +337,13 @@ final public class GeneralUtils {
                         fileOutputStream.flush();
                         fileOutputStream.close();
                     }
-                }
+                } else context.runOnUiThread(() -> {
+                    try {
+                        Toast.makeText(context, connection.getResponseMessage(), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             } catch (Exception e) {
                 e.printStackTrace();
                 context.runOnUiThread(() -> Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show());

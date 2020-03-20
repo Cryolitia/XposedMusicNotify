@@ -121,13 +121,19 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                                                             }
                                                         }
                                                     }
+                                                    val appNameArray : Array<String> = Array(packageNameArrayList.size) { j->
+                                                        val packageManager = activity!!.packageManager
+                                                        val packageName = packageNameArrayList[j]
+                                                        packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0)).toString() + " " + activity!!.packageManager.getPackageInfo(packageName, 0).versionName
+                                                    }
                                                     MaterialAlertDialogBuilder(activity!!).apply {
-                                                        title = "选择配置文件以应用"
-                                                        setItems(packageNameArrayList.toArray(arrayOfNulls<String>(packageNameArrayList.size)), DialogInterface.OnClickListener { _, which ->
+                                                        this.setTitle("选择配置文件以应用")
+                                                        setNegativeButton("取消",null)
+                                                        setItems(appNameArray) { _, which ->
                                                             val packageName = packageNameArrayList[which]
                                                             @Suppress("DEPRECATION") val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) activity!!.packageManager.getPackageInfo(packageName, 0).longVersionCode else activity!!.packageManager.getPackageInfo(packageName, 0).versionCode
                                                             GeneralUtils.downloadFileFromInternet("$packageName/$versionCode/$packageName.json", url, activity as MainActivity, context.getExternalFilesDir(null))
-                                                        })
+                                                        }
                                                         show()
                                                     }
                                                 } catch (e: Exception) {

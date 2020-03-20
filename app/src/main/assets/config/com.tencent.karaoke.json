@@ -1,17 +1,17 @@
 {
-  "versionName": "6.15.28.278",
-  "versionCode": "438",
-  "class": "com.tencent.karaoke.common.media.x",
+  "versionName": "6.19.28.278",
+  "versionCode": "482",
+  "class": "com.tencent.karaoke.common.media.n",
   "method": "a",
-  "titleID": "7f091a8b",
-  "textID": "7f091a89",
-  "bitmapID": "7f091a86",
-  "iconID": "7f080fb3",
-  "intentClass": "com.tencent.karaoke.common.k",
-  "preSongField": "e",
-  "playSongField": "b",
-  "nextSongField": "f",
-  "deleteField": "c",
+  "titleID": "7f091d55",
+  "textID": "7f091d53",
+  "bitmapID": "7f091d50",
+  "iconID": "7f0800dd",
+  "intentClass": "com.tencent.karaoke.common.h$a",
+  "preSongField": "d",
+  "playSongField": "a",
+  "nextSongField": "e",
+  "deleteField": "b",
   "IntentHandleActivity": "com.tencent.karaoke.widget.intent.IntentHandleActivity",
   "params": [
     "android.content.Context",
@@ -19,5 +19,9 @@
     "int",
     "java.lang.String",
     "android.graphics.drawable.Drawable"
-  ]
+  ],
+  "idClass": "com.tencent.karaoke.R$a",
+  "titleField": "play_notification_song_name",
+  "textField": "play_notification_nickname",
+  "bitmapField": "play_notification_cover"
 }

@@ -31,7 +31,7 @@ public class cnkuwoplayer extends BasicNotification {
         SharedPreferences preference = PreferenceUtil.getJSONPreference("cn.kuwo.player", basicParam.getContext());
         String className = preference.getString("class", "");
         String methodName = preference.getString("method", "");
-        int iconID = preference.getInt("iconID", -1);
+        //int iconID = preference.getInt("iconID", -1);
         String contextField = preference.getString("contextField", "");
         String preSongIntentName = preference.getString("preSongIntent", "");
         String playSongIntentName = preference.getString("playSongIntent", "");
@@ -42,8 +42,12 @@ public class cnkuwoplayer extends BasicNotification {
         String getStatusMethod2 = preference.getString("getStatusMethod2", "");
         String playProxyStatusClass = preference.getString("playProxyStatusClass", "");
         String playProxyStatusField = preference.getString("playProxyStatusField", "");
-        extraActionIcon = preference.getInt("extraActionIcon", -1);
+        //extraActionIcon = preference.getInt("extraActionIcon", -1);
         String extraActionIntentName = preference.getString("extraActionIntent", "");
+
+        Class drawableClass = XposedHelpers.findClass(preference.getString("drawableClass",""),classLoader);
+        int iconID = XposedHelpers.getStaticIntField(drawableClass,preference.getString("iconField",""));
+        extraActionIcon = XposedHelpers.getStaticIntField(drawableClass,preference.getString("extraActionIconField",""));
 
         final Class notifyClazz = XposedHelpers.findClass(className, classLoader);
         findAndHookMethod(notifyClazz, methodName, Bitmap.class, String.class, String.class, String.class, new XC_MethodReplacement() {
