@@ -1,0 +1,27 @@
+{
+  "versionName": "6.20.28.278",
+  "versionCode": "493",
+  "class": "com.tencent.karaoke.common.media.n",
+  "method": "a",
+  "titleID": "7f091d55",
+  "textID": "7f091d53",
+  "bitmapID": "7f091d50",
+  "iconID": "7f0800dd",
+  "intentClass": "com.tencent.karaoke.common.h$a",
+  "preSongField": "d",
+  "playSongField": "a",
+  "nextSongField": "e",
+  "deleteField": "b",
+  "IntentHandleActivity": "com.tencent.karaoke.widget.intent.IntentHandleActivity",
+  "params": [
+    "android.content.Context",
+    "com.tencent.karaoke.common.media.player.db.PlaySongInfo",
+    "int",
+    "java.lang.String",
+    "android.graphics.drawable.Drawable"
+  ],
+  "idClass": "com.tencent.karaoke.R$a",
+  "titleField": "play_notification_song_name",
+  "textField": "play_notification_nickname",
+  "bitmapField": "play_notification_cover"
+}

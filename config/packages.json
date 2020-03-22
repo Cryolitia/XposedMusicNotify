@@ -19,6 +19,9 @@
             },{
                 "versionName": "6.19.28.278",
                 "versionCode": "482"
+            },{
+                "versionName": "6.20.28.278",
+                "versionCode": "493"
             }
         ]
     },
@@ -51,6 +54,10 @@
          {
             "versionName": "9.3.0.1",
             "versionCode": "9301"
+         },
+         {
+            "versionName": "9.3.1.0",
+            "versionCode": "9310"
          }
     ]
     },
