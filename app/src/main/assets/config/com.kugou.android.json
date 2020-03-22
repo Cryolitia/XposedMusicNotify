@@ -1,4 +1,7 @@
 {
     "versionName": "10.1.0",
-    "versionCode": "10101"
+  "versionCode": "10101",
+  "class": "com.kugou.common.q.c",
+  "method1": "bX",
+  "method2": "aj"
 }

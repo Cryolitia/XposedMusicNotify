@@ -1,11 +1,13 @@
 package cn.nexus6p.QQMusicNotify.Hook;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicInit;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
@@ -33,8 +35,11 @@ public class comkugouandroid extends BasicInit {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        SharedPreferences preference = PreferenceUtil.getJSONPreference("cn.kuwo.player", basicParam.getContext());
+        String className = preference.getString("class", "");
         try {
-            XposedHelpers.findAndHookMethod("com.kugou.common.q.c", classLoader, "bX", new XC_MethodReplacement() {
+            String method1 = preference.getString("method1", "");
+            XposedHelpers.findAndHookMethod(className, classLoader, method1, new XC_MethodReplacement() {
                 @Override
                 protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                     return false;
@@ -44,7 +49,8 @@ public class comkugouandroid extends BasicInit {
             e.printStackTrace();
         }
         try {
-            XposedHelpers.findAndHookMethod("com.kugou.common.q.c", classLoader, "aj", boolean.class, new XC_MethodReplacement() {
+            String method2 = preference.getString("method2", "");
+            XposedHelpers.findAndHookMethod(className, classLoader, method2, boolean.class, new XC_MethodReplacement() {
                 @Override
                 protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                     return false;

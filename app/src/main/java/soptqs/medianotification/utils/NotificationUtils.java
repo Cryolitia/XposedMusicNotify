@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -21,6 +22,7 @@ import java.util.List;
 import cn.nexus6p.QQMusicNotify.Base.BasicParam;
 import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
+import me.qiwu.MusicNotification.NotificationHook;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getContext;
@@ -60,8 +62,15 @@ public class NotificationUtils {
             drawable.setColor(Color.parseColor(new XSharedPreferences(BuildConfig.APPLICATION_ID).getString("customColor","#000000")));
             largeIcon = ImageUtils.drawableToBitmap(drawable);
         }*/
-        try {
-            smallIcon = ((BitmapDrawable) appContext.getResources().getDrawable(basicParam.getIconID(), null)).getBitmap();
+        if (iconID == -1) try {
+            smallIcon = null;
+            Drawable drawable = getContext().getPackageManager().getApplicationIcon(getContext().getApplicationInfo());
+            smallIcon = NotificationHook.getBitmap(drawable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        else try {
+            smallIcon = ((BitmapDrawable) appContext.getResources().getDrawable(iconID, null)).getBitmap();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,7 +80,6 @@ public class NotificationUtils {
     public Notification updateNotification() {
         notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext, "music")
-                .setSmallIcon(iconID)
                 .setContentTitle(title)
                 .setContentText(subtitle)
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
@@ -79,7 +87,7 @@ public class NotificationUtils {
 //                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle())
                 .setOngoing(isPlaying || PreferenceUtil.getPreference(getContext()).getBoolean(PreferenceUtils.PREF_ALWAYS_DISMISSIBLE, false))
                 .setVisibility(VISIBILITY_PUBLIC);
-
+        if (iconID != -1) builder.setSmallIcon(iconID);
         if (deleteIntent != null) builder.setDeleteIntent(deleteIntent);
         if (contentIntent != null)
             builder.setContentIntent(contentIntent);

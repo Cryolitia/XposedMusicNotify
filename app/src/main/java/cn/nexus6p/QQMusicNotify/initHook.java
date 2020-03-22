@@ -1,5 +1,6 @@
 package cn.nexus6p.QQMusicNotify;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
@@ -7,6 +8,8 @@ import android.util.Log;
 import androidx.annotation.Keep;
 
 import org.json.JSONArray;
+
+import java.util.List;
 
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
 import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
@@ -79,6 +82,9 @@ public class initHook implements IXposedHookLoadPackage {
                     return;
                 }
 
+                if (PreferenceUtil.getPreference(context).getBoolean("onlyForeground", false) && (!RunningForeground(context, lpparam.packageName)))
+                    return;
+
                 if (isHookEnabled(lpparam.packageName, context)) {
                     XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
                     Class c = Class.forName("cn.nexus6p.QQMusicNotify.Hook." + lpparam.packageName.replace(".", ""));
@@ -105,6 +111,25 @@ public class initHook implements IXposedHookLoadPackage {
             return false;
         }
         return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (PreferenceUtil.getPreference(context).getBoolean(packageName + ".enabled", true)));
+    }
+
+    private static boolean RunningForeground(Context context, String packageName) {
+        try {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+            if (appProcesses == null) {
+                return true;
+            }
+            for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+                if ((appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND || appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND_SERVICE) && appProcess.processName.equals(packageName)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
     }
 
 }

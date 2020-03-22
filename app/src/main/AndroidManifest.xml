@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.nexus6p.QQMusicNotify"
     android:installLocation="internalOnly"
-    android:versionCode="26"
-    android:versionName="2.9">
+    android:versionCode="27"
+    android:versionName="2.9.1-beta">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application

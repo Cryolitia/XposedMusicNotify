@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -191,6 +192,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("去除通知栏白色边框", "https://github.com/singleNeuron/XposedRemoveNotificationWhiteFrame", "Copyright 2019 神经元", new MITLicense()));
             notices.addNotice(new Notice("QQ净化", "https://github.com/zpp0196/QQPurify", "zpp0196", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("CustoMIUIzer", "https://code.highspec.ru/Mikanoshi/CustoMIUIzer", "Mikanoshi", new GnuGeneralPublicLicense30()));
+            notices.addNotice(new Notice("AndroidProcess", "https://github.com/wenmingvs/AndroidProcess", "wenmingvs", new ApacheSoftwareLicense20()));
             new LicensesDialog.Builder(Objects.requireNonNull(getContext()))
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
@@ -284,6 +286,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         findPreference("media_notification").setVisible(getSharedPreferenceOnUI(getActivity()).getBoolean("styleModify", true));
 
+        findPreference("autoStart").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                try {
+                    Intent intent = getAutostartSettingIntent(getActivity());
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        });
+
     }
 
     private boolean getEnable() {
@@ -300,6 +315,60 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private ComponentName getAlias() {
         return new ComponentName(getActivity(), MainActivity.class.getName() + "Alias");
+    }
+
+    //https://blog.csdn.net/qq_29612963/article/details/77841075
+
+    /**
+     * 获取自启动管理页面的Intent
+     *
+     * @param context context
+     * @return 返回自启动管理页面的Intent
+     */
+    private static Intent getAutostartSettingIntent(Context context) {
+        ComponentName componentName = null;
+        String brand = Build.MANUFACTURER;
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        switch (brand.toLowerCase()) {
+            case "samsung"://三星
+                componentName = new ComponentName("com.samsung.android.sm", "com.samsung.android.sm.app.dashboard.SmartManagerDashBoardActivity");
+                break;
+            case "huawei"://华为
+                //荣耀V8，EMUI 8.0.0，Android 8.0上，以下两者效果一样
+                componentName = new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity");
+//            componentName = new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity");//目前看是通用的
+                break;
+            case "xiaomi"://小米
+                componentName = new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity");
+                break;
+            case "vivo"://VIVO
+//            componentName = new ComponentName("com.iqoo.secure", "com.iqoo.secure.safaguard.PurviewTabActivity");
+                componentName = new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity");
+                break;
+            case "oppo"://OPPO
+//            componentName = new ComponentName("com.oppo.safe", "com.oppo.safe.permission.startup.StartupAppListActivity");
+                componentName = new ComponentName("com.coloros.oppoguardelf", "com.coloros.powermanager.fuelgaue.PowerUsageModelActivity");
+                break;
+            case "yulong":
+            case "360"://360
+                componentName = new ComponentName("com.yulong.android.coolsafe", "com.yulong.android.coolsafe.ui.activity.autorun.AutoRunListActivity");
+                break;
+            case "meizu"://魅族
+                componentName = new ComponentName("com.meizu.safe", "com.meizu.safe.permission.SmartBGActivity");
+                break;
+            case "oneplus"://一加
+                componentName = new ComponentName("com.oneplus.security", "com.oneplus.security.chainlaunch.view.ChainLaunchAppListActivity");
+                break;
+            case "letv"://乐视
+                intent.setAction("com.letv.android.permissionautoboot");
+            default://其他
+                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                intent.setData(Uri.fromParts("package", context.getPackageName(), null));
+                break;
+        }
+        intent.setComponent(componentName);
+        return intent;
     }
 
 }

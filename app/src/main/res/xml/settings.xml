@@ -17,6 +17,10 @@
             android:summary="启用全局样式修改后可用，来自媒体通知"
             android:title="自定义通知样式" />
         <androidx.preference.SwitchPreferenceCompat
+            android:title="仅对前台应用生效（实验性）"
+            android:key="onlyForeground"
+            android:summary="如无必要请勿打开" />
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="showIcon"
             android:title="显示桌面图标" />
@@ -48,6 +52,10 @@
             android:key="redirectStorage"
             >
         </androidx.preference.Preference>-->
+        <androidx.preference.Preference
+            android:title="自启动权限"
+            android:summary="如果您在使用国产系统或后台管理软件，请允许本模块自启及被唤醒。本模块无后台服务，不会常驻后台，该功能仅用于提供配置文件。"
+            android:key="autoStart" />
         <androidx.preference.Preference
             android:key="chimi"
             android:summary="有报告称吃米可能与此模块有不良的相互作用，如此模块工作不正常请尝试禁用吃米并重启"

@@ -42,12 +42,22 @@ public class NotificationHook {
                 if (isMediaNotification(notification)) {
                     Bundle extras = NotificationCompat.getExtras(notification);
                     Log.d("MusicNotification", extras.toString());
-                    String title = extras.get(NotificationCompat.EXTRA_TITLE).toString();
-                    String subtitle = extras.get(NotificationCompat.EXTRA_TEXT).toString();
+                    String title = null;
+                    String subtitle = null;
+                    try {
+                        title = extras.get(NotificationCompat.EXTRA_TITLE).toString();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        subtitle = extras.get(NotificationCompat.EXTRA_TEXT).toString();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     title = title == null || title.equals("") ? "未知音乐" : title;
                     subtitle = subtitle == null || subtitle.equals("") ? "未知艺术家" : subtitle;
                     //RemoteViews remoteViews = getContentView(title,subtitle,notification);
-                    int resId = getIconId(notification.getSmallIcon()) != -1 ? getIconId(notification.getSmallIcon()) : android.R.drawable.ic_dialog_info;
+                    int resId = getIconId(notification.getSmallIcon());
                     /*MediaSession.Token token = null;
                     try {
                         token=notification.extras.getParcelable(EXTRA_MEDIA_SESSION);
@@ -172,7 +182,7 @@ public class NotificationHook {
     }
 
 
-    private Bitmap getBitmap(Drawable vectorDrawable) {
+    public static Bitmap getBitmap(Drawable vectorDrawable) {
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
                 vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

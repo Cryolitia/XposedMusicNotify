@@ -1,6 +1,6 @@
 {
-  "versionName": "9.3.0.1",
-  "versionCode": "9301",
+  "versionName": "9.3.1.0",
+  "versionCode": "9310",
   "class": "cn.kuwo.mod.notification.manager.KwNotificationManager",
   "method": "getPlayNotification",
   "iconID": "7f020c9b",
