@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(colorInt);
         View docker = getWindow().getDecorView();
         int ui = docker.getSystemUiVisibility();
-        if (!isNightMode) {
+        if (!(currentNightMode == Configuration.UI_MODE_NIGHT_YES || isNightMode)) {
             ui |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ui |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
