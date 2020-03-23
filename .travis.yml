@@ -6,8 +6,8 @@ branches:
 
 script:
   - git clone https://github.com/singleNeuron/XposedMusicNotify.git github -b gh-pages --depth=1
-  - git clone https://git.dev.tencent.com/Neuron/XposedMusicNotify.git coding
+  - git clone "https://Neuron:${Token}@e.coding.net/singleneuron/XposedMusicNotify.git" coding
   - rm -rf ./github/.git
   - mv ./coding/.git ./github/.git
   - cd ./github
-  - git push "https://Neuron:${Token}@git.dev.tencent.com/Neuron/XposedMusicNotify.git" master:master
+  - git push "https://Neuron:${Token}@e.coding.net/singleneuron/XposedMusicNotify.git" master:master
