@@ -10,4 +10,6 @@ script:
   - rm -rf ./github/.git
   - mv ./coding/.git ./github/.git
   - cd ./github
+  - git add .
+  - git commit -m "Travis-CI auto update"
   - git push "https://${User}:${Token}@e.coding.net/singleneuron/XposedMusicNotify.git" master:master
