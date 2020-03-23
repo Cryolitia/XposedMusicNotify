@@ -39,16 +39,16 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                 val builder = MaterialAlertDialogBuilder(activity)
                 builder.setTitle("设置自定义仓库地址")
                         .setView(editText)
-                        .setPositiveButton("确定") { dialog: DialogInterface?, which: Int ->
+                        .setPositiveButton("确定") { _: DialogInterface?, _: Int ->
                             val url = editText.text.toString()
                             sharedPreferences.edit().putString("onlineGit", url).apply()
-                            listPreference!!.summary = url
+                            listPreference.summary = url
                         }
                         .show()
             } else {
                 val url = urls[(newValue as String?)!!.toInt()]
                 sharedPreferences.edit().putString("onlineGit", url).apply()
-                listPreference!!.summary = url
+                listPreference.summary = url
             }
             true
         }
@@ -171,7 +171,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
 
         try {
             val path = activity!!.getExternalFilesDir(null).toString() + File.separator + "packages.json"
-            findPreference<Preference>("editJSON")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener { preference: Preference? ->
+            findPreference<Preference>("editJSON")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 GeneralUtils.editFile(File(path), activity)
                 true
             }

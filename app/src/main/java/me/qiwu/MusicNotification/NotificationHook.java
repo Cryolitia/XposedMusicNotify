@@ -52,7 +52,7 @@ public class NotificationHook {
                     try {
                         subtitle = extras.get(NotificationCompat.EXTRA_TEXT).toString();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                     title = title == null || title.equals("") ? "未知音乐" : title;
                     subtitle = subtitle == null || subtitle.equals("") ? "未知艺术家" : subtitle;

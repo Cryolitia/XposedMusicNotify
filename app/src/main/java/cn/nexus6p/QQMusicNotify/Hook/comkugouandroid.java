@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.Keep;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicInit;
+import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -18,7 +19,7 @@ public class comkugouandroid extends BasicInit {
 
     @Override
     public void init() {
-        if (Build.VERSION.SDK_INT > 28) return;
+        if ((!BuildConfig.DEBUG) && Build.VERSION.SDK_INT > 28) return;
         try {
             Class preferenceClass = XposedHelpers.findClass("com.kugou.framework.setting.preference.Preference", classLoader);
             XposedHelpers.findAndHookMethod("com.kugou.framework.setting.preference.PreferenceGroup", classLoader, "removePreference", preferenceClass, new XC_MethodHook() {
@@ -28,14 +29,16 @@ public class comkugouandroid extends BasicInit {
                     Object preference = param.args[0];
                     String key = (String) XposedHelpers.callMethod(preference, "getKey");
                     XposedBridge.log("XposedMusicNotify: get key " + key);
-                    Toast.makeText(basicParam.getContext(),"kugou try to remove "+key,Toast.LENGTH_SHORT).show();
-                    if (key.contains("USE_KG_NOTIFICATION")) param.setResult(true);
+                    if (key.contains("USE_KG_NOTIFICATION")) {
+                        Toast.makeText(basicParam.getContext(), "stop kugou removing " + key, Toast.LENGTH_SHORT).show();
+                        param.setResult(true);
+                    }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SharedPreferences preference = PreferenceUtil.getJSONPreference("cn.kuwo.player", basicParam.getContext());
+        SharedPreferences preference = PreferenceUtil.getJSONPreference("com.kugou.android", basicParam.getContext());
         String className = preference.getString("class", "");
         try {
             String method1 = preference.getString("method1", "");
