@@ -1,4 +1,4 @@
-# 照片时间修复
+# 原生音乐通知
 
 [![license](https://img.shields.io/badge/license-LGPL-blue.svg)](https://github.com/hefuyicoder/ListenerMusicPlayer#license)
 [![platform](https://img.shields.io/badge/platform-Android-yellow.svg)](https://www.android.com)
