@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 
 import cn.nexus6p.QQMusicNotify.Fragment.AppsFragment;
 import cn.nexus6p.QQMusicNotify.Fragment.SettingsFragment;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     版权声明：本文为博主原创文章，转载请附上博文链接！*/
 
     private void checkUpdate() {
-        if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode", false)) && shouldCheckUpdate) {
+        if ((!getSharedPreferenceOnUI(this).getBoolean("debugMode", false)) && shouldCheckUpdate && !PreferenceUtil.isGooglePlay) {
             shouldCheckUpdate = false;
             getJsonFromInternet(this, false);
         }
@@ -249,4 +250,18 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /*@Override
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+        final Bundle args = pref.getExtras();
+        final Fragment fragment = getSupportFragmentManager().getFragmentFactory().instantiate(
+                getClassLoader(),
+                pref.getFragment());
+        fragment.setArguments(args);
+        fragment.setTargetFragment(caller, 0);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack(null)
+                .commit();
+        return true;
+    }*/
 }

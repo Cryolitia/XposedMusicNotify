@@ -29,6 +29,7 @@ import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
+import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuGeneralPublicLicense30;
@@ -50,8 +51,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
         addPreferencesFromResource(R.xml.settings);
         jumpToLink(this, "author", "u/603406", true);
-        jumpToLink(this, "github", "https://github.com/singleNeuron/XposedMusicNotify", false);
-        jumpToLink(this, "telegram", "https://t.me/NeuronDevelopChannel", false);
+        //jumpToLink(this, "github", "https://github.com/singleNeuron/XposedMusicNotify", false);
+        //jumpToLink(this, "telegram", "https://t.me/NeuronDevelopChannel", false);
 
         findPreference("thanks").setOnPreferenceClickListener(preference13 -> {
             if (i++ > 3) {
@@ -151,6 +152,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         findPreference("version").setOnPreferenceClickListener(preference1 -> {
+            if (PreferenceUtil.isGooglePlay) {
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=cn.nexus6p.QQMusicNotify"));
+                getActivity().startActivity(intent);
+                return true;
+            }
             getJsonFromInternet((MainActivity) getActivity(), true);
             return true;
         });
@@ -193,6 +201,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("QQ净化", "https://github.com/zpp0196/QQPurify", "zpp0196", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("CustoMIUIzer", "https://code.highspec.ru/Mikanoshi/CustoMIUIzer", "Mikanoshi", new GnuGeneralPublicLicense30()));
             notices.addNotice(new Notice("AndroidProcess", "https://github.com/wenmingvs/AndroidProcess", "wenmingvs", new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("libsu", "https://github.com/topjohnwu/libsu", "topjohnwu", new ApacheSoftwareLicense20()));
             new LicensesDialog.Builder(Objects.requireNonNull(getContext()))
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
@@ -201,7 +210,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference("music_notification").setOnPreferenceClickListener(preference1 -> {
+        /*findPreference("music_notification").setOnPreferenceClickListener(preference1 -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MusicNotificationFragment()).addToBackStack(MusicNotificationFragment.class.getSimpleName()).commit();
             return true;
         });
@@ -215,7 +224,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference("apps").setOnPreferenceClickListener(preference1 -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AppsFragment(), "appsFragment").addToBackStack(AppsFragment.class.getSimpleName()).commit();
             return true;
-        });
+        });*/
 
         findPreference("reUnzip").setOnPreferenceClickListener(preference12 -> {
             try {

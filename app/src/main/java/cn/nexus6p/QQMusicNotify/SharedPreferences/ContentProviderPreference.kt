@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import cn.nexus6p.QQMusicNotify.BackgroundActivity
 import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.ContentProvider
@@ -21,7 +20,7 @@ class ContentProviderPreference private constructor() : BasePreference() {
             bundle = getBundle(position, null, context)
         }
         if (bundle == null) {
-            this.jsonObject = JSONObject("")
+            this.jsonObject = JSONObject()
         } else {
             //Log.d("XposedMusicNotify", "getBundle: $bundle")
             originalJsonString = bundle.getString(ContentProvider.BUNDLE_KEY_JSON_STRING)

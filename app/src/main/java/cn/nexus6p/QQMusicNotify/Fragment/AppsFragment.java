@@ -53,10 +53,10 @@ public class AppsFragment extends PreferenceFragmentCompat {
             e.printStackTrace();
         }
 
-        findPreference("thirdPartySource").setOnPreferenceClickListener(preference -> {
+        /*findPreference("thirdPartySource").setOnPreferenceClickListener(preference -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ThirdPartySourceFragment()).addToBackStack(ThirdPartySourceFragment.class.getSimpleName()).commit();
             return true;
-        });
+        });*/
 
     }
 

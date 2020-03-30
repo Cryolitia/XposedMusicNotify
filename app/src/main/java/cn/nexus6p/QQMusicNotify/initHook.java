@@ -3,7 +3,6 @@ package cn.nexus6p.QQMusicNotify;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.Keep;
 
@@ -39,12 +38,12 @@ public class initHook implements IXposedHookLoadPackage {
 
                 Context context = (Context) param.args[0];
                 if (context == null) {
-                    Log.d("XposedMusicNotify", lpparam.packageName + ": Context is null!");
+                    XposedBridge.log(lpparam.packageName + ": Context is null!");
                     return;
                 }
                 ClassLoader classLoader = context.getClassLoader();
                 if (classLoader == null) {
-                    Log.d("XposedMusicNotify", lpparam.packageName + ": classloader is null!");
+                    XposedBridge.log(lpparam.packageName + ": classloader is null!");
                     return;
                 }
 
@@ -53,7 +52,7 @@ public class initHook implements IXposedHookLoadPackage {
                     findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
                         @Override
                         protected Object replaceHookedMethod(MethodHookParam param) {
-                            Log.d("XposedMusicNotify", "模块已激活");
+                            XposedBridge.log("模块已激活");
                             return true;
                         }
                     });
@@ -107,7 +106,7 @@ public class initHook implements IXposedHookLoadPackage {
     private boolean isHookEnabled(String packageName, Context context) {
         JSONArray jsonArray = PreferenceUtil.getSupportPackages(context);
         if (jsonArray == null) {
-            Log.d("XposedMusicNotify", "加载配置文件失败：" + packageName);
+            XposedBridge.log("加载配置文件失败：" + packageName);
             return false;
         }
         return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (PreferenceUtil.getPreference(context).getBoolean(packageName + ".enabled", true)));

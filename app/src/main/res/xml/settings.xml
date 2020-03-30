@@ -6,16 +6,19 @@
         android:title="设置">
         <androidx.preference.Preference
             android:key="apps"
-            android:title="播放器" />
+            android:title="播放器"
+            app:fragment="cn.nexus6p.QQMusicNotify.Fragment.AppsFragment" />
         <androidx.preference.Preference
             android:key="music_notification"
             android:summary="适用于MIUI等非原生ROM，与MusicNotification功能完全相同，请勿同时启用"
-            android:title="全局模式" />
+            android:title="全局模式"
+            app:fragment="cn.nexus6p.QQMusicNotify.Fragment.MusicNotificationFragment" />
         <androidx.preference.PreferenceScreen
             android:enabled="true"
             android:key="media_notification"
             android:summary="启用全局样式修改后可用，来自媒体通知"
-            android:title="自定义通知样式" />
+            android:title="自定义通知样式"
+            app:fragment="cn.nexus6p.QQMusicNotify.Fragment.MediaNotificationFragment" />
         <androidx.preference.SwitchPreferenceCompat
             android:title="仅对前台应用生效（实验性）"
             android:key="onlyForeground"
@@ -96,12 +99,20 @@
         <androidx.preference.Preference
             android:key="telegram"
             android:summary="\@NeuronDevelopChannel"
-            android:title="Telegram频道/群组" />
+            android:title="Telegram频道/群组">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://t.me/NeuronDevelopChannel" />
+        </androidx.preference.Preference>
         <androidx.preference.Preference
             android:icon="@drawable/github"
             android:key="github"
-            android:summary="https://github.com/singleNeuron/QQMusicNotify"
-            android:title="项目地址" />
+            android:summary="https://github.com/singleNeuron/XposedMusicNotify"
+            android:title="项目地址">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/singleNeuron/XposedMusicNotify" />
+        </androidx.preference.Preference>
         <androidx.preference.Preference
             android:key="openSource"
             android:title="开放源代码许可" />
