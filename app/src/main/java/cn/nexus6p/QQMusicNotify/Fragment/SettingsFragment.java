@@ -62,6 +62,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
         Preference preference = findPreference("statue");
+        boolean edxp = new File("/system/framework/edxp.jar").exists();
         boolean fakeTaichi = GeneralUtils.getSharedPreferenceOnUI(getActivity()).getBoolean("fakeTaichi", false);
         boolean taichi_magisk = false;
         int ExpStatue = HookStatue.isExpModuleActive(getActivity());
@@ -92,7 +93,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 e.printStackTrace();
             }
         } else if (HookStatue.isEnabled()) {
-            preference.setSummary("Xposed 已激活");
+            preference.setSummary((edxp?"Ed":"")+"Xposed 已激活");
         } else if (ExpStatue == 1) {
             preference.setSummary("太极·" + (taichi_magisk ? "阳" : "阴") + " 未激活");
             preference.setOnPreferenceClickListener(preference1 -> {
@@ -102,12 +103,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 try {
                     startActivity(t);
                 } catch (ActivityNotFoundException e) {
-                    preference.setSummary("模块未激活，您是否已在启用或升级模块后重启手机");
+                    preference.setSummary("模块未激活");
                 }
                 return true;
             });
         } else {
-            preference.setSummary("模块未激活，您是否已在启用或升级模块后重启手机");
+            preference.setSummary(edxp?"EdXposed未激活":"模块未激活");
         }
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);

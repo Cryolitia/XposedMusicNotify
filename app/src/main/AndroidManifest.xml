@@ -12,7 +12,9 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:hasFragileUserData="true"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="q">
         <activity
             android:name=".MainActivity"
             android:theme="@style/googleBlue">
