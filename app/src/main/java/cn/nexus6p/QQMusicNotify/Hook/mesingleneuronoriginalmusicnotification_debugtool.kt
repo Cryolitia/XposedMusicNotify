@@ -7,6 +7,7 @@ import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.ContentProvider
 import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
+import com.topjohnwu.superuser.Shell
 import de.robv.android.xposed.SELinuxHelper
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedHelpers
@@ -25,7 +26,9 @@ class mesingleneuronoriginalmusicnotification_debugtool : BasicInit() {
                 Log.d("nexus", "已进入调试器")
                 basicParam.context!!.toast("Xposed已经注入")
                 val selinux = if (SELinuxHelper.isSELinuxEnabled()) if (SELinuxHelper.isSELinuxEnforced()) "Enforcing" else "Permissive" else "Disabled"
-                print("SeLinux: $selinux")
+                val realSelinux = Shell.su("getenforce").exec().out.toString()
+                print("SeLinux (probably unreliable Xposed framework provide): $selinux")
+                print("SeLinux (real statue getting by root): $realSelinux")
                 print("原生音乐通知已找到：\n版本名: " + BuildConfig.VERSION_NAME + "\n版本号：" + BuildConfig.VERSION_CODE)
                 print("Context: " + basicParam.context.toString())
                 print("ModuleContext: " + GeneralUtils.getModuleContext(basicParam.context))
