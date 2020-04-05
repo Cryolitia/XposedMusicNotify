@@ -1,8 +1,8 @@
 package cn.nexus6p.QQMusicNotify;
 
 import android.app.ActivityManager;
+import android.app.Application;
 import android.content.Context;
-import android.content.ContextWrapper;
 
 import androidx.annotation.Keep;
 
@@ -31,26 +31,26 @@ public class initHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
 
+        if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
+            XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
+            findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam param) {
+                    XposedBridge.log("模块已激活");
+                    return true;
+                }
+            });
+            return;
+        }
+
         if (lpparam.packageName.equals("me.singleneuron.originalmusicnotification_debugtool")) {
             new cn.nexus6p.QQMusicNotify.Hook.mesingleneuronoriginalmusicnotification_debugtool(lpparam).init();
             return;
         }
 
-        XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-
-                if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
-                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
-                    findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
-                        @Override
-                        protected Object replaceHookedMethod(MethodHookParam param) {
-                            XposedBridge.log("模块已激活");
-                            return true;
-                        }
-                    });
-                    return;
-                }
 
                 Context context = (Context) param.args[0];
                 if (context == null) {

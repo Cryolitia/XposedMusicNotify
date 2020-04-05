@@ -1,7 +1,7 @@
 package cn.nexus6p.QQMusicNotify.Hook
 
+import android.app.Application
 import android.content.Context
-import android.content.ContextWrapper
 import androidx.annotation.Keep
 import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.ContentProvider
@@ -52,7 +52,7 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
             }
         })
 
-        XposedHelpers.findAndHookMethod(ContextWrapper::class.java, "attachBaseContext", Context::class.java, object : XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Application::class.java, "attach", Context::class.java, object : XC_MethodHook() {
             override fun afterHookedMethod(paramInit: MethodHookParam?) {
                 try {
 
@@ -64,8 +64,8 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
                         override fun replaceHookedMethod(param: MethodHookParam?): Any? {
                             val xposedPrint = XposedPrint(param!!)
                             try {
-                                XposedBridge.log("已附加至ContextWrapper")
-                                xposedPrint.print("已附加至ContextWrapper")
+                                XposedBridge.log("已附加至Application")
+                                xposedPrint.print("已附加至Application")
                                 if (paramInit == null) {
                                     xposedPrint.print("MethodHookParam: null")
                                     return null
