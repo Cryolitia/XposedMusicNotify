@@ -1,12 +1,14 @@
 package cn.nexus6p.QQMusicNotify.Fragment
 
 import android.os.Bundle
+import androidx.annotation.Keep
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import cn.nexus6p.QQMusicNotify.R
 import org.json.JSONObject
 
+@Keep
 class JsonDetailFragment private constructor() : PreferenceFragmentCompat() {
 
     companion object {

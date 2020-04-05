@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Keep;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
@@ -43,6 +44,7 @@ import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
 
+@Keep
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     private int i = 0;

@@ -2,6 +2,7 @@ package cn.nexus6p.QQMusicNotify.Fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.Keep;
 import androidx.preference.PreferenceFragmentCompat;
 
 import cn.nexus6p.QQMusicNotify.MainActivity;
@@ -13,6 +14,7 @@ import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.deviceContextPreferenceChangeListener;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
 
+@Keep
 public class MusicNotificationFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

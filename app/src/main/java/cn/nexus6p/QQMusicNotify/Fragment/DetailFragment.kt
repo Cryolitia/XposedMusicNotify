@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import androidx.annotation.Keep
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -22,6 +23,7 @@ import org.jetbrains.anko.toast
 import org.json.JSONObject
 import java.io.File
 
+@Keep
 class DetailFragment private constructor() : PreferenceFragmentCompat() {
 
     companion object {
@@ -84,8 +86,8 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                     supportedVersionPreference.summary = list.toString()
                     if (!list.contains(packageInfo.versionName)) findPreference<Preference>("refresh")!!.isVisible = false
                     else findPreference<Preference>("refresh")!!.setOnPreferenceClickListener {
-                            if (!getSharedPreferenceOnUI(activity).getBoolean("network", true)) Toast.makeText(activity, "联网已禁用", Toast.LENGTH_SHORT).show()
-                            else downloadFileFromInternet("$packageName/$versionCode/$packageName.json", activity as MainActivity)
+                        if (!getSharedPreferenceOnUI(activity).getBoolean("network", true)) Toast.makeText(activity, "联网已禁用", Toast.LENGTH_SHORT).show()
+                        else downloadFileFromInternet("$packageName/$versionCode/$packageName.json", activity as MainActivity)
                         true
                     }
                     break

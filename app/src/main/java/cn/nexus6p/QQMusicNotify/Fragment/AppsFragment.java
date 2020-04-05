@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.Keep;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -16,7 +17,7 @@ import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 
-
+@Keep
 public class AppsFragment extends PreferenceFragmentCompat {
 
     @Override

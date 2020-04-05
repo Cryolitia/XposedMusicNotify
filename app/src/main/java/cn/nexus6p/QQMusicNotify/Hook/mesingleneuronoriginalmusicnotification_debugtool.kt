@@ -54,30 +54,43 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
 
         XposedHelpers.findAndHookMethod(Application::class.java, "attach", Context::class.java, object : XC_MethodHook() {
             override fun afterHookedMethod(paramInit: MethodHookParam?) {
+                try {
 
-                val context = paramInit!!.args[0] as Context
-                val classLoader = context.classLoader
+                    /*val context = paramInit!!.args[0] as Context
+                    val classLoader = context.classLoader*/
 
-                XposedHelpers.findAndHookMethod("me.singleneuron.originalmusicnotification_debugtool.MainActivity", loadPackageParam.classLoader, "toHook", object : XC_MethodReplacement() {
+                    XposedHelpers.findAndHookMethod("me.singleneuron.originalmusicnotification_debugtool.MainActivity", loadPackageParam.classLoader, "toHook", object : XC_MethodReplacement() {
 
-                    override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                        val xposedPrint = XposedPrint(param!!)
-                        try {
-                            XposedBridge.log("已附加至Application")
-                            xposedPrint.print("已附加至Application")
-                            xposedPrint.print("Context (got by Application）: $context")
-                            xposedPrint.print("ClassLoader (from Context): $classLoader")
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            val stringWriter = StringWriter()
-                            val printWriter = PrintWriter(stringWriter)
-                            e.printStackTrace(printWriter)
-                            xposedPrint.print(stringWriter.toString())
+                        override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+                            val xposedPrint = XposedPrint(param!!)
+                            try {
+                                XposedBridge.log("已附加至Application")
+                                xposedPrint.print("已附加至Application")
+                                if (paramInit == null) {
+                                    xposedPrint.print("MethodHookParam: null")
+                                    return null
+                                }
+                                xposedPrint.print("MethodHookParam: $paramInit")
+                                if (paramInit.args[0] == null) {
+                                    xposedPrint.print("Context (got by Application）: null")
+                                    return null
+                                }
+                                xposedPrint.print("Context (got by Application）: " + paramInit.args[0])
+                                xposedPrint.print("ClassLoader (from Context): " + (paramInit.args[0] as Context).classLoader)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                val stringWriter = StringWriter()
+                                val printWriter = PrintWriter(stringWriter)
+                                e.printStackTrace(printWriter)
+                                xposedPrint.print(stringWriter.toString())
+                            }
+                            return null
                         }
-                        return null
-                    }
 
-                })
+                    })
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         })
     }

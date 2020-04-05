@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.Keep;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -17,6 +18,7 @@ import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
 
+@Keep
 public class MediaNotificationFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

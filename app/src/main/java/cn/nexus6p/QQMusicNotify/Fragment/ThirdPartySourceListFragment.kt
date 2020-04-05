@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.annotation.Keep
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -22,6 +23,7 @@ import org.json.JSONObject
 import java.io.File
 import java.net.URL
 
+@Keep
 class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.third_party_source)
