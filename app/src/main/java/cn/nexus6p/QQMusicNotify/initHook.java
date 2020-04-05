@@ -31,18 +31,6 @@ public class initHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
 
-        if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
-            XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
-            findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
-                @Override
-                protected Object replaceHookedMethod(MethodHookParam param) {
-                    XposedBridge.log("模块已激活");
-                    return true;
-                }
-            });
-            return;
-        }
-
         if (lpparam.packageName.equals("me.singleneuron.originalmusicnotification_debugtool")) {
             new cn.nexus6p.QQMusicNotify.Hook.mesingleneuronoriginalmusicnotification_debugtool(lpparam).init();
             return;
@@ -60,6 +48,18 @@ public class initHook implements IXposedHookLoadPackage {
                 ClassLoader classLoader = context.getClassLoader();
                 if (classLoader == null) {
                     XposedBridge.log(lpparam.packageName + ": classloader is null!");
+                    return;
+                }
+
+                if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
+                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
+                    findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam param) {
+                            XposedBridge.log("模块已激活");
+                            return true;
+                        }
+                    });
                     return;
                 }
 
