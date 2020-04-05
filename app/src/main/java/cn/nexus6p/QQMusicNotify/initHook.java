@@ -31,10 +31,26 @@ public class initHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
 
+        if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
+            XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
+            findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam param) {
+                    XposedBridge.log("模块已激活");
+                    return true;
+                }
+            });
+            return;
+        }
+
+        if (lpparam.packageName.equals("me.singleneuron.originalmusicnotification_debugtool")) {
+            new cn.nexus6p.QQMusicNotify.Hook.mesingleneuronoriginalmusicnotification_debugtool(lpparam).init();
+            return;
+        }
+
         XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
 
                 Context context = (Context) param.args[0];
                 if (context == null) {
@@ -46,22 +62,6 @@ public class initHook implements IXposedHookLoadPackage {
                     XposedBridge.log(lpparam.packageName + ": classloader is null!");
                     return;
                 }
-
-                if (lpparam.packageName.equals("cn.nexus6p.QQMusicNotify")) {
-                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
-                    findAndHookMethod("cn.nexus6p.QQMusicNotify.Utils.HookStatue", lpparam.classLoader, "isEnabled", new XC_MethodReplacement() {
-                        @Override
-                        protected Object replaceHookedMethod(MethodHookParam param) {
-                            XposedBridge.log("模块已激活");
-                            return true;
-                        }
-                    });
-                    return;
-                }
-                /*if (lpparam.packageName.equals("me.singleneuron.originalmusicnotification_debugtool")) {
-                    XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
-                    new cn.nexus6p.QQMusicNotify.Hook.mesingleneuronoriginalmusicnotificationdebugtool().setClassLoader(lpparam.classLoader).setContext(context).init();
-                }*/
 
                 if (lpparam.packageName.equals("com.android.systemui")) {
                     if (new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, null, context).getBoolean("miuiModify", false)) {

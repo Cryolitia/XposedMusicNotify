@@ -16,7 +16,6 @@ public class comneteasecloudmusic extends BasicInit {
         XposedHelpers.findAndHookMethod(SharedPreferences.class, "getInt", String.class, int.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 if (param.args[0].equals("notificationBackground")) {
                     param.setResult(2);
                 }
@@ -25,7 +24,6 @@ public class comneteasecloudmusic extends BasicInit {
         XposedHelpers.findAndHookMethod(SharedPreferences.Editor.class, "putInt", String.class, int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
                 if (param.args[0].equals("notificationBackground")) {
                     param.args[1] = 2;
                 }

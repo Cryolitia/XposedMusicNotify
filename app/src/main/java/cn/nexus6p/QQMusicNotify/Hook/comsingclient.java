@@ -28,7 +28,6 @@ public class comsingclient extends BasicViewNotification {
         XposedHelpers.findAndHookMethod("com.kugou.common.player.manager.b", classLoader, "h", songClazz, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 oldNotification = (Notification) XposedHelpers.getObjectField(param.thisObject, "b");
                 basicParam.setContext((Context) XposedHelpers.getObjectField(param.thisObject, "a"));
                 basicParam.setIconID(0x7f0207f1);

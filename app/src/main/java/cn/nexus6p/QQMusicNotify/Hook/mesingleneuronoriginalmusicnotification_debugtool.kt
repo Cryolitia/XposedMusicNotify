@@ -1,53 +1,91 @@
 package cn.nexus6p.QQMusicNotify.Hook
 
-import android.util.Log
+import android.app.Application
+import android.content.Context
 import androidx.annotation.Keep
-import cn.nexus6p.QQMusicNotify.Base.BasicInit
 import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.ContentProvider
 import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
-import com.topjohnwu.superuser.Shell
-import de.robv.android.xposed.SELinuxHelper
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedHelpers
+import de.robv.android.xposed.*
+import de.robv.android.xposed.callbacks.XC_LoadPackage
 import org.jetbrains.anko.toast
+import java.io.PrintWriter
+import java.io.StringWriter
 
 @Keep
-class mesingleneuronoriginalmusicnotification_debugtool : BasicInit() {
+class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC_LoadPackage.LoadPackageParam) {
 
-    override fun init() {
-        XposedHelpers.findAndHookMethod("me.singleneuron.originalmusicnotification_debugtool.MainActivity", classLoader, "toHook", object : XC_MethodReplacement() {
+    fun init() {
 
-            var mParam: MethodHookParam? = null
+        XposedHelpers.findAndHookMethod("me.singleneuron.originalmusicnotification_debugtool.MainActivity", loadPackageParam.classLoader, "toHookOnInit", object : XC_MethodReplacement() {
             override fun replaceHookedMethod(param: MethodHookParam?): Any? {
-                super.afterHookedMethod(param)
-                mParam = param
-                Log.d("nexus", "已进入调试器")
-                basicParam.context!!.toast("Xposed已经注入")
-                val selinux = if (SELinuxHelper.isSELinuxEnabled()) if (SELinuxHelper.isSELinuxEnforced()) "Enforcing" else "Permissive" else "Disabled"
-                val realSelinux = Shell.su("getenforce").exec().out.toString()
-                print("SeLinux (probably unreliable Xposed framework provide): $selinux")
-                print("SeLinux (real statue getting by root): $realSelinux")
-                print("原生音乐通知已找到：\n版本名: " + BuildConfig.VERSION_NAME + "\n版本号：" + BuildConfig.VERSION_CODE)
-                print("Context: " + basicParam.context.toString())
-                print("ModuleContext: " + GeneralUtils.getModuleContext(basicParam.context))
-                print("ClassLoader: $classLoader")
-                print("ModuleClassLoader: " + GeneralUtils.getModuleContext(basicParam.context).classLoader)
-                val jsonString: String = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_JSON, "me.singleneuron.originalmusicnotification_debugtool", basicParam.context!!).getJSONString()
-                print("JSONString: $jsonString")
-                val settingJsonString: String = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_PREFERENCE, null, basicParam.context!!).getJSONString()
-                print("ModuleSettings: $settingJsonString")
-                val deveceProtectedPreference = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE,null,basicParam.context!!).getJSONString()
-                print("DeviceProtectedPreference: $deveceProtectedPreference")
+                val classLoader = loadPackageParam.classLoader
+                val context = GeneralUtils.getContext()
+                val xposedPrint = XposedPrint(param!!)
+
+                try {
+                    XposedBridge.log("已注入调试器")
+                    context.toast("Xposed已经注入")
+                    val selinux = if (SELinuxHelper.isSELinuxEnabled()) if (SELinuxHelper.isSELinuxEnforced()) "Enforcing" else "Permissive" else "Disabled"
+                    xposedPrint.print("原生音乐通知已找到：\n版本名: " + BuildConfig.VERSION_NAME + "\n版本号：" + BuildConfig.VERSION_CODE)
+                    xposedPrint.print("SeLinux (probably unreliable Xposed framework provided): $selinux")
+                    xposedPrint.print("Context (got by Xposed): $context")
+                    xposedPrint.print("ModuleContext: " + GeneralUtils.getModuleContext(context))
+                    xposedPrint.print("ClassLoader (from LoadPackageParam): $classLoader")
+                    xposedPrint.print("ModuleClassLoader: " + GeneralUtils.getModuleContext(context).classLoader)
+                    val jsonString: String = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_JSON, "me.singleneuron.originalmusicnotification_debugtool", context).getJSONString()
+                    xposedPrint.print("JSONString: $jsonString")
+                    val settingJsonString: String = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_PREFERENCE, null, context).getJSONString()
+                    xposedPrint.print("ModuleSettings: $settingJsonString")
+                    val deveceProtectedPreference = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, null, context).getJSONString()
+                    xposedPrint.print("DeviceProtectedPreference: $deveceProtectedPreference")
+                    xposedPrint.print("---------------")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    val stringWriter = StringWriter()
+                    val printWriter = PrintWriter(stringWriter)
+                    e.printStackTrace(printWriter)
+                    xposedPrint.print(stringWriter.toString())
+                }
                 return null
             }
-
-            fun print(string: String) {
-                XposedHelpers.callMethod(mParam!!.thisObject, "writeToTextview", string)
-            }
-
         })
+
+        XposedHelpers.findAndHookMethod(Application::class.java, "attach", Context::class.java, object : XC_MethodHook() {
+            override fun afterHookedMethod(paramInit: MethodHookParam?) {
+
+                val context = paramInit!!.args[0] as Context
+                val classLoader = context.classLoader
+
+                XposedHelpers.findAndHookMethod("me.singleneuron.originalmusicnotification_debugtool.MainActivity", loadPackageParam.classLoader, "toHook", object : XC_MethodReplacement() {
+
+                    override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+                        val xposedPrint = XposedPrint(param!!)
+                        try {
+                            XposedBridge.log("已附加至Application")
+                            xposedPrint.print("已附加至Application")
+                            xposedPrint.print("Context (got by Application）: $context")
+                            xposedPrint.print("ClassLoader (from Context): $classLoader")
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            val stringWriter = StringWriter()
+                            val printWriter = PrintWriter(stringWriter)
+                            e.printStackTrace(printWriter)
+                            xposedPrint.print(stringWriter.toString())
+                        }
+                        return null
+                    }
+
+                })
+            }
+        })
+    }
+
+    class XposedPrint(val param: XC_MethodHook.MethodHookParam) {
+        fun print(string: String) {
+            XposedHelpers.callMethod(param.thisObject, "writeToTextview", string)
+        }
     }
 
 }

@@ -28,7 +28,6 @@ public class comtencentqqmusiclocalplayer extends BasicNotification {
         findAndHookMethod(notifyClazz, "b", Context.class, infoClazz, Bitmap.class, new XC_MethodReplacement() {
             @Override
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 basicParam.setIconID(0x7f020099);
                 basicParam.setContext((Context) param.args[0]);
                 basicParam.setBitmap((Bitmap) param.args[2]);

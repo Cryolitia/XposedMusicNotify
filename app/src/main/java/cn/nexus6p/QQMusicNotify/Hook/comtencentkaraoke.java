@@ -57,7 +57,6 @@ public class comtencentkaraoke extends BasicViewNotification {
         objects[params.length()] = new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 basicParam.setContext((Context) param.args[0]);
                 Parcelable playSongInfo = (Parcelable) param.args[1];
                 oldNotification = (Notification) param.getResult();

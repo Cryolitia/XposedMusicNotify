@@ -24,6 +24,10 @@ public class MainActivity extends Activity {
             Shell.Result result = Shell.sh("su --version").exec();
             writeToTextview("su --version: " + (result.isSuccess() ? result.getOut().toString() : result.getErr().toString()));
             writeToTextview("taichi_magisk: " + System.getProperty("taichi_magisk"));
+            Shell.Result result2 = Shell.su("getenforce").exec();
+            writeToTextview("SeLinux (real statue go by root):" + (result2.isSuccess() ? result2.getOut().toString() : result2.getErr().toString()));
+            writeToTextview("---------------");
+            toHookOnInit();
             toHook();
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,6 +41,11 @@ public class MainActivity extends Activity {
     public void toHook() {
         writeToTextview("原生音乐通知未找到");
         Log.d("XposedMusicNotify_DebugTool", "原生音乐通知未找到");
+    }
+
+    public void toHookOnInit() {
+        writeToTextview("初始化时原生音乐通知未找到");
+        Log.d("XposedMusicNotify_DebugTool", "原生音乐通知未附加到Application");
     }
 
     public void writeToTextview(String string) {

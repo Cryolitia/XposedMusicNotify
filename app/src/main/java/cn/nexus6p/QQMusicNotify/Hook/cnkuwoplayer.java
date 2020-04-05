@@ -53,7 +53,6 @@ public class cnkuwoplayer extends BasicNotification {
         findAndHookMethod(notifyClazz, methodName, Bitmap.class, String.class, String.class, String.class, new XC_MethodReplacement() {
             @Override
             protected Notification replaceHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     channelID = "music1";
                     NotificationChannel channel = new NotificationChannel(channelID, "音乐通知", NotificationManager.IMPORTANCE_LOW);

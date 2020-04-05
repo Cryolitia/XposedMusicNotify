@@ -25,7 +25,6 @@ public class comkugouandroid extends BasicInit {
             XposedHelpers.findAndHookMethod("com.kugou.framework.setting.preference.PreferenceGroup", classLoader, "removePreference", preferenceClass, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
                     Object preference = param.args[0];
                     String key = (String) XposedHelpers.callMethod(preference, "getKey");
                     XposedBridge.log("XposedMusicNotify: get key " + key);

@@ -34,7 +34,6 @@ public class main {
         XposedHelpers.findAndHookMethod(Application.class.getName(), classLoader, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 Context context = (Context) param.args[0];
                 /*final int leftID = context.getResources().getIdentifier("notification_background_custom_padding_left","dimen","com.android.systemui");
                 final int topID = context.getResources().getIdentifier("notification_background_custom_padding_top","dimen","com.android.systemui");
@@ -51,7 +50,6 @@ public class main {
                 XposedHelpers.findAndHookMethod(Resources.class, "getDimensionPixelSize", int.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
                         int resID = (int) param.args[0];
                         for (Integer ID : IDs) {
                             if (resID == ID) {

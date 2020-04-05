@@ -37,7 +37,6 @@ public class NotificationHook {
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 Notification notification = (Notification) param.getResult();
                 if (isMediaNotification(notification)) {
                     Bundle extras = NotificationCompat.getExtras(notification);
