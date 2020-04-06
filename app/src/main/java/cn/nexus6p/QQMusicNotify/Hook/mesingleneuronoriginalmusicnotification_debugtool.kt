@@ -1,6 +1,7 @@
 package cn.nexus6p.QQMusicNotify.Hook
 
 import android.app.Application
+import android.app.Instrumentation
 import android.content.Context
 import androidx.annotation.Keep
 import cn.nexus6p.QQMusicNotify.BuildConfig
@@ -34,6 +35,17 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
                     xposedPrint.print("ModuleContext: " + GeneralUtils.getModuleContext(context))
                     xposedPrint.print("ClassLoader (from LoadPackageParam): $classLoader")
                     xposedPrint.print("ModuleClassLoader: " + GeneralUtils.getModuleContext(context).classLoader)
+                    try {
+                        val systemContext: Context = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", loadPackageParam.classLoader), "currentActivityThread"), "getSystemContext") as Context
+                        xposedPrint.print("SystemContext: $systemContext")
+                        xposedPrint.print("SystemClassLoader: " + systemContext.classLoader)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        val stringWriter = StringWriter()
+                        val printWriter = PrintWriter(stringWriter)
+                        e.printStackTrace(printWriter)
+                        xposedPrint.print(stringWriter.toString())
+                    }
                     val jsonString: String = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_JSON, "me.singleneuron.originalmusicnotification_debugtool", context).getJSONString()
                     xposedPrint.print("JSONString: $jsonString")
                     val settingJsonString: String = ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_PREFERENCE, null, context).getJSONString()
@@ -52,7 +64,7 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
             }
         })
 
-        XposedHelpers.findAndHookMethod(Application::class.java, "attach", Context::class.java, object : XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Instrumentation::class.java, "callApplicationOnCreate", Application::class.java, object : XC_MethodHook() {
             override fun afterHookedMethod(paramInit: MethodHookParam?) {
                 try {
 
@@ -64,8 +76,8 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
                         override fun replaceHookedMethod(param: MethodHookParam?): Any? {
                             val xposedPrint = XposedPrint(param!!)
                             try {
-                                XposedBridge.log("已附加至Application")
-                                xposedPrint.print("已附加至Application")
+                                XposedBridge.log("已附加至Instrumentation")
+                                xposedPrint.print("已附加至Instrumentation")
                                 if (paramInit == null) {
                                     xposedPrint.print("MethodHookParam: null")
                                     return null

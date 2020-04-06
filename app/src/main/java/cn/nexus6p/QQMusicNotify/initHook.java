@@ -2,6 +2,7 @@ package cn.nexus6p.QQMusicNotify;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.app.Instrumentation;
 import android.content.Context;
 
 import androidx.annotation.Keep;
@@ -36,7 +37,7 @@ public class initHook implements IXposedHookLoadPackage {
             return;
         }
 
-        XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Instrumentation.class, "callApplicationOnCreate", Application.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 
