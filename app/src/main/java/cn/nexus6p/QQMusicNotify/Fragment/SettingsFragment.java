@@ -296,7 +296,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference("media_notification").setVisible(getSharedPreferenceOnUI(getActivity()).getBoolean("styleModify", true));
+        findPreference("media_notification").setVisible(getSharedPreferenceOnUI(getActivity()).getBoolean("debugMode", false) || getSharedPreferenceOnUI(getActivity()).getBoolean("styleModify", true));
 
         findPreference("autoStart").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

@@ -3,7 +3,7 @@
     <androidx.preference.SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="debugMode"
-        android:summary="打开后将禁用自动更新检查及解压配置文件"
+        android:summary="打开后将禁用自动更新检查及解压配置文件，不隐藏视图等"
         android:title="Debug Mode" />
     <androidx.preference.SwitchPreferenceCompat
         android:defaultValue="false"
