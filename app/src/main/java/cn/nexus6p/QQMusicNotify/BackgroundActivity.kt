@@ -1,6 +1,7 @@
 package cn.nexus6p.QQMusicNotify
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ class BackgroundActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("XposedMusicNotify", "BackgroundActivity已启动")
         moveTaskToBack(true)
     }
 

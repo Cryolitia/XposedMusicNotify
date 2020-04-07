@@ -35,7 +35,8 @@
         <activity
             android:name=".BackgroundActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/noDisplay">
+            android:theme="@style/noDisplay"
+            android:exported="true">
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"

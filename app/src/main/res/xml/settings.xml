@@ -21,8 +21,7 @@
             app:fragment="cn.nexus6p.QQMusicNotify.Fragment.MediaNotificationFragment" />
         <androidx.preference.SwitchPreferenceCompat
             android:title="仅对前台应用生效（实验性）"
-            android:key="onlyForeground"
-            android:summary="如无必要请勿打开" />
+            android:key="onlyForeground" />
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="showIcon"
