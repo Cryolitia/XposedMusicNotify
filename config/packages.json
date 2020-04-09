@@ -62,16 +62,6 @@
     ]
     },
     {
-        "app": "me.singleneuron.originalmusicnotification_debugtool",
-        "name": "原生音乐通知调试器",
-        "supportedVersion": [
-        {
-            "versionName": "1.0",
-            "versionCode": "1"
-        }
-        ]
-    },
-    {
         "app": "com.kugou.android",
         "name": "酷狗音乐",
         "supportedVersion": [
