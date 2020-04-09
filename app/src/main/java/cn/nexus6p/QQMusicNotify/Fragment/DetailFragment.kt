@@ -18,9 +18,9 @@ import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.*
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.topjohnwu.superuser.Shell
-import org.jetbrains.anko.longToast
-import org.jetbrains.anko.toast
 import org.json.JSONObject
+import splitties.toast.longToast
+import splitties.toast.toast
 import java.io.File
 
 @Keep

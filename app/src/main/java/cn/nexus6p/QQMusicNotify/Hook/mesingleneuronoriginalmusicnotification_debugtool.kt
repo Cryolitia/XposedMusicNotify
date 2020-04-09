@@ -10,7 +10,7 @@ import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
-import org.jetbrains.anko.toast
+import splitties.toast.toast
 import java.io.PrintWriter
 import java.io.StringWriter
 

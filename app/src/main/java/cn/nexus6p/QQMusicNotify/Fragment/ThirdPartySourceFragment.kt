@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import cn.nexus6p.QQMusicNotify.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.jetbrains.anko.toast
 import org.json.JSONObject
+import splitties.toast.toast
 import java.io.File
 import java.net.URL
 

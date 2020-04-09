@@ -17,9 +17,9 @@ import cn.nexus6p.QQMusicNotify.MainActivity
 import cn.nexus6p.QQMusicNotify.R
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.jetbrains.anko.toast
 import org.json.JSONArray
 import org.json.JSONObject
+import splitties.toast.toast
 import java.io.File
 import java.net.URL
 
