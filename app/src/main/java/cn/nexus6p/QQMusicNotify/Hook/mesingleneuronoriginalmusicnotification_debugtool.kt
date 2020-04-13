@@ -8,6 +8,7 @@ import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.ContentProvider
 import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
+import cn.nexus6p.QQMusicNotify.Utils.LogUtils
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import splitties.toast.toast
@@ -60,6 +61,7 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
                     e.printStackTrace(printWriter)
                     xposedPrint.print(stringWriter.toString())
                 }
+                LogUtils.addLogByContentProvider(loadPackageParam.packageName, "", context)
                 return null
             }
         })

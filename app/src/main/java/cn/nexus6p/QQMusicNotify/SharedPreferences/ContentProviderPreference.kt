@@ -14,6 +14,10 @@ class ContentProviderPreference private constructor() : BasePreference() {
 
     constructor(@ContentProvider.ContentProviderParams position: String, key: String?, context: Context) : this() {
         var bundle: Bundle? = null
+        if (position == ContentProvider.CONTENT_PROVIDER_COMMIT) {
+            getBundle(position, key, context)
+            return
+        }
         if (position == ContentProvider.CONTENT_PROVIDER_JSON) {
             bundle = getBundle(position, key, context)
         } else if (position == ContentProvider.CONTENT_PROVIDER_PREFERENCE || position == ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE) {

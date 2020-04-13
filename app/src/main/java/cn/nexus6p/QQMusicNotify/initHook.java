@@ -14,6 +14,7 @@ import java.util.List;
 import cn.nexus6p.QQMusicNotify.Base.HookInterface;
 import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.LogUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -68,6 +69,7 @@ public class initHook implements IXposedHookLoadPackage {
                     if (new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, null, context).getBoolean("miuiModify", false)) {
                         try {
                             cn.nexus6p.removewhitenotificationforbugme.main.handleLoadPackage(lpparam);
+                            LogUtils.Companion.addLogByContentProvider(lpparam.packageName, "removewhitenotificationforbugme", context);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -75,6 +77,7 @@ public class initHook implements IXposedHookLoadPackage {
                     if (new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, null, context).getBoolean("miuiForceExpand", false)) {
                         try {
                             System.ExpandNotificationsHook(lpparam);
+                            LogUtils.Companion.addLogByContentProvider(lpparam.packageName, "ExpandNotificationsHook", context);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -90,6 +93,7 @@ public class initHook implements IXposedHookLoadPackage {
                     Class c = Class.forName("cn.nexus6p.QQMusicNotify.Hook." + lpparam.packageName.replace(".", ""));
                     HookInterface hookInterface = (HookInterface) c.newInstance();
                     hookInterface.setClassLoader(classLoader).setContext(context).init();
+                    LogUtils.Companion.addLogByContentProvider(lpparam.packageName, "", context);
                 }
 
                 if (PreferenceUtil.getPreference(context).getBoolean("styleModify", false)) {

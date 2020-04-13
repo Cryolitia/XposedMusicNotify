@@ -10,6 +10,7 @@ import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.annotation.StringDef
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
+import cn.nexus6p.QQMusicNotify.Utils.LogUtils
 import org.json.JSONObject
 
 @Keep
@@ -20,11 +21,18 @@ class ContentProvider : ContentProvider() {
         const val CONTENT_PROVIDER_PREFERENCE: String = "content_provider_preference"
         const val CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE: String = "content_provider_device_protected_preference"
         const val BUNDLE_KEY_JSON_STRING: String = "bundle_key_json_string"
+        const val CONTENT_PROVIDER_COMMIT: String = "content_provider_commit"
     }
 
     override fun call(@ContentProviderParams method: String, arg: String?, extras: Bundle?): Bundle? {
         //Log.d("XposedMusicNotify", "ContentProvider is called")
         val bundle = Bundle()
+        if (method == CONTENT_PROVIDER_COMMIT) {
+            LogUtils.addLog(arg!!, context!!)
+            return Bundle().apply {
+                putBoolean("success", true)
+            }
+        }
         if (method == CONTENT_PROVIDER_JSON) {
             //Log.d("XposedMusicNotify","getJsonFile: "+GeneralUtils.getAssetsString("$arg.json",context))
             bundle.putString(BUNDLE_KEY_JSON_STRING, GeneralUtils.getAssetsString("$arg.json", context))
@@ -46,7 +54,7 @@ class ContentProvider : ContentProvider() {
     }
 
     @Retention(AnnotationRetention.SOURCE)
-    @StringDef(CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, CONTENT_PROVIDER_JSON, CONTENT_PROVIDER_PREFERENCE)
+    @StringDef(CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, CONTENT_PROVIDER_JSON, CONTENT_PROVIDER_PREFERENCE, CONTENT_PROVIDER_COMMIT)
     @Target(AnnotationTarget.VALUE_PARAMETER)
     annotation class ContentProviderParams
 

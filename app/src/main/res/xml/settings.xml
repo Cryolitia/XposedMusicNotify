@@ -69,7 +69,7 @@
         <androidx.preference.Preference
             android:key="edxpProblem"
             android:title="EdXposed"
-            android:summary="EdXposed问题反馈注意事项"
+            android:summary="EdXposed 问题反馈注意事项"
             app:isPreferenceVisible="false" />
         <androidx.preference.Preference
             android:key="taichiProblem"

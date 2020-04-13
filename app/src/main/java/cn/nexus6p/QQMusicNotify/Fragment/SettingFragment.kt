@@ -12,8 +12,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import cn.nexus6p.QQMusicNotify.R
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import cn.nexus6p.QQMusicNotify.Utils.LogUtils
+import splitties.toast.toast
 
 class SettingFragment : Fragment() {
 
@@ -24,31 +26,37 @@ class SettingFragment : Fragment() {
 
         val cardView = view.findViewById<CardView>(R.id.cardview)
         val cardViewTitle = view.findViewById<TextView>(R.id.cardView_Title)
+        val cardViewSummary = view.findViewById<TextView>(R.id.cardView_summary)
         val cardViewImage = view.findViewById<ImageView>(R.id.cardView_image)
         val statue = HookStatue.getStatue(activity)
         cardViewTitle.text = HookStatue.getStatueName(statue)
         if (HookStatue.isActive(statue)) cardViewImage.setImageResource(R.drawable.ic_check_circle) else cardViewImage.setImageResource(R.drawable.ic_cancel)
-        if (statue.name.contains("taichi", true)) cardView.setOnClickListener {
-            val t = Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
-            t.data = Uri.parse("package:" + "cn.nexus6p.QQMusicNotify");
-            t.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            try {
-                startActivity(t);
-            } catch (e: ActivityNotFoundException) {
-                //ignore
+        if (statue.name.contains("taichi", true)) cardViewImage.apply {
+            setOnClickListener {
+                activity!!.toast("跳转到太极")
+                val t = Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
+                t.data = Uri.parse("package:" + "cn.nexus6p.QQMusicNotify");
+                t.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    startActivity(t);
+                } catch (e: ActivityNotFoundException) {
+                    //ignore
+                }
             }
-        } else cardView.setOnClickListener {
-            MaterialAlertDialogBuilder(activity)
-                    .setTitle("清空计数器？")
-                    .setPositiveButton("确定") { _, _ ->
-
-                    }
-                    .setNegativeButton("取消", null)
-                    .create()
-                    .show()
+            isClickable = true
+        }
+        cardView.setOnClickListener {
+            activity!!.supportFragmentManager.beginTransaction().replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
         }
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LogUtils.cleanLog(GeneralUtils.getSharedPreferenceOnUI(context).getInt("logMaxLine", 1000), activity!!)
+        val cardViewSummary = view!!.findViewById<TextView>(R.id.cardView_summary)
+        cardViewSummary.text = "已应用" + LogUtils.getLineCount(activity!!) + "次"
     }
 
 }

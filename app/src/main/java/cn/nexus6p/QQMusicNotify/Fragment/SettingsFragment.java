@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -21,8 +22,10 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
+import java.util.Properties;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
@@ -125,7 +128,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             });
         }
 
-        if (getSharedPreferenceOnUI(getActivity()).getBoolean("debugMode", false) || Build.MANUFACTURER.toLowerCase().contains("xiaomi")) {
+        if (getSharedPreferenceOnUI(getActivity()).getBoolean("debugMode", false) || isMIUI()) {
             Preference miuiProblemPreference = findPreference("miuiProblem");
             miuiProblemPreference.setVisible(true);
             miuiProblemPreference.setOnPreferenceClickListener(preference1 -> {
@@ -233,7 +236,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("AndroidProcess", "https://github.com/wenmingvs/AndroidProcess", "wenmingvs", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("libsu", "https://github.com/topjohnwu/libsu", "topjohnwu", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("Splitties", "https://github.com/LouisCAD/Splitties", "LouisCAD", new ApacheSoftwareLicense20()));
-            new LicensesDialog.Builder(Objects.requireNonNull(getContext()))
+            notices.addNotice(new Notice("suspension-fab", "https://github.com/userwangjf/MindLock/tree/master/suspension-fab", "Copyright [2016-09-21] [阿钟]", new ApacheSoftwareLicense20()));
+            new LicensesDialog.Builder(getContext())
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
                     .build()
@@ -409,6 +413,25 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
         intent.setComponent(componentName);
         return intent;
+    }
+
+    private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
+    private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
+    private static final String KEY_MIUI_INTERNAL_STORAGE = "ro.miui.internal.storage";
+
+    public static boolean isMIUI() {
+        Properties prop = new Properties();
+        boolean isMIUI;
+        try {
+            prop.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        isMIUI = prop.getProperty(KEY_MIUI_VERSION_CODE, null) != null
+                || prop.getProperty(KEY_MIUI_VERSION_NAME, null) != null
+                || prop.getProperty(KEY_MIUI_INTERNAL_STORAGE, null) != null;
+        return isMIUI;
     }
 
 }

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
     boolean shouldCheckUpdate = true;
+    public boolean isInNightMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isNightMode = getSharedPreferenceOnUI(this).getBoolean("forceNight", false);
         int nightMode = isNightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
         @ColorInt int colorInt = Color.parseColor(currentNightMode == Configuration.UI_MODE_NIGHT_YES ? "#212121" : isNightMode ? "#212121" : "#F5F5F5");
+        isInNightMode = !(currentNightMode == Configuration.UI_MODE_NIGHT_YES || isNightMode);
 
         mToolbar = findViewById(R.id.toolbar_preference);
         mToolbar.setTitle(getResources().getString(R.string.app_name));

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.nexus6p.QQMusicNotify.Base.BasicParam;
+import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
+import cn.nexus6p.QQMusicNotify.Utils.LogUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -84,6 +86,7 @@ public class NotificationHook {
                     Notification newNotification = new NotificationUtils().setParam(basicParam, actions, actionIcons).updateNotification();
                     param.setResult(newNotification);
                     //param.setResult(GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,notification.contentIntent,Build.VERSION.SDK_INT >= 26?notification.getChannelId():null,notification.deleteIntent));
+                    LogUtils.Companion.addLogByContentProvider(packageName, "NotificationHook", GeneralUtils.getContext());
                 }
             }
         });

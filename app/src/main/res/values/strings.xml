@@ -38,4 +38,5 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <item name="default_fab_id" type="id"></item>
 </resources>

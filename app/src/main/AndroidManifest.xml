@@ -4,7 +4,7 @@
     package="cn.nexus6p.QQMusicNotify"
     android:installLocation="internalOnly"
     android:versionCode="29"
-    android:versionName="2.9.2">
+    android:versionName="2.9.3-beta">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
