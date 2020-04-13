@@ -8,6 +8,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.Keep
+import androidx.annotation.StringDef
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import org.json.JSONObject
 
@@ -21,7 +22,7 @@ class ContentProvider : ContentProvider() {
         const val BUNDLE_KEY_JSON_STRING: String = "bundle_key_json_string"
     }
 
-    override fun call(method: String, arg: String?, extras: Bundle?): Bundle? {
+    override fun call(@ContentProviderParams method: String, arg: String?, extras: Bundle?): Bundle? {
         //Log.d("XposedMusicNotify", "ContentProvider is called")
         val bundle = Bundle()
         if (method == CONTENT_PROVIDER_JSON) {
@@ -43,6 +44,11 @@ class ContentProvider : ContentProvider() {
     override fun onCreate(): Boolean {
         return true
     }
+
+    @Retention(AnnotationRetention.SOURCE)
+    @StringDef(CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, CONTENT_PROVIDER_JSON, CONTENT_PROVIDER_PREFERENCE)
+    @Target(AnnotationTarget.VALUE_PARAMETER)
+    annotation class ContentProviderParams
 
     override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
         throw NoSuchMethodException()

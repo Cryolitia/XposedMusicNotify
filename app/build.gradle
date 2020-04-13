@@ -10,6 +10,7 @@ android {
         minSdkVersion 24
         //noinspection OldTargetApi,ExpiredTargetSdkVersion
         targetSdkVersion 29
+        vectorDrawables.useSupportLibrary = true
     }
 
     repositories {
@@ -42,7 +43,7 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'com.github.topjohnwu.libsu:core:2.5.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.android.material:material:1.2.0-alpha05'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     implementation("com.louiscad.splitties:splitties-toast:$splitties_version")

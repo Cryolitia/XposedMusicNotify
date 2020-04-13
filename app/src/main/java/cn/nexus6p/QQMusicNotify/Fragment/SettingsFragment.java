@@ -1,6 +1,5 @@
 package cn.nexus6p.QQMusicNotify.Fragment;
 
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -11,15 +10,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -28,8 +24,6 @@ import java.util.Objects;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.R;
-import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
-import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -63,16 +57,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
             return true;
         });
-        Preference preference = findPreference("statue");
-        boolean edxp = new File("/system/framework/edxp.jar").exists();
-        boolean fakeTaichi = GeneralUtils.getSharedPreferenceOnUI(getActivity()).getBoolean("fakeTaichi", false);
-        boolean taichi_magisk = false;
+        /*Preference preference = findPreference("statue");
+
+        boolean fakeTaichi = HookStatue.fakeTaichi(getActivity());
+        boolean taichi_magisk = HookStatue.taichi_magisk();
         int ExpStatue = HookStatue.isExpModuleActive(getActivity());
-        try {
-            taichi_magisk = "1".equals(System.getProperty("taichi_magisk"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         if (fakeTaichi || ExpStatue == 2) {
             preference.setSummary("太极·阴 已激活");
             Preference taichiProblemPreference = findPreference("taichiProblem");
@@ -111,7 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             });
         } else {
             preference.setSummary(edxp?"EdXposed未激活":"模块未激活");
-        }
+        }*/
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
         if (BuildConfig.VERSION_NAME.contains("canary") || BuildConfig.VERSION_NAME.contains("NIGHTLY") || BuildConfig.VERSION_NAME.contains("beta") || BuildConfig.VERSION_NAME.contains("alpha") || BuildConfig.VERSION_NAME.contains("α") || BuildConfig.VERSION_NAME.contains("β"))
@@ -173,6 +163,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("给播放器原生的音乐通知", "https://github.com/singleNeuron/XposedMusicNotify", "Copyright 2019 神经元", new GnuLesserGeneralPublicLicense3()));
             notices.addNotice(new Notice("Android", "https://source.android.com/license", "The Android Open Source Project", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("XposedBridge", "https://github.com/rovo89/XposedBridge", "Copyright 2013 rovo89, Tungstwenty", new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("Kotlin", "https://github.com/JetBrains/kotlin", "Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("MusicNotification", "https://github.com/Qiwu2542284182/MusicNotification", "祈无", new License() {
                 @Override
                 public String getName() {
@@ -205,6 +196,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("CustoMIUIzer", "https://code.highspec.ru/Mikanoshi/CustoMIUIzer", "Mikanoshi", new GnuGeneralPublicLicense30()));
             notices.addNotice(new Notice("AndroidProcess", "https://github.com/wenmingvs/AndroidProcess", "wenmingvs", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("libsu", "https://github.com/topjohnwu/libsu", "topjohnwu", new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("Splitties", "https://github.com/LouisCAD/Splitties", "LouisCAD", new ApacheSoftwareLicense20()));
             new LicensesDialog.Builder(Objects.requireNonNull(getContext()))
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
@@ -213,7 +205,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        /*findPreference("music_notification").setOnPreferenceClickListener(preference1 -> {
+        findPreference("music_notification").setOnPreferenceClickListener(preference1 -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MusicNotificationFragment()).addToBackStack(MusicNotificationFragment.class.getSimpleName()).commit();
             return true;
         });
@@ -227,7 +219,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference("apps").setOnPreferenceClickListener(preference1 -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AppsFragment(), "appsFragment").addToBackStack(AppsFragment.class.getSimpleName()).commit();
             return true;
-        });*/
+        });
 
         findPreference("reUnzip").setOnPreferenceClickListener(preference12 -> {
             try {

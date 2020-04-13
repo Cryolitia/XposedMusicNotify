@@ -34,7 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import cn.nexus6p.QQMusicNotify.Fragment.AppsFragment;
-import cn.nexus6p.QQMusicNotify.Fragment.SettingsFragment;
+import cn.nexus6p.QQMusicNotify.Fragment.SettingFragment;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
@@ -111,11 +111,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment settingsFragment = fragmentManager.findFragmentByTag("settingsFragment");
-        if (settingsFragment == null) settingsFragment = new SettingsFragment();
-        if (settingsFragment.isAdded()) fragmentManager.beginTransaction().show(settingsFragment);
+        Fragment settingFragment = fragmentManager.findFragmentByTag("settingFragment");
+        if (settingFragment == null) settingFragment = new SettingFragment();
+        if (settingFragment.isAdded()) fragmentManager.beginTransaction().show(settingFragment);
         else getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, settingsFragment, "settingsFragment")
+                .replace(R.id.content_frame, settingFragment, "settingFragment")
                 .commit();
 
         try {

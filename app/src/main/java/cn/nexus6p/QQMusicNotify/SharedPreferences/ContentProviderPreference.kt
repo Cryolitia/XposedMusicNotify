@@ -12,7 +12,7 @@ import org.json.JSONObject
 
 class ContentProviderPreference private constructor() : BasePreference() {
 
-    constructor(position: String, key: String?, context: Context) : this() {
+    constructor(@ContentProvider.ContentProviderParams position: String, key: String?, context: Context) : this() {
         var bundle: Bundle? = null
         if (position == ContentProvider.CONTENT_PROVIDER_JSON) {
             bundle = getBundle(position, key, context)
@@ -53,7 +53,7 @@ class ContentProviderPreference private constructor() : BasePreference() {
         return jsonObject.toString(4)
     }
 
-    private fun getBundle(position: String, key: String?, context: Context): Bundle? {
+    private fun getBundle(@ContentProvider.ContentProviderParams position: String, key: String?, context: Context): Bundle? {
         try {
             val contentResolver: ContentResolver = context.contentResolver
             val uri = Uri.parse("content://cn.nexus6p.QQMusicNotify.provider/")
