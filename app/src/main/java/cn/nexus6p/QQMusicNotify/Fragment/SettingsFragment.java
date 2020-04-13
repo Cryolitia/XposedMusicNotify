@@ -10,12 +10,15 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -24,6 +27,7 @@ import java.util.Objects;
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
 import cn.nexus6p.QQMusicNotify.R;
+import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -65,17 +69,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         if (fakeTaichi || ExpStatue == 2) {
             preference.setSummary("太极·阴 已激活");
-            Preference taichiProblemPreference = findPreference("taichiProblem");
-            taichiProblemPreference.setVisible(true);
-            taichiProblemPreference.setOnPreferenceClickListener(preference1 -> {
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
-                ImageView imageView = new ImageView(getActivity());
-                imageView.setImageResource(R.drawable.taichi);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setAdjustViewBounds(true);
-                builder.setView(imageView).setPositiveButton("确定", null).create().show();
-                return true;
-            });
+
             try {
                 //Toast.makeText(getActivity(),System.getProperty("taichi_magisk"),Toast.LENGTH_LONG).show();
                 if (taichi_magisk || HookStatue.isEnabled())
@@ -102,6 +96,48 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         } else {
             preference.setSummary(edxp?"EdXposed未激活":"模块未激活");
         }*/
+
+        HookStatue.Statue statue = HookStatue.getStatue(getActivity());
+        if (getSharedPreferenceOnUI(getActivity()).getBoolean("debugMode", false) || statue.name().contains("taichi")) {
+            Preference taichiProblemPreference = findPreference("taichiProblem");
+            taichiProblemPreference.setVisible(true);
+            taichiProblemPreference.setOnPreferenceClickListener(preference1 -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setImageResource(R.drawable.taichi);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setAdjustViewBounds(true);
+                builder.setView(imageView).setPositiveButton("确定", null).create().show();
+                return true;
+            });
+        }
+        if (getSharedPreferenceOnUI(getActivity()).getBoolean("debugMode", false) || statue.name().contains("Edxp")) {
+            Preference edxpProblemPreference = findPreference("edxpProblem");
+            edxpProblemPreference.setVisible(true);
+            edxpProblemPreference.setOnPreferenceClickListener(preference1 -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setImageResource(R.drawable.edxp);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setAdjustViewBounds(true);
+                builder.setView(imageView).setPositiveButton("确定", null).create().show();
+                return true;
+            });
+        }
+
+        if (getSharedPreferenceOnUI(getActivity()).getBoolean("debugMode", false) || Build.MANUFACTURER.toLowerCase().contains("xiaomi")) {
+            Preference miuiProblemPreference = findPreference("miuiProblem");
+            miuiProblemPreference.setVisible(true);
+            miuiProblemPreference.setOnPreferenceClickListener(preference1 -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setImageResource(R.drawable.miui);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setAdjustViewBounds(true);
+                builder.setView(imageView).setPositiveButton("确定", null).create().show();
+                return true;
+            });
+        }
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
         if (BuildConfig.VERSION_NAME.contains("canary") || BuildConfig.VERSION_NAME.contains("NIGHTLY") || BuildConfig.VERSION_NAME.contains("beta") || BuildConfig.VERSION_NAME.contains("alpha") || BuildConfig.VERSION_NAME.contains("α") || BuildConfig.VERSION_NAME.contains("β"))

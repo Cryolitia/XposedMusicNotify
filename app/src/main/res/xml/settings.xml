@@ -63,6 +63,15 @@
             android:summary="请在更新后重新勾选模块并重启手机"
             android:title="更新后无效" />
         <androidx.preference.Preference
+            android:key="miuiProblem"
+            android:title="MIUI"
+            app:isPreferenceVisible="false" />
+        <androidx.preference.Preference
+            android:key="edxpProblem"
+            android:title="EdXposed"
+            android:summary="EdXposed问题反馈注意事项"
+            app:isPreferenceVisible="false" />
+        <androidx.preference.Preference
             android:key="taichiProblem"
             android:summary="如果EdXposed/Xposed等用户报告此模块工作正常但不在您的太极上工作。很大可能是太极的适配引擎又出现了问题/压根就没支持"
             android:title="太极"

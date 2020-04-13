@@ -12,6 +12,8 @@ import androidx.annotation.IntDef;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,19 +29,26 @@ public class HookStatue {
             else return Statue.taichi_active;
         }
         isInstall isInstall = new isInstall(context);
+        GetMagiskModule getMagiskModule = new GetMagiskModule();
         int isExp = isExpModuleActive(context);
         if (isEnabled()) {
             if (edxp) return Statue.Edxp_Active;
             else if (isExp == TAICHI_ACTIVE) return Statue.taichi_magisk_active;
+            else if (isInstall.isEdxpManagerInstall || getMagiskModule.edxpModule)
+                return Statue.Edxp_Active;
             else if (isInstall.isXposedInstall) return Statue.xposed_active;
-            else if (isInstall.isEdxpManagerInstall) return Statue.Edxp_Active;
             else return Statue.xposed_active;
         } else {
-            if (isExp == TAICHI_ACTIVE) return Statue.taichi_active;
-            else if (isInstall.isEdxpManagerInstall) return Statue.Edxp_notActive;
+            if (isExp == TAICHI_ACTIVE) {
+                if (taichi_magisk() || getMagiskModule.taichiModule)
+                    return Statue.taichi_magisk_active;
+                else return Statue.taichi_active;
+            } else if (isInstall.isEdxpManagerInstall || getMagiskModule.edxpModule)
+                return Statue.Edxp_notActive;
             else if (isInstall.isXposedInstall) return Statue.xposed_notActive;
             else if (isExp == TAICHI_NOT_ACTIVE) {
-                if (taichi_magisk()) return Statue.taichi_magisk_notActive;
+                if (taichi_magisk() || getMagiskModule.taichiModule)
+                    return Statue.taichi_magisk_notActive;
                 else return Statue.taichi_notActive;
             } else return Statue.xposed_notActive;
         }
@@ -155,7 +164,20 @@ public class HookStatue {
     public @interface Taichi_statue {
     }
 
-    ;
+    public static class GetMagiskModule {
+        public boolean taichiModule = false;
+        public boolean edxpModule = false;
+        final public static String moduleLocate = "/data/adb/modules";
+
+        public GetMagiskModule() {
+            Shell.su("su");
+            Shell.Result result = Shell.su("ls " + moduleLocate).exec();
+            String resultString = result.getOut().toString();
+            Log.d("getMagiskModule", resultString);
+            if (resultString.contains("edxp")) edxpModule = true;
+            if (resultString.contains("taichi")) taichiModule = true;
+        }
+    }
 
     @Taichi_statue
     public static int isExpModuleActive(Context context) {
