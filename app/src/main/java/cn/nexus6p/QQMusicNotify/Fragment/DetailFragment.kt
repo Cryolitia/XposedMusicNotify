@@ -19,8 +19,6 @@ import cn.nexus6p.QQMusicNotify.Utils.HookStatue
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.topjohnwu.superuser.Shell
 import org.json.JSONObject
-import splitties.toast.longToast
-import splitties.toast.toast
 import java.io.File
 
 @Keep
@@ -49,7 +47,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             packageInfo = packageManager.getPackageInfo(packageName!!, 0)
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
-            activity!!.toast("应用不存在")
+            Toast.makeText(activity!!, "应用不存在", Toast.LENGTH_SHORT).show()
         }
         appPreference.title = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName!!, 0))
         appPreference.icon = packageManager.getApplicationIcon(packageName)
@@ -110,7 +108,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                 nowVersionFragment.setIcon(iconID)
             } catch (e: Exception) {
                 findPreference<Preference>("nowVersion")!!.summary = "读取配置文件出错"
-                activity!!.longToast("读取配置文件出错:$e")
+                Toast.makeText(activity!!, "读取配置文件出错:$e", Toast.LENGTH_LONG).show()
                 e.printStackTrace()
             }
             findPreference<Preference>("editjson")!!.setOnPreferenceClickListener {
@@ -125,11 +123,11 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             findPreference<Preference>("editjson")!!.isVisible = false
         }
         findPreference<Preference>("forceStop")!!.setOnPreferenceClickListener {
-            if (!Shell.rootAccess()) activity!!.toast("没有Root权限")
+            if (!Shell.rootAccess()) Toast.makeText(activity!!, "没有Root权限", Toast.LENGTH_SHORT).show()
             else {
                 val result = Shell.su("am force-stop $packageName").exec()
-                if (!result.isSuccess) activity!!.longToast(result.err.toString())
-                else activity!!.toast("成功")
+                if (!result.isSuccess) Toast.makeText(activity!!, result.err.toString(), Toast.LENGTH_LONG).show()
+                else Toast.makeText(activity!!, "成功", Toast.LENGTH_SHORT).show()
             }
             true
         }
@@ -149,7 +147,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                 activity!!.startActivity(intent)
             } catch (e: Exception) {
                 e.printStackTrace()
-                activity!!.toast("未安装太极")
+                Toast.makeText(activity!!, "未安装太极", Toast.LENGTH_SHORT).show()
             }
             true
         }

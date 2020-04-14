@@ -6,6 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -49,22 +51,24 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
     boolean shouldCheckUpdate = true;
+    public static int navBarHeight = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.setting);
+        setContentView(R.layout.main_activity);
 
         findViewById(R.id.content).getRootView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.content).getRootView(), (v, insets) -> {
             v.setPadding(0, 0, 0, insets.getTappableElementInsets().bottom);
+            navBarHeight = insets.getTappableElementInsets().bottom;
             return insets;
         });
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbar_preference), (v, insets) -> {
+        /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbar_preference), (v, insets) -> {
             v.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
             return insets;
-        });
+        });*/
 
         //if (savedInstanceState!=null) shouldCheckUpdate = savedInstanceState.getBoolean("shouldCheckUpdate",true);
 
@@ -73,11 +77,19 @@ public class MainActivity extends AppCompatActivity {
         int nightMode = isNightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
         @ColorInt int colorInt = ContextCompat.getColor(this, R.color.toolbarBackground);
 
+        //https://blog.csdn.net/maosidiaoxian/article/details/51734895
+        Window window = getWindow();
+        //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        //设置状态栏颜色
+        window.setStatusBarColor(colorInt);
+
         mToolbar = findViewById(R.id.toolbar_preference);
         mToolbar.setTitle(getResources().getString(R.string.app_name));
-        mToolbar.setBackgroundColor(colorInt);
+        //mToolbar.setBackgroundColor(colorInt);
         setSupportActionBar(mToolbar);
-        getWindow().setStatusBarColor(colorInt);
         View docker = getWindow().getDecorView();
         int ui = docker.getSystemUiVisibility();
         if (!(currentNightMode == Configuration.UI_MODE_NIGHT_YES || isNightMode)) {

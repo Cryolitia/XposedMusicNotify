@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -15,7 +16,6 @@ import cn.nexus6p.QQMusicNotify.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONObject
-import splitties.toast.toast
 import java.io.File
 import java.net.URL
 
@@ -55,7 +55,7 @@ class ThirdPartySourceFragment : Fragment() {
                                     childFragmentManager.beginTransaction().replace(R.id.content_frame2, ThirdPartySourceListFragment()).commit()
                                 }
                             } catch (e: Exception) {
-                                activity!!.runOnUiThread { activity!!.toast(e.toString()) }
+                                activity!!.runOnUiThread { Toast.makeText(activity!!, e.toString(), Toast.LENGTH_SHORT).show() }
                                 e.printStackTrace()
                             } finally {
                                 activity!!.runOnUiThread(alertDialog::dismiss)

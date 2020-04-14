@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import cn.nexus6p.QQMusicNotify.R
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
@@ -18,6 +19,7 @@ import com.azhon.suspensionfab.FabAttributes
 import com.azhon.suspensionfab.SuspensionFab
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 
 class LogFragment : Fragment() {
@@ -65,7 +67,17 @@ class LogFragment : Fragment() {
         suspensionFab.setFabClickListener { _, tag ->
             when (tag) {
                 1 -> {
-                    MaterialAlertDialogBuilder(activity)
+                    val snackBar = Snackbar.make(view.findViewById(R.id.log_content), "清除所有日志", Snackbar.LENGTH_LONG)
+                            .setAction("确定", View.OnClickListener {
+                                logFile.writeText("")
+                                textView.text = ""
+                            })
+                    val snackBarView = snackBar.view
+                    snackBarView.fitsSystemWindows = false
+                    ViewCompat.setOnApplyWindowInsetsListener(snackBarView, null)
+                    snackBar.show()
+
+                    /*MaterialAlertDialogBuilder(activity)
                             .setMessage("清除所有日志")
                             .setPositiveButton("确定") { _, _ ->
                                 logFile.delete()
@@ -73,7 +85,7 @@ class LogFragment : Fragment() {
                             }
                             .setNegativeButton("取消", null)
                             .create()
-                            .show()
+                            .show()*/
                 }
                 2 -> {
                     textView.text = logFile.readText()

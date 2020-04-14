@@ -3,6 +3,7 @@ package cn.nexus6p.QQMusicNotify.Hook
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Context
+import android.widget.Toast
 import androidx.annotation.Keep
 import cn.nexus6p.QQMusicNotify.BuildConfig
 import cn.nexus6p.QQMusicNotify.ContentProvider
@@ -11,7 +12,6 @@ import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import cn.nexus6p.QQMusicNotify.Utils.LogUtils
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
-import splitties.toast.toast
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -28,7 +28,7 @@ class mesingleneuronoriginalmusicnotification_debugtool(val loadPackageParam: XC
 
                 try {
                     XposedBridge.log("已注入调试器")
-                    context.toast("Xposed已经注入")
+                    Toast.makeText(context, "Xposed已经注入", Toast.LENGTH_SHORT).show()
                     val selinux = if (SELinuxHelper.isSELinuxEnabled()) if (SELinuxHelper.isSELinuxEnforced()) "Enforcing" else "Permissive" else "Disabled"
                     xposedPrint.print("原生音乐通知已找到：\n版本名: " + BuildConfig.VERSION_NAME + "\n版本号：" + BuildConfig.VERSION_CODE)
                     xposedPrint.print("SeLinux (probably unreliable Xposed framework provided): $selinux")

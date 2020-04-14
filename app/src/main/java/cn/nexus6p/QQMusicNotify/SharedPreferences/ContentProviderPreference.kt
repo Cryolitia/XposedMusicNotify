@@ -50,7 +50,7 @@ class ContentProviderPreference private constructor() : BasePreference() {
     }
 
     override fun getString(key: String?, defValue: String?): String? {
-        return jsonObject.optString(key, defValue)
+        return jsonObject.optString(key, defValue ?: "")
     }
 
     fun getJSONString(): String {

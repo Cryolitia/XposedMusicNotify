@@ -7,18 +7,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
+import androidx.core.view.ViewCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +38,7 @@ import java.net.URL;
 
 import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.MainActivity;
+import cn.nexus6p.QQMusicNotify.R;
 import de.robv.android.xposed.XposedBridge;
 
 final public class GeneralUtils {
@@ -219,7 +221,17 @@ final public class GeneralUtils {
                                 int versionCode = jsonObject.optInt("code");
                                 if (versionCode > BuildConfig.VERSION_CODE) {
                                     if (shouldShowToast) finalAlertDialog.dismiss();
-                                    new MaterialAlertDialogBuilder(activity)
+                                    Snackbar snackBar = Snackbar.make(activity.findViewById(R.id.content), "发现新版本: " + jsonObject.optString("name"), Snackbar.LENGTH_LONG)
+                                            .setAction("下载", v -> {
+                                                Intent localIntent = new Intent("android.intent.action.VIEW");
+                                                localIntent.setData(Uri.parse(PreferenceUtil.isGooglePlay ? "https://play.google.com/store/apps/details?id=cn.nexus6p.QQMusicNotify" : "https://github.com/singleNeuron/XposedMusicNotify/releases"));
+                                                activity.startActivity(localIntent);
+                                            });
+                                    View snackBarView = snackBar.getView();
+                                    snackBarView.setFitsSystemWindows(false);
+                                    ViewCompat.setOnApplyWindowInsetsListener(snackBarView, null);
+                                    snackBar.show();
+                                    /*new MaterialAlertDialogBuilder(activity)
                                             .setTitle("发现新版本")
                                             .setMessage(jsonObject.optString("name"))
                                             .setNegativeButton("取消", null)
@@ -229,9 +241,11 @@ final public class GeneralUtils {
                                                 activity.startActivity(localIntent);
                                             })
                                             .create()
-                                            .show();
-                                } else if (shouldShowToast) finalAlertDialog.dismiss();
-                                activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新成功，当前已是最新版本", Toast.LENGTH_SHORT).show());
+                                            .show();*/
+                                } else {
+                                    if (shouldShowToast) finalAlertDialog.dismiss();
+                                    activity.runOnUiThread(() -> Toast.makeText(activity, "检查更新成功，当前已是最新版本", Toast.LENGTH_SHORT).show());
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

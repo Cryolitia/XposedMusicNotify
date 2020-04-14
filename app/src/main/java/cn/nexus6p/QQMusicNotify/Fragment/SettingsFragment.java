@@ -235,7 +235,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("CustoMIUIzer", "https://code.highspec.ru/Mikanoshi/CustoMIUIzer", "Mikanoshi", new GnuGeneralPublicLicense30()));
             notices.addNotice(new Notice("AndroidProcess", "https://github.com/wenmingvs/AndroidProcess", "wenmingvs", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("libsu", "https://github.com/topjohnwu/libsu", "topjohnwu", new ApacheSoftwareLicense20()));
-            notices.addNotice(new Notice("Splitties", "https://github.com/LouisCAD/Splitties", "LouisCAD", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("suspension-fab", "https://github.com/userwangjf/MindLock/tree/master/suspension-fab", "Copyright [2016-09-21] [阿钟]", new ApacheSoftwareLicense20()));
             new LicensesDialog.Builder(getContext())
                     .setNotices(notices)

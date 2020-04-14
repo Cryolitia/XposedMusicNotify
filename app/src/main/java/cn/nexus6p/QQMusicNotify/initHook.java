@@ -62,7 +62,16 @@ public class initHook implements IXposedHookLoadPackage {
                             return true;
                         }
                     });
-                    return;
+                    /*try {
+                        findAndHookMethod(BaseTransientBottomBar.class, "shouldAnimate", new XC_MethodReplacement() {
+                            @Override
+                            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                                return true;
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }*/
                 }
 
                 if (lpparam.packageName.equals("com.android.systemui")) {

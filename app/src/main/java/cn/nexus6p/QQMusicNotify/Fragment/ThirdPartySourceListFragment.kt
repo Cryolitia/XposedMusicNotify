@@ -19,7 +19,6 @@ import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONArray
 import org.json.JSONObject
-import splitties.toast.toast
 import java.io.File
 import java.net.URL
 
@@ -73,7 +72,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                             onPreferenceClickListener = Preference.OnPreferenceClickListener {
                                 MaterialAlertDialogBuilder(activity).apply {
                                     this.setTitle("请选择操作")
-                                    setItems(arrayOf("更新源", "查看源", "删除源"), DialogInterface.OnClickListener { _: DialogInterface, i: Int ->
+                                    setItems(arrayOf("更新源", "查看源", "删除源")) { _: DialogInterface, i: Int ->
                                         when (i) {
                                             0 -> {
                                                 val builder = MaterialAlertDialogBuilder(context)
@@ -87,11 +86,11 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                                                     try {
                                                         File(activity!!.getExternalFilesDir("ThirdPartySource").toString() + File.separator + id + File.separator + "packages.json").writeBytes(URL(url + (if (url.endsWith("/")) "" else "/") + "packages.json").readBytes())
                                                         activity!!.runOnUiThread {
-                                                            activity!!.toast("成功")
+                                                            Toast.makeText(activity!!, "成功", Toast.LENGTH_SHORT).show()
                                                         }
                                                     } catch (e: Exception) {
                                                         e.printStackTrace()
-                                                        activity!!.toast(e.toString())
+                                                        Toast.makeText(activity!!, e.toString(), Toast.LENGTH_SHORT).show()
                                                     } finally {
                                                         alertDialog.dismiss()
                                                     }
@@ -133,26 +132,26 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                                                         setNegativeButton("取消",null)
                                                         setItems(appNameArray) { _, which ->
                                                             val packageName = packageNameArrayList[which]
-                                                            @Suppress("DEPRECATION") val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) activity!!.packageManager.getPackageInfo(packageName, 0).longVersionCode else activity!!.packageManager.getPackageInfo(packageName, 0).versionCode
+                                                            @Suppress("DEPRECATION") val versionCode: Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) activity!!.packageManager.getPackageInfo(packageName, 0).longVersionCode else activity!!.packageManager.getPackageInfo(packageName, 0).versionCode.toLong()
                                                             GeneralUtils.downloadFileFromInternet("$packageName/$versionCode/$packageName.json", url, activity as MainActivity, context.getExternalFilesDir(null))
                                                         }
                                                         show()
                                                     }
                                                 } catch (e: Exception) {
                                                     e.printStackTrace()
-                                                    activity!!.toast(e.toString())
+                                                    Toast.makeText(activity!!, e.toString(), Toast.LENGTH_SHORT).show()
                                                 }
                                             }
                                             2 -> {
                                                 try {
-                                                    activity!!.toast(if (File(activity!!.getExternalFilesDir("ThirdPartySource").toString() + File.separator + id).deleteRecursively()) "删除成功" else "删除失败")
+                                                    Toast.makeText(activity!!, if (File(activity!!.getExternalFilesDir("ThirdPartySource").toString() + File.separator + id).deleteRecursively()) "删除成功" else "删除失败", Toast.LENGTH_SHORT).show()
                                                     (activity as MainActivity).reload()
                                                 } catch (e: Exception) {
                                                     e.printStackTrace()
                                                 }
                                             }
                                         }
-                                    })
+                                    }
                                     setNegativeButton("取消", null)
                                     show()
                                 }

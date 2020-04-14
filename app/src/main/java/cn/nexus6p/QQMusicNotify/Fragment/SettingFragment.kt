@@ -17,7 +17,6 @@ import cn.nexus6p.QQMusicNotify.R
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue
 import cn.nexus6p.QQMusicNotify.Utils.LogUtils
-import splitties.toast.toast
 
 class SettingFragment : Fragment() {
 
@@ -44,7 +43,7 @@ class SettingFragment : Fragment() {
 
         if (statue.name.contains("taichi", true)) cardViewImage.apply {
             setOnClickListener {
-                activity!!.toast("跳转到太极")
+                //activity!!.toast("跳转到太极")
                 val t = Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
                 t.data = Uri.parse("package:" + "cn.nexus6p.QQMusicNotify");
                 t.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
