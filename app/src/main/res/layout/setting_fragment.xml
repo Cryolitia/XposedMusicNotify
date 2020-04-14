@@ -42,6 +42,7 @@
                         android:layout_height="48dp"
                         android:layout_margin="16dp"
                         android:scaleType="centerInside"
+                        android:tint="@android:color/white"
                         app:srcCompat="@drawable/ic_cancel" />
 
                     <LinearLayout

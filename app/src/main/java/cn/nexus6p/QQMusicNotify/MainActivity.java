@@ -2,7 +2,6 @@ package cn.nexus6p.QQMusicNotify;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
     boolean shouldCheckUpdate = true;
-    public boolean isInNightMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,19 +69,9 @@ public class MainActivity extends AppCompatActivity {
         //if (savedInstanceState!=null) shouldCheckUpdate = savedInstanceState.getBoolean("shouldCheckUpdate",true);
 
         int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        /*switch (currentNightMode) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                // Night mode is not active, we're using the light theme
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:
-                // Night mode is active, we're using dark theme
-                break;
-        }*/
-
         boolean isNightMode = getSharedPreferenceOnUI(this).getBoolean("forceNight", false);
         int nightMode = isNightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-        @ColorInt int colorInt = Color.parseColor(currentNightMode == Configuration.UI_MODE_NIGHT_YES ? "#212121" : isNightMode ? "#212121" : "#F5F5F5");
-        isInNightMode = !(currentNightMode == Configuration.UI_MODE_NIGHT_YES || isNightMode);
+        @ColorInt int colorInt = ContextCompat.getColor(this, R.color.toolbarBackground);
 
         mToolbar = findViewById(R.id.toolbar_preference);
         mToolbar.setTitle(getResources().getString(R.string.app_name));

@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import cn.nexus6p.QQMusicNotify.MainActivity
 import cn.nexus6p.QQMusicNotify.R
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
 import cn.nexus6p.QQMusicNotify.Utils.LogUtils.Companion.cleanLog
@@ -32,8 +31,7 @@ class LogFragment : Fragment() {
         if (!logFile.exists()) logFile.createNewFile()
 
         val textView = view.findViewById<TextView>(R.id.textView)
-        val isInNightMode = (activity as MainActivity).isInNightMode
-        textView.setBackgroundColor(Color.parseColor(if (isInNightMode) "#efefef" else "#101010"))
+        textView.setBackgroundColor(ContextCompat.getColor(context!!, R.color.textViewBackground))
 
         val colorPrimary = ContextCompat.getColor(activity!!, R.color.colorPrimary)
         val colorPrimaryVariant = ContextCompat.getColor(activity!!, R.color.colorPrimaryVariant)

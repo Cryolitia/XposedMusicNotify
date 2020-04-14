@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import cn.nexus6p.QQMusicNotify.R
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils
@@ -24,13 +26,22 @@ class SettingFragment : Fragment() {
         val view = inflater.inflate(R.layout.setting_fragment, container, false)
         childFragmentManager.beginTransaction().replace(R.id.content_frame3, SettingsFragment()).addToBackStack(SettingsFragment::class.java.simpleName).commit()
 
+        val shardPreferences = GeneralUtils.getSharedPreferenceOnUI(context)
+
         val cardView = view.findViewById<CardView>(R.id.cardview)
+        val cardViewLinearLayout = view.findViewById<LinearLayout>(R.id.setting_linearLayout)
         val cardViewTitle = view.findViewById<TextView>(R.id.cardView_Title)
-        val cardViewSummary = view.findViewById<TextView>(R.id.cardView_summary)
         val cardViewImage = view.findViewById<ImageView>(R.id.cardView_image)
         val statue = HookStatue.getStatue(activity)
         cardViewTitle.text = HookStatue.getStatueName(statue)
-        if (HookStatue.isActive(statue)) cardViewImage.setImageResource(R.drawable.ic_check_circle) else cardViewImage.setImageResource(R.drawable.ic_cancel)
+        if (HookStatue.isActive(statue)) {
+            cardViewImage.setImageResource(R.drawable.ic_check_circle)
+            if (shardPreferences.getBoolean("colorCardView", true)) cardViewLinearLayout.setBackgroundColor(ContextCompat.getColor(context!!, R.color.green))
+        } else {
+            cardViewImage.setImageResource(R.drawable.ic_cancel)
+            if (shardPreferences.getBoolean("colorCardView", true)) cardViewLinearLayout.setBackgroundColor(ContextCompat.getColor(context!!, R.color.colorError))
+        }
+
         if (statue.name.contains("taichi", true)) cardViewImage.apply {
             setOnClickListener {
                 activity!!.toast("跳转到太极")

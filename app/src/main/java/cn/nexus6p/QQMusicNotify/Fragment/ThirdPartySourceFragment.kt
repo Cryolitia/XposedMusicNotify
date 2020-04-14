@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.annotation.Keep
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import cn.nexus6p.QQMusicNotify.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -26,6 +27,7 @@ class ThirdPartySourceFragment : Fragment() {
         childFragmentManager.beginTransaction().replace(R.id.content_frame2, ThirdPartySourceListFragment()).addToBackStack(ThirdPartySourceListFragment::class.java.simpleName).commit()
         val floatingActionButton = view.findViewById<FloatingActionButton>(R.id.floating_action_button)
         floatingActionButton.setColorFilter(Color.WHITE)
+        floatingActionButton.rippleColor = ContextCompat.getColor(context!!, R.color.colorPrimaryVariant)
         floatingActionButton.setOnClickListener {
             val editText = EditText(activity)
             MaterialAlertDialogBuilder(activity)
