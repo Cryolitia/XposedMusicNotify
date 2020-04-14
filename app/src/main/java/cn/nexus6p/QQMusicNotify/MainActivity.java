@@ -104,8 +104,10 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment settingFragment = fragmentManager.findFragmentByTag("settingFragment");
         if (settingFragment == null) settingFragment = new SettingFragment();
-        if (settingFragment.isAdded()) fragmentManager.beginTransaction().show(settingFragment);
+        if (settingFragment.isAdded())
+            fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).show(settingFragment);
         else getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
                 .replace(R.id.content_frame, settingFragment, "settingFragment")
                 .commit();
 
@@ -114,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 if (savedInstanceState.getString("currentFragment").equals("AppsFragment")) {
                     getSupportFragmentManager().findFragmentByTag("appsFragment").onCreate(null);
                     getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
                             .replace(R.id.content_frame, getSupportFragmentManager().findFragmentByTag("appsFragment"), "appsFragment")
                             .commit();
                 }
@@ -121,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             //e.printStackTrace();
         }
+
+        if (BuildConfig.VERSION_NAME.contains("canary") || BuildConfig.VERSION_NAME.contains("NIGHTLY") || BuildConfig.VERSION_NAME.contains("beta") || BuildConfig.VERSION_NAME.contains("alpha") || BuildConfig.VERSION_NAME.contains("α") || BuildConfig.VERSION_NAME.contains("β"))
+            Toast.makeText(this, "您正在使用未经完全测试的版本，使用风险自负\n测试版本不代表最终品质", Toast.LENGTH_LONG).show();
 
         File file = new File(getExternalFilesDir(null) + File.separator + "version.json");
         if (!file.exists()) {
@@ -165,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("currentFragment", "AppsFragment");
             }
             while (!transaction.isEmpty()) {
-                transaction.remove(getSupportFragmentManager().findFragmentById(R.id.content_frame));
+                transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).remove(getSupportFragmentManager().findFragmentById(R.id.content_frame));
             }
             transaction.commit();
         } catch (Exception e) {

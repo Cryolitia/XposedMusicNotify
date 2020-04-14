@@ -103,7 +103,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                 val nowVersionFragment = findPreference<Preference>("nowVersion")
                 nowVersionFragment!!.summary = "versionName: " + jsonObject.optString("versionName") + "  versionCode: " + jsonObject.optString("versionCode")
                 nowVersionFragment.setOnPreferenceClickListener {
-                    activity!!.supportFragmentManager.beginTransaction().replace(R.id.content_frame, JsonDetailFragment.newInstance(jsonObject.toString())).addToBackStack(JsonDetailFragment::class.java.simpleName).commit()
+                    activity!!.supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, JsonDetailFragment.newInstance(jsonObject.toString())).addToBackStack(JsonDetailFragment::class.java.simpleName).commit()
                     true
                 }
                 val iconID = if (jsonObject.optString("versionCode") == versionCode.toString()) R.drawable.ic_check_circle else R.drawable.ic_cancel

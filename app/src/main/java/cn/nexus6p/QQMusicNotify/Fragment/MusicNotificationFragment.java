@@ -53,8 +53,8 @@ public class MusicNotificationFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         AlertDialog dialog = new MaterialAlertDialogBuilder(getActivity())
                 .setTitle("关于去白边及强制展开")
                 .setMessage("此功能是否生效取决于您的手机系统及框架，且不属于本模块的常规功能范畴，本人不为其效果提供任何保证及咨询服务，本功能在您的手机上失效亦不会属于未来任何一个版本的修复内容。关于部分ROM上的通知如何去除白边或强制展开，请自行去相关论坛或手机系统交流群咨询。\n\n下面列出一个可能会有用但没用也不关我事的网址：\nhttps://github.com/singleNeuron/XposedRemoveNotificationWhiteFrame/releases")

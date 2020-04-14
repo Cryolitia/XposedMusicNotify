@@ -1,5 +1,7 @@
 package cn.nexus6p.QQMusicNotify.Fragment;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -59,7 +61,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         findPreference("thanks").setOnPreferenceClickListener(preference13 -> {
             if (i++ > 3) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ExperimentalFragment()).addToBackStack(ExperimentalFragment.class.getSimpleName()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, new ExperimentalFragment()).addToBackStack(ExperimentalFragment.class.getSimpleName()).commit();
                 i = 0;
             }
             return true;
@@ -143,8 +145,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         findPreference("version").setSummary(BuildConfig.VERSION_NAME);
-        if (BuildConfig.VERSION_NAME.contains("canary") || BuildConfig.VERSION_NAME.contains("NIGHTLY") || BuildConfig.VERSION_NAME.contains("beta") || BuildConfig.VERSION_NAME.contains("alpha") || BuildConfig.VERSION_NAME.contains("α") || BuildConfig.VERSION_NAME.contains("β"))
-            Toast.makeText(getActivity(), "您正在使用未经完全测试的版本，使用风险自负\n测试版本不代表最终品质", Toast.LENGTH_LONG).show();
         findPreference("qqqun").setOnPreferenceClickListener(preference1 -> {
             /*
              *
@@ -246,18 +246,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         findPreference("music_notification").setOnPreferenceClickListener(preference1 -> {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MusicNotificationFragment()).addToBackStack(MusicNotificationFragment.class.getSimpleName()).commit();
+            getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, new MusicNotificationFragment()).addToBackStack(MusicNotificationFragment.class.getSimpleName()).commit();
             return true;
         });
 
         findPreference("media_notification").setOnPreferenceClickListener(preference1 -> {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MediaNotificationFragment()).addToBackStack(MusicNotificationFragment.class.getSimpleName()).commit();
+            getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, new MediaNotificationFragment()).addToBackStack(MusicNotificationFragment.class.getSimpleName()).commit();
             return true;
         });
 
         //findPreference("apps").setFragment(AppsFragment.class.getName());
         findPreference("apps").setOnPreferenceClickListener(preference1 -> {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AppsFragment(), "appsFragment").addToBackStack(AppsFragment.class.getSimpleName()).commit();
+            getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, new AppsFragment(), "appsFragment").addToBackStack(AppsFragment.class.getSimpleName()).commit();
             return true;
         });
 
@@ -432,6 +432,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 || prop.getProperty(KEY_MIUI_VERSION_NAME, null) != null
                 || prop.getProperty(KEY_MIUI_INTERNAL_STORAGE, null) != null;
         return isMIUI;
+    }
+
+    @Override
+    public Animator onCreateAnimator(int transit, boolean enter, int nextAnim) {
+        if (true) {//condition
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(getView(), "alpha", 1, 1);
+            objectAnimator.setDuration(getActivity().getResources().getInteger(android.R.integer.config_mediumAnimTime));//time same with parent fragment's animation
+            return objectAnimator;
+        }
+        return super.onCreateAnimator(transit, enter, nextAnim);
     }
 
 }

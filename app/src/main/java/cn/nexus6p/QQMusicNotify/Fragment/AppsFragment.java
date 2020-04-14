@@ -45,7 +45,7 @@ public class AppsFragment extends PreferenceFragmentCompat {
                 preference.setTitle(jsonArray.getJSONObject(i).getString("name"));
                 preference.setSummary(packageName);
                 preference.setOnPreferenceClickListener(preference1 -> {
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, DetailFragment.Companion.newInstance(packageName)).addToBackStack(DetailFragment.class.getSimpleName()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, DetailFragment.Companion.newInstance(packageName)).addToBackStack(DetailFragment.class.getSimpleName()).commit();
                     return true;
                 });
                 ((PreferenceCategory) findPreference("app")).addPreference(preference);
@@ -54,10 +54,10 @@ public class AppsFragment extends PreferenceFragmentCompat {
             e.printStackTrace();
         }
 
-        /*findPreference("thirdPartySource").setOnPreferenceClickListener(preference -> {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ThirdPartySourceFragment()).addToBackStack(ThirdPartySourceFragment.class.getSimpleName()).commit();
+        findPreference("thirdPartySource").setOnPreferenceClickListener(preference -> {
+            getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, new ThirdPartySourceFragment()).addToBackStack(ThirdPartySourceFragment.class.getSimpleName()).commit();
             return true;
-        });*/
+        });
 
     }
 
