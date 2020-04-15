@@ -82,7 +82,11 @@
             android:icon="@drawable/singleneuron"
             android:key="author"
             android:summary="神经元"
-            android:title="作者" />
+            android:title="作者">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/singleNeuron" />
+        </androidx.preference.Preference>
         <androidx.preference.Preference
             android:summary="部分代码合并自祈无的MusicNotification、Soptq的MediaNotification\n感谢卖动绘制图标"
             android:key="thanks"
@@ -92,6 +96,7 @@
             android:title="版本" />
         <androidx.preference.Preference
             android:key="connect"
+            android:icon="@drawable/ic_mail_outline"
             android:summary="liziyuan0720@gmail.com"
             android:title="联系作者" />
         <androidx.preference.Preference
@@ -99,15 +104,15 @@
             android:summary="951343825"
             android:title="加入QQ群" />
         <androidx.preference.Preference
-            android:key="telegram"
             android:summary="\@NeuronDevelopChannel"
+            android:icon="@drawable/ic_telegram_logo"
             android:title="Telegram频道/群组">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://t.me/NeuronDevelopChannel" />
         </androidx.preference.Preference>
         <androidx.preference.Preference
-            android:icon="@drawable/github"
+            android:icon="@drawable/ic_github"
             android:key="github"
             android:summary="https://github.com/singleNeuron/XposedMusicNotify"
             android:title="项目地址">

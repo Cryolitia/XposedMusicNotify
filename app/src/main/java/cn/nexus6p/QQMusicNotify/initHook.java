@@ -72,6 +72,7 @@ public class initHook implements IXposedHookLoadPackage {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }*/
+                    return;
                 }
 
                 if (lpparam.packageName.equals("com.android.systemui")) {

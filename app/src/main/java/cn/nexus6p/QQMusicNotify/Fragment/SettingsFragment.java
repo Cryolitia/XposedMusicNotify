@@ -45,7 +45,6 @@ import de.psdev.licensesdialog.model.Notices;
 
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getJsonFromInternet;
 import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.getSharedPreferenceOnUI;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
 
 @Keep
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -55,9 +54,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
         addPreferencesFromResource(R.xml.settings);
-        jumpToLink(this, "author", "u/603406", true);
+        //jumpToLink(this, "author", "u/603406", true);
         //jumpToLink(this, "github", "https://github.com/singleNeuron/XposedMusicNotify", false);
         //jumpToLink(this, "telegram", "https://t.me/NeuronDevelopChannel", false);
+
+        //findPreference("github").getIcon().setTint(ContextCompat.getColor(getContext(),R.color.githubTint));
 
         findPreference("thanks").setOnPreferenceClickListener(preference13 -> {
             if (i++ > 3) {

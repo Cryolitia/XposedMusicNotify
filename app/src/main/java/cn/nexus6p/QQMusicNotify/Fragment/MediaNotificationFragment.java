@@ -13,10 +13,6 @@ import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import cn.nexus6p.QQMusicNotify.R;
-import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
-
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToAlipay;
-import static cn.nexus6p.QQMusicNotify.Utils.GeneralUtils.jumpToLink;
 
 @Keep
 public class MediaNotificationFragment extends PreferenceFragmentCompat {
@@ -61,11 +57,6 @@ public class MediaNotificationFragment extends PreferenceFragmentCompat {
         GradientDrawable drawable = (GradientDrawable) getContext().getDrawable(R.drawable.color_drawable);
         drawable.setColor(Color.parseColor(colorPreference.getText()));
         findPreference("customColor").setIcon(drawable);
-
-        jumpToLink(this, "author3", "https://github.com/Soptq", false);
-        jumpToAlipay(this, "alipay2", "FKX02896EL8F1WS3RV8183");
-
-        if (PreferenceUtil.isGooglePlay) findPreference("alipay2").setVisible(false);
 
     }
 }

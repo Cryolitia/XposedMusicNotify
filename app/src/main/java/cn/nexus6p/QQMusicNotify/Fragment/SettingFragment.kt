@@ -41,22 +41,45 @@ class SettingFragment : Fragment() {
             if (shardPreferences.getBoolean("colorCardView", true)) cardViewLinearLayout.setBackgroundColor(ContextCompat.getColor(context!!, R.color.colorError))
         }
 
-        if (statue.name.contains("taichi", true)) cardViewImage.apply {
-            setOnClickListener {
-                //activity!!.toast("跳转到太极")
-                val t = Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
-                t.data = Uri.parse("package:" + "cn.nexus6p.QQMusicNotify");
-                t.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                try {
-                    startActivity(t);
-                } catch (e: ActivityNotFoundException) {
-                    //ignore
+        if (statue.name.contains("taichi", true)) {
+            if (HookStatue.isActive(statue)) {
+                cardView.setOnClickListener {
+                    activity!!.supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
+                }
+                cardViewImage.apply {
+                    setOnClickListener {
+                        //activity!!.toast("跳转到太极")
+                        val t = Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
+                        t.data = Uri.parse("package:" + "cn.nexus6p.QQMusicNotify");
+                        t.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        try {
+                            startActivity(t);
+                        } catch (e: ActivityNotFoundException) {
+                            //ignore
+                        }
+                    }
+                    isClickable = true
+                }
+            } else {
+                cardView.apply {
+                    setOnClickListener {
+                        //activity!!.toast("跳转到太极")
+                        val t = Intent("me.weishu.exp.ACTION_MODULE_MANAGE");
+                        t.data = Uri.parse("package:" + "cn.nexus6p.QQMusicNotify");
+                        t.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        try {
+                            startActivity(t);
+                        } catch (e: ActivityNotFoundException) {
+                            //ignore
+                        }
+                    }
+                    isClickable = true
                 }
             }
-            isClickable = true
-        }
-        cardView.setOnClickListener {
-            activity!!.supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
+        } else {
+            cardView.setOnClickListener {
+                activity!!.supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
+            }
         }
 
         return view

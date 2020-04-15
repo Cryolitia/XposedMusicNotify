@@ -16,7 +16,6 @@ import androidx.core.content.FileProvider;
 import androidx.core.view.ViewCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -102,7 +101,7 @@ final public class GeneralUtils {
         return stringBuilder.toString();
     }
 
-    public static void jumpToLink(PreferenceFragmentCompat fragment, String preference, String link, boolean isCoolapk) {
+    /*public static void jumpToLink(PreferenceFragmentCompat fragment, String preference, String link, boolean isCoolapk) {
         fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
             Intent intent = new Intent();
             intent.setAction("android.intent.action.VIEW");
@@ -123,7 +122,7 @@ final public class GeneralUtils {
             }
             return true;
         });
-    }
+    }*/
 
     public static void bindEditTextSummary(EditTextPreference preference) {
         preference.setSummary(preference.getText());
@@ -133,7 +132,7 @@ final public class GeneralUtils {
         });
     }
 
-    public static void jumpToAlipay(PreferenceFragmentCompat fragment, String preference, String link) {
+    /*public static void jumpToAlipay(PreferenceFragmentCompat fragment, String preference, String link) {
         fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
             Intent localIntent = new Intent();
             localIntent.setAction("android.intent.action.VIEW");
@@ -146,7 +145,7 @@ final public class GeneralUtils {
             fragment.startActivity(localIntent);
             return true;
         });
-    }
+    }*/
 
     /*public static void setWorldReadable(Context context) {
         try {

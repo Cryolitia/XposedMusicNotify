@@ -36,12 +36,10 @@
             android:title="为什么用了之后通知部分按钮显示不全" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="其他">
-        <androidx.preference.Preference
-            android:key="github2"
-            android:title="查看源码" />
-        <androidx.preference.Preference
-            android:key="alipay"
-            android:summary="此链接为捐赠祈无，非本模块作者神经元。"
-            android:title="支持我" />
+        <androidx.preference.Preference android:title="查看源码">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/Qiwu2542284182/MusicNotification" />
+        </androidx.preference.Preference>
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
     boolean shouldCheckUpdate = true;
-    public static int navBarHeight = 0;
+    public static boolean nowNightMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.content).getRootView(), (v, insets) -> {
             v.setPadding(0, 0, 0, insets.getTappableElementInsets().bottom);
-            navBarHeight = insets.getTappableElementInsets().bottom;
             return insets;
         });
         /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbar_preference), (v, insets) -> {
@@ -92,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         View docker = getWindow().getDecorView();
         int ui = docker.getSystemUiVisibility();
-        if (!(currentNightMode == Configuration.UI_MODE_NIGHT_YES || isNightMode)) {
+        nowNightMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES || isNightMode;
+        if (!nowNightMode) {
             ui |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ui |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
