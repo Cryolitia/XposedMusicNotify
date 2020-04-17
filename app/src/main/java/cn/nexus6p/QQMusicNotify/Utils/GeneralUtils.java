@@ -377,7 +377,12 @@ final public class GeneralUtils {
     }
 
     public static void deviceContextPreferenceChangeListener(Preference preference, Object newValue, Context strongeContext) {
-        Context deviceContext = strongeContext.createDeviceProtectedStorageContext();
+        Context deviceContext = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            deviceContext = strongeContext.createDeviceProtectedStorageContext();
+        } else {
+            deviceContext = strongeContext;
+        }
         SharedPreferences deviceProtectedSharedPreferences = deviceContext.getSharedPreferences("deviceProtected", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = deviceProtectedSharedPreferences.edit();
         editor.putBoolean(preference.getKey(), (Boolean) newValue);

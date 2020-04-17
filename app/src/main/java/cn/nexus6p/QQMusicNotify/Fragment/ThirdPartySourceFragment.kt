@@ -27,15 +27,15 @@ class ThirdPartySourceFragment : Fragment() {
         childFragmentManager.beginTransaction().replace(R.id.content_frame2, ThirdPartySourceListFragment()).addToBackStack(ThirdPartySourceListFragment::class.java.simpleName).commit()
         val floatingActionButton = view.findViewById<FloatingActionButton>(R.id.floating_action_button)
         floatingActionButton.setColorFilter(Color.WHITE)
-        floatingActionButton.rippleColor = ContextCompat.getColor(context!!, R.color.colorPrimaryVariant)
+        floatingActionButton.rippleColor = ContextCompat.getColor(requireContext(), R.color.colorPrimaryVariant)
         floatingActionButton.setOnClickListener {
             val editText = EditText(activity)
-            MaterialAlertDialogBuilder(activity)
+            MaterialAlertDialogBuilder(requireContext())
                     .setTitle("请输入源地址")
                     .setView(editText)
                     .setNegativeButton("取消", null)
                     .setPositiveButton("确定", DialogInterface.OnClickListener { _, _ ->
-                        val builder = MaterialAlertDialogBuilder(context)
+                        val builder = MaterialAlertDialogBuilder(requireContext())
                         builder.setTitle("下载中...description.json")
                         builder.setCancelable(false)
                         val progressBar = ProgressBar(context)
@@ -47,18 +47,18 @@ class ThirdPartySourceFragment : Fragment() {
                                 val jsonString: String = URL(editText.text.toString() + (if (editText.text.toString().endsWith("/")) "" else "/") + "description.json").readText()
                                 val jsonObject = JSONObject(jsonString)
                                 val id = jsonObject.optString("id")
-                                val files = File(activity!!.getExternalFilesDir("ThirdPartySource").toString() + File.separator + id)
+                                val files = File(requireContext().getExternalFilesDir("ThirdPartySource").toString() + File.separator + id)
                                 if (!files.exists()) files.mkdir()
                                 File(files.toString() + File.separator + "description.json").writeText(jsonString)
                                 File(files.toString() + File.separator + "packages.json").writeBytes(URL(editText.text.toString() + (if (editText.text.toString().endsWith("/")) "" else "/") + "packages.json").readBytes())
-                                activity!!.runOnUiThread {
+                                requireActivity().runOnUiThread {
                                     childFragmentManager.beginTransaction().replace(R.id.content_frame2, ThirdPartySourceListFragment()).commit()
                                 }
                             } catch (e: Exception) {
-                                activity!!.runOnUiThread { Toast.makeText(activity!!, e.toString(), Toast.LENGTH_SHORT).show() }
+                                requireActivity().runOnUiThread { Toast.makeText(requireActivity(), e.toString(), Toast.LENGTH_SHORT).show() }
                                 e.printStackTrace()
                             } finally {
-                                activity!!.runOnUiThread(alertDialog::dismiss)
+                                requireActivity().runOnUiThread(alertDialog::dismiss)
                             }
                         }).start()
                     }).show()

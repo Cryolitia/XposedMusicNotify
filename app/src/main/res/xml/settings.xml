@@ -17,7 +17,7 @@
             android:summary="启用全局样式修改后可用，来自媒体通知"
             android:title="自定义通知样式" />
         <androidx.preference.SwitchPreferenceCompat
-            android:title="仅对前台应用生效（实验性）"
+            android:title="仅对前台应用生效"
             android:key="onlyForeground" />
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
@@ -69,6 +69,7 @@
         <androidx.preference.Preference
             android:key="edxpProblem"
             android:title="EdXposed"
+            android:icon="@drawable/edxp_icon"
             android:summary="EdXposed 问题反馈注意事项"
             app:isPreferenceVisible="false" />
         <androidx.preference.Preference

@@ -109,7 +109,7 @@ public class NotificationUtils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
-        else builder.setPriority(Notification.PRIORITY_MAX);
+        else builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
         for (NotificationCompat.Action action : actions) {
             builder.addAction(action);

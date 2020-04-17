@@ -94,13 +94,13 @@ class LogFragment : Fragment() {
                     val editText = EditText(context)
                     editText.inputType = InputType.TYPE_CLASS_NUMBER
                     editText.setText(sharedPreferences.getInt("logMaxLine", 1000).toString())
-                    MaterialAlertDialogBuilder(activity)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle("最大保留条数")
                             .setView(editText)
                             .setPositiveButton("确定") { _, _ ->
                                 val maxLine: Int = Integer.parseInt(editText.text.toString())
                                 sharedPreferences.edit().putInt("logMaxLine", maxLine).apply()
-                                cleanLog(maxLine, activity!!)
+                                cleanLog(maxLine, requireContext())
                                 textView.text = logFile.readText()
                             }
                             .setNegativeButton("取消", null)

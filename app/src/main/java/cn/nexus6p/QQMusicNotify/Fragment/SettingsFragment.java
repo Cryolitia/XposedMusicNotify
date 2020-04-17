@@ -200,7 +200,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         findPreference("openSource").setOnPreferenceClickListener(preference1 -> {
             final Notices notices = new Notices();
-            notices.addNotice(new Notice("给播放器原生的音乐通知", "https://github.com/singleNeuron/XposedMusicNotify", "Copyright 2019 神经元", new GnuLesserGeneralPublicLicense3()));
+            notices.addNotice(new Notice("原生音乐通知", "https://github.com/singleNeuron/XposedMusicNotify", "Copyright 2019 神经元", new GnuLesserGeneralPublicLicense3()));
             notices.addNotice(new Notice("Android", "https://source.android.com/license", "The Android Open Source Project", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("XposedBridge", "https://github.com/rovo89/XposedBridge", "Copyright 2013 rovo89, Tungstwenty", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("Kotlin", "https://github.com/JetBrains/kotlin", "Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.", new ApacheSoftwareLicense20()));

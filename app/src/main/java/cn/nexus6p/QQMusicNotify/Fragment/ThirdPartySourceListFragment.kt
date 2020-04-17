@@ -37,7 +37,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
             if (newValue == "3") {
                 val editText = EditText(activity)
                 editText.setText(if (sharedPreferences.getString("onlineGitIndex", "0") == "3") sharedPreferences.getString("onlineGit", "https://xposedmusicnotify.singleneuron.me/config/") else urls[sharedPreferences.getString("onlineGitIndex", "0")!!.toInt()])
-                val builder = MaterialAlertDialogBuilder(activity)
+                val builder = MaterialAlertDialogBuilder(requireContext())
                 builder.setTitle("设置自定义仓库地址")
                         .setView(editText)
                         .setPositiveButton("确定") { _: DialogInterface?, _: Int ->
@@ -54,7 +54,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
             true
         }
 
-        val files = activity!!.getExternalFilesDir("ThirdPartySource")
+        val files = requireContext().getExternalFilesDir("ThirdPartySource")
         if (!files!!.exists()) files.mkdir()
         val fileTreeWalk = files.walk()
         fileTreeWalk.maxDepth(2)
@@ -70,7 +70,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                             title = name
                             summary = url
                             onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                                MaterialAlertDialogBuilder(activity).apply {
+                                MaterialAlertDialogBuilder(requireContext()).apply {
                                     this.setTitle("请选择操作")
                                     setItems(arrayOf("更新源", "查看源", "删除源")) { _: DialogInterface, i: Int ->
                                         when (i) {
@@ -84,13 +84,13 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                                                 alertDialog.show()
                                                 Thread(Runnable {
                                                     try {
-                                                        File(activity!!.getExternalFilesDir("ThirdPartySource").toString() + File.separator + id + File.separator + "packages.json").writeBytes(URL(url + (if (url.endsWith("/")) "" else "/") + "packages.json").readBytes())
-                                                        activity!!.runOnUiThread {
-                                                            Toast.makeText(activity!!, "成功", Toast.LENGTH_SHORT).show()
+                                                        File(requireContext().getExternalFilesDir("ThirdPartySource").toString() + File.separator + id + File.separator + "packages.json").writeBytes(URL(url + (if (url.endsWith("/")) "" else "/") + "packages.json").readBytes())
+                                                        requireActivity().runOnUiThread {
+                                                            Toast.makeText(requireActivity(), "成功", Toast.LENGTH_SHORT).show()
                                                         }
                                                     } catch (e: Exception) {
                                                         e.printStackTrace()
-                                                        Toast.makeText(activity!!, e.toString(), Toast.LENGTH_SHORT).show()
+                                                        Toast.makeText(requireActivity(), e.toString(), Toast.LENGTH_SHORT).show()
                                                     } finally {
                                                         alertDialog.dismiss()
                                                     }
@@ -98,7 +98,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                                             }
                                             1 -> {
                                                 try {
-                                                    val jsonArray = JSONArray(File(activity!!.getExternalFilesDir("ThirdPartySource").toString() + File.separator + id + File.separator + "packages.json").readText())
+                                                    val jsonArray = JSONArray(File(requireContext().getExternalFilesDir("ThirdPartySource").toString() + File.separator + id + File.separator + "packages.json").readText())
                                                     //Log.d("jsonArray", jsonArray.toString())
                                                     val packageNameArrayList = ArrayList<String>()
                                                     for (j in 0 until jsonArray.length()) {
@@ -107,7 +107,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                                                         val supportedVersionJsonArray = jsonObject2.optJSONArray("supportedVersion")
                                                         var packageInfo: PackageInfo?
                                                         packageInfo = try {
-                                                            activity!!.packageManager.getPackageInfo(packageName, 0)
+                                                            requireContext().packageManager.getPackageInfo(packageName, 0)
                                                         } catch (e: PackageManager.NameNotFoundException) {
                                                             null
                                                         }
@@ -123,28 +123,28 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
                                                         }
                                                     }
                                                     val appNameArray : Array<String> = Array(packageNameArrayList.size) { j->
-                                                        val packageManager = activity!!.packageManager
+                                                        val packageManager = requireContext().packageManager
                                                         val packageName = packageNameArrayList[j]
-                                                        packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0)).toString() + " " + activity!!.packageManager.getPackageInfo(packageName, 0).versionName
+                                                        packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0)).toString() + " " + requireContext().packageManager.getPackageInfo(packageName, 0).versionName
                                                     }
-                                                    MaterialAlertDialogBuilder(activity!!).apply {
+                                                    MaterialAlertDialogBuilder(requireContext()).apply {
                                                         this.setTitle("选择配置文件以应用")
                                                         setNegativeButton("取消",null)
                                                         setItems(appNameArray) { _, which ->
                                                             val packageName = packageNameArrayList[which]
-                                                            @Suppress("DEPRECATION") val versionCode: Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) activity!!.packageManager.getPackageInfo(packageName, 0).longVersionCode else activity!!.packageManager.getPackageInfo(packageName, 0).versionCode.toLong()
+                                                            @Suppress("DEPRECATION") val versionCode: Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) requireContext().packageManager.getPackageInfo(packageName, 0).longVersionCode else requireContext().packageManager.getPackageInfo(packageName, 0).versionCode.toLong()
                                                             GeneralUtils.downloadFileFromInternet("$packageName/$versionCode/$packageName.json", url, activity as MainActivity, context.getExternalFilesDir(null))
                                                         }
                                                         show()
                                                     }
                                                 } catch (e: Exception) {
                                                     e.printStackTrace()
-                                                    Toast.makeText(activity!!, e.toString(), Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(requireActivity(), e.toString(), Toast.LENGTH_SHORT).show()
                                                 }
                                             }
                                             2 -> {
                                                 try {
-                                                    Toast.makeText(activity!!, if (File(activity!!.getExternalFilesDir("ThirdPartySource").toString() + File.separator + id).deleteRecursively()) "删除成功" else "删除失败", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(requireActivity(), if (File(requireContext().getExternalFilesDir("ThirdPartySource").toString() + File.separator + id).deleteRecursively()) "删除成功" else "删除失败", Toast.LENGTH_SHORT).show()
                                                     (activity as MainActivity).reload()
                                                 } catch (e: Exception) {
                                                     e.printStackTrace()
@@ -171,7 +171,7 @@ class ThirdPartySourceListFragment : PreferenceFragmentCompat() {
         }
 
         try {
-            val path = activity!!.getExternalFilesDir(null).toString() + File.separator + "packages.json"
+            val path = requireContext().getExternalFilesDir(null).toString() + File.separator + "packages.json"
             findPreference<Preference>("editJSON")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 GeneralUtils.editFile(File(path), activity)
                 true

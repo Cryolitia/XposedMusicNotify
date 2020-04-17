@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.annotation.StringDef
@@ -39,7 +40,11 @@ class ContentProvider : ContentProvider() {
         } else {
             val mSharedPreferences: SharedPreferences = when (method) {
                 CONTENT_PROVIDER_PREFERENCE -> GeneralUtils.getSharedPreferenceOnUI(context)
-                CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE -> context!!.createDeviceProtectedStorageContext().getSharedPreferences("deviceProtected", Context.MODE_PRIVATE);
+                CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    context!!.createDeviceProtectedStorageContext().getSharedPreferences("deviceProtected", Context.MODE_PRIVATE)
+                } else {
+                    context!!.getSharedPreferences("deviceProtected", Context.MODE_PRIVATE)
+                }
                 else -> throw IllegalArgumentException()
             }
 

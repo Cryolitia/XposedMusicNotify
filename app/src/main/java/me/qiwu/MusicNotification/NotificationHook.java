@@ -1,5 +1,6 @@
 package me.qiwu.MusicNotification;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,6 +38,7 @@ public class NotificationHook {
     public void init(String packageName) {
         XposedHelpers.findAndHookMethod(Notification.Builder.class, "build", new XC_MethodHook() {
 
+            @SuppressLint("ResourceType")
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Notification notification = (Notification) param.getResult();
@@ -77,11 +79,11 @@ public class NotificationHook {
                     for (int i = 0; i < actionCount; i++) {
                         NotificationCompat.Action action = NotificationCompat.getAction(notification, i);
                         try {
-                            actionIcons.add(getBitmap(getContext().getDrawable(action.icon)));
+                            actionIcons.add(getBitmap(getContext().getDrawable(action.getIconCompat().getResId())));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        actions.add(new NotificationCompat.Action.Builder(action.icon, action.getTitle(), action.getActionIntent()).build());
+                        actions.add(new NotificationCompat.Action.Builder(action.getIconCompat().getResId(), action.getTitle(), action.getActionIntent()).build());
                     }
                     Notification newNotification = new NotificationUtils().setParam(basicParam, actions, actionIcons).updateNotification();
                     param.setResult(newNotification);
