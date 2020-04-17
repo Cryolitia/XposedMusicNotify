@@ -29,14 +29,14 @@ class LogFragment : Fragment() {
 
         val sharedPreferences = GeneralUtils.getSharedPreferenceOnUI(context)
 
-        val logFile = File(activity!!.filesDir.absolutePath + File.separator + "log.txt")
+        val logFile = File(requireContext().filesDir.absolutePath + File.separator + "log.txt")
         if (!logFile.exists()) logFile.createNewFile()
 
         val textView = view.findViewById<TextView>(R.id.textView)
-        textView.setBackgroundColor(ContextCompat.getColor(context!!, R.color.textViewBackground))
+        textView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.textViewBackground))
 
-        val colorPrimary = ContextCompat.getColor(activity!!, R.color.colorPrimary)
-        val colorPrimaryVariant = ContextCompat.getColor(activity!!, R.color.colorPrimaryVariant)
+        val colorPrimary = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+        val colorPrimaryVariant = ContextCompat.getColor(requireContext(), R.color.colorPrimaryVariant)
 
         val suspensionFab = view.findViewById<SuspensionFab>(R.id.fab_top)
         val defaultFab = suspensionFab.findViewWithTag<FloatingActionButton>(0)
@@ -44,21 +44,21 @@ class LogFragment : Fragment() {
 
         val deleteFAB = FabAttributes.Builder()
                 .setBackgroundTint(colorPrimary)
-                .setSrc(ContextCompat.getDrawable(context!!, R.drawable.ic_delete_black_24dp))
+                .setSrc(ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_black_24dp))
                 .setFabSize(FloatingActionButton.SIZE_NORMAL)
                 .setPressedTranslationZ(10)
                 .setTag(1)
                 .build()
         val refreshFAB = FabAttributes.Builder()
                 .setBackgroundTint(colorPrimary)
-                .setSrc(ContextCompat.getDrawable(context!!, R.drawable.ic_refresh_black_24dp))
+                .setSrc(ContextCompat.getDrawable(requireContext(), R.drawable.ic_refresh_black_24dp))
                 .setFabSize(FloatingActionButton.SIZE_NORMAL)
                 .setPressedTranslationZ(10)
                 .setTag(2)
                 .build()
         val settingFAB = FabAttributes.Builder()
                 .setBackgroundTint(colorPrimary)
-                .setSrc(ContextCompat.getDrawable(context!!, R.drawable.ic_settings_black_24dp))
+                .setSrc(ContextCompat.getDrawable(requireContext(), R.drawable.ic_settings_black_24dp))
                 .setFabSize(FloatingActionButton.SIZE_NORMAL)
                 .setPressedTranslationZ(10)
                 .setTag(3)
@@ -121,8 +121,8 @@ class LogFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val logFile = File(activity!!.filesDir.absolutePath + File.separator + "log.txt")
-        val textView = view!!.findViewById<TextView>(R.id.textView)
+        val logFile = File(requireContext().filesDir.absolutePath + File.separator + "log.txt")
+        val textView = requireView().findViewById<TextView>(R.id.textView)
         textView.text = logFile.readText()
     }
 

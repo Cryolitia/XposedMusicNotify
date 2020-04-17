@@ -38,16 +38,16 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.detail)
         val list = ArrayList<String>()
         if (arguments == null) throw IllegalAccessException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
-        val packageName = arguments!!.getString("packageName")
+        val packageName = requireArguments().getString("packageName")
         val appPreference = findPreference<Preference>("app")
-        val packageManager = activity!!.packageManager
+        val packageManager = requireContext().packageManager
         appPreference!!.summary = packageName
         var packageInfo: PackageInfo? = null
         try {
             packageInfo = packageManager.getPackageInfo(packageName!!, 0)
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
-            Toast.makeText(activity!!, "应用不存在", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), "应用不存在", Toast.LENGTH_SHORT).show()
         }
         appPreference.title = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName!!, 0))
         appPreference.icon = packageManager.getApplicationIcon(packageName)
@@ -56,7 +56,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
         else packageInfo.versionCode.toLong()
         findPreference<Preference>("versionCode")!!.summary = versionCode.toString()
         val enablePreference = findPreference<SwitchPreferenceCompat>("enable")
-        val enabled: Boolean = getSharedPreferenceOnUI(activity!!).getBoolean("$packageName.enabled", true)
+        val enabled: Boolean = getSharedPreferenceOnUI(requireContext()).getBoolean("$packageName.enabled", true)
         enablePreference!!.key = "$packageName.enabled"
         enablePreference.isChecked = enabled
         /*enablePreference.setOnPreferenceChangeListener { preference, newValue ->
@@ -64,7 +64,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             true
         }*/
         findPreference<Preference>("taichi")!!.isVisible = HookStatue.isExpModuleActive(activity) > 0
-        val file = File(activity!!.getExternalFilesDir(null).toString() + File.separator + packageName + ".json")
+        val file = File(requireContext().getExternalFilesDir(null).toString() + File.separator + packageName + ".json")
         try {
             val supportedVersionPreference = findPreference<Preference>("supportedVersion")
             val jsonArray = getSupportPackages(this.context)
@@ -77,7 +77,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                         list.add(versionJsonObject.optString("versionName"))
                     }
                     supportedVersionPreference!!.setOnPreferenceClickListener {
-                        val builder = MaterialAlertDialogBuilder(activity!!)
+                        val builder = MaterialAlertDialogBuilder(requireContext())
                         builder.setTitle("支持版本").setItems(list.toArray(arrayOfNulls<String>(list.size)), null).setPositiveButton("确定", null).create().show()
                         true
                     }
@@ -101,14 +101,14 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                 val nowVersionFragment = findPreference<Preference>("nowVersion")
                 nowVersionFragment!!.summary = "versionName: " + jsonObject.optString("versionName") + "  versionCode: " + jsonObject.optString("versionCode")
                 nowVersionFragment.setOnPreferenceClickListener {
-                    activity!!.supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, JsonDetailFragment.newInstance(jsonObject.toString())).addToBackStack(JsonDetailFragment::class.java.simpleName).commit()
+                    requireActivity().supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, JsonDetailFragment.newInstance(jsonObject.toString())).addToBackStack(JsonDetailFragment::class.java.simpleName).commit()
                     true
                 }
                 val iconID = if (jsonObject.optString("versionCode") == versionCode.toString()) R.drawable.ic_check_circle else R.drawable.ic_cancel
                 nowVersionFragment.setIcon(iconID)
             } catch (e: Exception) {
                 findPreference<Preference>("nowVersion")!!.summary = "读取配置文件出错"
-                Toast.makeText(activity!!, "读取配置文件出错:$e", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireActivity(), "读取配置文件出错:$e", Toast.LENGTH_LONG).show()
                 e.printStackTrace()
             }
             findPreference<Preference>("editjson")!!.setOnPreferenceClickListener {
@@ -123,11 +123,11 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             findPreference<Preference>("editjson")!!.isVisible = false
         }
         findPreference<Preference>("forceStop")!!.setOnPreferenceClickListener {
-            if (!Shell.rootAccess()) Toast.makeText(activity!!, "没有Root权限", Toast.LENGTH_SHORT).show()
+            if (!Shell.rootAccess()) Toast.makeText(requireActivity(), "没有Root权限", Toast.LENGTH_SHORT).show()
             else {
                 val result = Shell.su("am force-stop $packageName").exec()
-                if (!result.isSuccess) Toast.makeText(activity!!, result.err.toString(), Toast.LENGTH_LONG).show()
-                else Toast.makeText(activity!!, "成功", Toast.LENGTH_SHORT).show()
+                if (!result.isSuccess) Toast.makeText(requireActivity(), result.err.toString(), Toast.LENGTH_LONG).show()
+                else Toast.makeText(requireActivity(), "成功", Toast.LENGTH_SHORT).show()
             }
             true
         }
@@ -135,7 +135,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             val intent = Intent()
             intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
             intent.data = Uri.fromParts("package", packageName, null)
-            activity!!.startActivity(intent)
+            requireContext().startActivity(intent)
             true
         }
 
@@ -144,10 +144,10 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
             intent.data = Uri.parse("package:$packageName")
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             try {
-                activity!!.startActivity(intent)
+                requireContext().startActivity(intent)
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(activity!!, "未安装太极", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "未安装太极", Toast.LENGTH_SHORT).show()
             }
             true
         }
@@ -157,7 +157,7 @@ class DetailFragment private constructor() : PreferenceFragmentCompat() {
                 val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
                 intent.putExtra(Settings.EXTRA_CHANNEL_ID, "music")
-                if (activity!!.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) startActivity(intent)
+                if (requireContext().packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) startActivity(intent)
                 true
             }
         } else findPreference<Preference>("channelSetting")!!.isVisible = false

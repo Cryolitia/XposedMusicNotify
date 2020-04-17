@@ -25,11 +25,11 @@ class JsonDetailFragment private constructor() : PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.json_detail)
         if (arguments == null) throw IllegalAccessException("Arguments should not be null,please use newInstance to get a DetailFragment object and set the param as the packageName")
         try {
-            val jsonString = arguments!!.getString("jsonString")
+            val jsonString = requireArguments().getString("jsonString")
             val jsonObject = JSONObject(jsonString!!)
             val detailPreferenceCategory: PreferenceCategory = findPreference("JSONDetail")!!
             for (key in jsonObject.keys()) {
-                val preference = Preference(activity!!)
+                val preference = Preference(requireContext())
                 preference.title = key
                 preference.summary = jsonObject.optString(key)
                 detailPreferenceCategory.addItemFromInflater(preference)

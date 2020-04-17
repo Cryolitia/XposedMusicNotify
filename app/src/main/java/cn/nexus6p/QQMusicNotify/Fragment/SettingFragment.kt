@@ -35,16 +35,16 @@ class SettingFragment : Fragment() {
         cardViewTitle.text = HookStatue.getStatueName(statue)
         if (HookStatue.isActive(statue)) {
             cardViewImage.setImageResource(R.drawable.ic_check_circle)
-            if (shardPreferences.getBoolean("colorCardView", true)) cardViewLinearLayout.setBackgroundColor(ContextCompat.getColor(context!!, R.color.green))
+            if (shardPreferences.getBoolean("colorCardView", true)) cardViewLinearLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
         } else {
             cardViewImage.setImageResource(R.drawable.ic_cancel)
-            if (shardPreferences.getBoolean("colorCardView", true)) cardViewLinearLayout.setBackgroundColor(ContextCompat.getColor(context!!, R.color.colorError))
+            if (shardPreferences.getBoolean("colorCardView", true)) cardViewLinearLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorError))
         }
 
         if (statue.name.contains("taichi", true)) {
             if (HookStatue.isActive(statue)) {
                 cardView.setOnClickListener {
-                    activity!!.supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
+                    requireActivity().supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
                 }
                 cardViewImage.apply {
                     setOnClickListener {
@@ -78,7 +78,7 @@ class SettingFragment : Fragment() {
             }
         } else {
             cardView.setOnClickListener {
-                activity!!.supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
+                requireActivity().supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, LogFragment(), "logFragment").addToBackStack(LogFragment::class.java.simpleName).commit()
             }
         }
 
@@ -87,9 +87,9 @@ class SettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        LogUtils.cleanLog(GeneralUtils.getSharedPreferenceOnUI(context).getInt("logMaxLine", 1000), activity!!)
-        val cardViewSummary = view!!.findViewById<TextView>(R.id.cardView_summary)
-        cardViewSummary.text = "已应用" + LogUtils.getLineCount(activity!!) + "次"
+        LogUtils.cleanLog(GeneralUtils.getSharedPreferenceOnUI(context).getInt("logMaxLine", 1000), requireContext())
+        val cardViewSummary = requireView().findViewById<TextView>(R.id.cardView_summary)
+        cardViewSummary.text = "已应用" + LogUtils.getLineCount(requireContext()) + "次"
     }
 
 }
