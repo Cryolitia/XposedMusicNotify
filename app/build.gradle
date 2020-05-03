@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
@@ -24,15 +29,56 @@ android {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
-    compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+
+    flavorDimensions "type"
+    productFlavors {
+        play {
+            dimension "type"
+        }
+        apk {
+            dimension "type"
+        }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+    applicationVariants.all { variant ->
+        def buildType = variant.buildType.name
+        def variantName = variant.productFlavors[0].name
+        if (buildType == "release" && variantName == "apk") {
+            variant.getPackageApplication().outputDirectory = new File(project.rootDir.absolutePath + "/app/release")
+            variant.outputs.all { output ->
+                output.outputFileName = "XposedMusicNotify-" + variant.versionName + "-release.apk"
+            }
+        }
+    }
+
+}
+
+task buildAllRelease {
+    group = 'build'
+    dependsOn 'bundlePlayRelease'
+    dependsOn 'assembleApkRelease'
 }
 
 dependencies {

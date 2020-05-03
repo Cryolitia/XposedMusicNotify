@@ -1,6 +1,7 @@
 package cn.nexus6p.QQMusicNotify;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -34,6 +36,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import cn.nexus6p.QQMusicNotify.Fragment.AppsFragment;
 import cn.nexus6p.QQMusicNotify.Fragment.SettingFragment;
@@ -113,6 +117,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        /*if (PreferenceUtil.isGooglePlay) {
+            final ArrayList<Integer> noPlayArgs = new ArrayList<Integer>(Arrays.asList(ConnectionResult.SERVICE_DISABLED, ConnectionResult.SERVICE_MISSING, ConnectionResult.SERVICE_INVALID));
+            GoogleApiAvailability googleApiAvailability = new GoogleApiAvailability();
+            int googleApiStatue = googleApiAvailability.isGooglePlayServicesAvailable(this);
+            if (noPlayArgs.contains(googleApiStatue)) PreferenceUtil.isGooglePlay=false;
+        }*/
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment settingFragment = fragmentManager.findFragmentByTag("settingFragment");
         if (settingFragment == null) settingFragment = new SettingFragment();
@@ -166,6 +177,39 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             checkUpdate();
+        }
+
+        SharedPreferences sharedPreferences = getSharedPreferenceOnUI(this);
+        if (sharedPreferences.getBoolean("firstRun",true)) {
+            AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                    .setTitle("功能说明")
+                    .setMessage("播放器\n此设置项将只显示所有允许自定义及更新配置文件的播放器，且其中设置均只用于将其音乐通知更改为系统样式。\n\n全局模式\n此设置项用于将所有系统样式的音乐通知强制更改为原生样式。\n\n以上两项功能相互独立，可只打开任意其中一项或同时打开，同时此两项功能内任何设置及显示的内容都与另一项功能无关。")
+                    .setCancelable(false)
+                    .setPositiveButton("我已阅读并知悉 (5)", null)
+                    .create();
+            dialog.show();
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setEnabled(false);
+            new Thread(() -> {
+                for (int i = 5; i > 0; i--) {
+                    int finalI = i;
+                    this.runOnUiThread(() -> {
+                        button.setText("我已阅读并知悉 (" + finalI + ")");
+                    });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                this.runOnUiThread(() -> {
+                    button.setText("我已阅读并知悉");
+                });
+                this.runOnUiThread(() -> {
+                    button.setEnabled(true);
+                });
+            }).start();
+            sharedPreferences.edit().putBoolean("firstRun",false).apply();
         }
 
     }

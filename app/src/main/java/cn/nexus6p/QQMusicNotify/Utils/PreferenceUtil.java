@@ -5,12 +5,14 @@ import android.content.SharedPreferences;
 
 import org.json.JSONArray;
 
+import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.ContentProvider;
 import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
 
 final public class PreferenceUtil {
 
-    public static boolean isGooglePlay = true;
+    @SuppressWarnings("ConstantConditions")
+    public static boolean isGooglePlay = BuildConfig.FLAVOR.equals("play");
 
     public static SharedPreferences getPreference(Context context) {
         return new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_PREFERENCE, null, context);

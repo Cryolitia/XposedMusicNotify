@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
@@ -237,6 +238,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             notices.addNotice(new Notice("AndroidProcess", "https://github.com/wenmingvs/AndroidProcess", "wenmingvs", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("libsu", "https://github.com/topjohnwu/libsu", "topjohnwu", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("suspension-fab", "https://github.com/userwangjf/MindLock/tree/master/suspension-fab", "Copyright [2016-09-21] [阿钟]", new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("audiohq_md2","https://github.com/Alcatraz323/audiohq_md2","Alcatraz323", new MITLicense()));
             new LicensesDialog.Builder(getContext())
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
@@ -355,6 +357,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return false;
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getListView().setOverScrollMode(ListView.OVER_SCROLL_NEVER);
     }
 
     private ComponentName getAlias() {
