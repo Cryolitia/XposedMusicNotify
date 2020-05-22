@@ -67,7 +67,7 @@ android {
         def buildType = variant.buildType.name
         def variantName = variant.productFlavors[0].name
         if (buildType == "release" && variantName == "apk") {
-            variant.packageApplicationProvider.get().outputDirectory = new File(project.rootDir.absolutePath + "/app/release")
+            //variant.packageApplicationProvider.get().outputDirectory = new File(project.rootDir.absolutePath + "/app/release")
             variant.outputs.all { output ->
                 output.outputFileName = "XposedMusicNotify-" + variant.versionName + "-release.apk"
             }
