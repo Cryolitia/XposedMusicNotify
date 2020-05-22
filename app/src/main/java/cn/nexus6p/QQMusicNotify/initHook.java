@@ -78,8 +78,8 @@ public class initHook implements IXposedHookLoadPackage {
                 if (lpparam.packageName.equals("com.android.systemui")) {
                     if (new ContentProviderPreference(ContentProvider.CONTENT_PROVIDER_DEVICE_PROTECTED_PREFERENCE, null, context).getBoolean("miuiModify", false)) {
                         try {
-                            cn.nexus6p.removewhitenotificationforbugme.main.handleLoadPackage(lpparam);
-                            LogUtils.Companion.addLogByContentProvider(lpparam.packageName, "removewhitenotificationforbugme", context);
+                            new cn.nexus6p.removewhitenotificationforbugme.main().handleLoadPackage(lpparam);
+                            LogUtils.Companion.addLogByContentProvider(lpparam.packageName, "removewhitenotification", context);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
