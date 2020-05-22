@@ -83,6 +83,7 @@ task buildAllRelease {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -93,7 +94,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.android.material:material:1.2.0-alpha06'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
-    implementation 'com.azhon:suspension-fab:1.1.0'
 }
 repositories {
     mavenCentral()
