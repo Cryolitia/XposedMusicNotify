@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.preference.Preference
+        android:key="playing"
+        android:title="正在播放"
+        />
     <androidx.preference.PreferenceCategory
         android:key="settings"
         android:title="设置">

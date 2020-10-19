@@ -95,61 +95,6 @@ public class NotificationHook {
 
     }
 
-    /*private RemoteViews getContentView(String title,String subtitle,Notification notification){
-        int backgroundColor = Color.BLACK;
-        int textColor = Color.WHITE;
-        if (notification.getLargeIcon()!=null){
-            Bitmap bitmap = getLargeIcon(notification);
-            int[] colors = ColorUtil.getColor(bitmap);
-            backgroundColor = colors[0];
-            textColor = colors[1];
-        }
-        RemoteViews remoteViews = new RemoteViews(getMoudleContext(getContext()).getPackageName(),R.layout.notifition_layout);
-
-        remoteViews.setTextViewText(R.id.appName,getContext().getPackageManager().getApplicationLabel(AndroidAppHelper.currentApplicationInfo()));
-        remoteViews.setTextViewText(R.id.title,title);
-        remoteViews.setTextViewText(R.id.subtitle,subtitle);
-        //remoteViews.setImageViewIcon(R.id.smallIcon,notification.getSmallIcon());
-
-
-        remoteViews.setImageViewBitmap(
-                R.id.smallIcon,getIconId(notification.getSmallIcon()) != -1
-                ? getBitmap(getContext().getDrawable(getIconId(notification.getSmallIcon())))
-                //        :null
-                : getBitmap(getMoudleContext(getContext()).getDrawable(R.drawable.ic_music))
-        );
-
-        remoteViews.setTextColor(R.id.appName,textColor);
-        remoteViews.setTextColor(R.id.title,textColor);
-        remoteViews.setTextColor(R.id.subtitle,textColor);
-        remoteViews.setImageViewIcon(R.id.largeIcon,notification.getLargeIcon());
-        remoteViews.setInt(R.id.smallIcon,"setColorFilter",textColor);
-        remoteViews.setInt(R.id.foregroundImage,"setColorFilter", backgroundColor);
-        remoteViews.setInt(R.id.background, "setBackgroundColor", backgroundColor);
-        TypedArray typedArray = getContext().obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
-        int selectableItemBackground = typedArray.getResourceId(0, 0);
-        typedArray.recycle();
-        if (NotificationCompat.getActionCount(notification)>0){
-            for (int i = 0;i<NotificationCompat.getActionCount(notification);i++){
-                int id = getMoudleContext().getResources().getIdentifier("ic_"+ i,"id",BuildConfig.APPLICATION_ID);
-                NotificationCompat.Action action = NotificationCompat.getAction(notification,i);
-                remoteViews.setViewVisibility(id, View.VISIBLE);
-
-
-
-                remoteViews.setImageViewBitmap(id,getBitmap(getContext().getDrawable(action.getIcon())));
-                remoteViews.setOnClickPendingIntent(id, action.getActionIntent());
-                remoteViews.setInt(id,"setColorFilter", textColor);
-                remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
-
-               // XposedBridge.log("资源："+action.getIcon());
-            }
-        } else {
-            XposedBridge.log("没有Action");
-        }
-        return remoteViews;
-    }*/
-
     private int getIconId(Icon icon) {
         int id = -1;
         if (icon != null) {

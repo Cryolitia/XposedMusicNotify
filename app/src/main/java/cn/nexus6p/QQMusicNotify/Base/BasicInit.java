@@ -8,6 +8,14 @@ public abstract class BasicInit implements HookInterface {
     public ClassLoader classLoader;
 
     @Override
+    public abstract void init();
+
+    @Override
+    public void initBefore() {
+        init();
+    }
+
+    @Override
     public final BasicInit setClassLoader(ClassLoader mClassLoader) {
         classLoader = mClassLoader;
         return this;

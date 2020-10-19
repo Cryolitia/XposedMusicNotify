@@ -50,6 +50,7 @@
         <provider
             android:authorities="cn.nexus6p.QQMusicNotify.provider"
             android:name=".ContentProvider"
+            android:multiprocess="false"
             android:exported="true"
             android:grantUriPermissions="true"
             android:directBootAware="true"

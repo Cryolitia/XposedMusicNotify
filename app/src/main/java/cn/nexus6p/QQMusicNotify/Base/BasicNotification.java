@@ -1,30 +1,21 @@
 package cn.nexus6p.QQMusicNotify.Base;
 
-import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.view.View;
-import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.nexus6p.QQMusicNotify.BuildConfig;
 import cn.nexus6p.QQMusicNotify.R;
-import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
-import me.qiwu.MusicNotification.ColorUtil;
 import soptqs.medianotification.utils.NotificationUtils;
 
 import static android.app.Notification.FLAG_FOREGROUND_SERVICE;
@@ -47,7 +38,13 @@ public abstract class BasicNotification extends BasicInit {
     private List<NotificationCompat.Action> actions = new ArrayList<>();
     private List<Bitmap> actionIcons = new ArrayList<>();
 
+    @Override
     public abstract void init();
+
+    @Override
+    public final void initBefore() {
+        init();
+    }
 
     public final Notification build() {
         NotificationCompat.Action previousAction = new NotificationCompat.Action.Builder(
@@ -76,10 +73,6 @@ public abstract class BasicNotification extends BasicInit {
             actions.add(extraAction);
         }
         if (PreferenceUtil.getPreference(basicParam.getContext()).getBoolean("styleModify", false)) {
-            /*if (basicParam.getBitmap()==null) {
-                RemoteViews remoteViews = getContentView(basicParam.getTitleString().toString(),basicParam.getTextString().toString());
-                return GeneralUtils.buildMusicNotificationWithoutAction(basicParam,remoteViews,PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT),channelID,null);
-            }*/
             basicParam.setContentIntent(PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT));
             actionIcons.clear();
             actionIcons.add(BitmapFactory.decodeResource(getModuleContext().getResources(), R.drawable.ic_skip_previous));
@@ -121,87 +114,6 @@ public abstract class BasicNotification extends BasicInit {
             notification.contentIntent = PendingIntent.getActivity(basicParam.getContext(), intentRequestID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             return notification;
         }
-    }
-
-    private RemoteViews getContentView(String title, String subtitle) {
-        int backgroundColor = Color.parseColor(PreferenceUtil.getPreference(basicParam.getContext()).getString("customColor", "#000000"));
-        int textColor = Color.WHITE;
-        if (basicParam.getBitmap() != null) {
-            int[] colors = ColorUtil.getColor(basicParam.getBitmap());
-            backgroundColor = colors[0];
-            textColor = colors[1];
-        }
-        RemoteViews remoteViews = new RemoteViews(GeneralUtils.getModuleContext(basicParam.getContext()).getPackageName(), R.layout.notifition_layout);
-
-        remoteViews.setTextViewText(R.id.appName, basicParam.getContext().getPackageManager().getApplicationLabel(AndroidAppHelper.currentApplicationInfo()));
-        remoteViews.setTextViewText(R.id.title, title);
-        remoteViews.setTextViewText(R.id.subtitle, subtitle);
-        //remoteViews.setImageViewIcon(R.id.smallIcon,notification.getSmallIcon());
-
-
-        remoteViews.setImageViewBitmap(
-                R.id.smallIcon, basicParam.getIconID() != -1
-                        ? getBitmap(basicParam.getContext().getDrawable(basicParam.getIconID()))
-                        //        :null
-                        : getBitmap(GeneralUtils.getModuleContext(basicParam.getContext()).getDrawable(R.drawable.ic_music))
-        );
-
-        remoteViews.setTextColor(R.id.appName, textColor);
-        remoteViews.setTextColor(R.id.title, textColor);
-        remoteViews.setTextColor(R.id.subtitle, textColor);
-        remoteViews.setImageViewBitmap(R.id.largeIcon, basicParam.getBitmap());
-        remoteViews.setInt(R.id.smallIcon, "setColorFilter", textColor);
-        remoteViews.setInt(R.id.foregroundImage, "setColorFilter", backgroundColor);
-        remoteViews.setInt(R.id.background, "setBackgroundColor", backgroundColor);
-        TypedArray typedArray = basicParam.getContext().obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
-        int selectableItemBackground = typedArray.getResourceId(0, 0);
-        typedArray.recycle();
-        int actionIconID = -1;
-        for (int i = 0; i <= 2; i++) {
-            switch (i) {
-                case 0:
-                    actionIconID = //android.R.drawable.ic_media_previous;
-                            R.drawable.ic_skip_previous;
-                    break;
-                case 1:
-                    actionIconID = (!basicParam.getStatue()) ? //android.R.drawable.ic_media_play
-                            R.drawable.ic_play
-                            : //android.R.drawable.ic_media_pause;
-                            R.drawable.ic_pause;
-                    break;
-                case 2:
-                    actionIconID = //android.R.drawable.ic_media_next;
-                            R.drawable.ic_skip_next;
-                    break;
-            }
-            int id = GeneralUtils.getModuleContext(basicParam.getContext()).getResources().getIdentifier("ic_" + i, "id", BuildConfig.APPLICATION_ID);
-            NotificationCompat.Action action = actions.get(i);
-            remoteViews.setViewVisibility(id, View.VISIBLE);
-            remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(GeneralUtils.getModuleContext(basicParam.getContext()).getResources(), actionIconID));
-            remoteViews.setOnClickPendingIntent(id, action.actionIntent);
-            remoteViews.setInt(id, "setColorFilter", textColor);
-            remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
-            // XposedBridge.log("资源："+action.getIcon());
-        }
-        if (hasExtraAction) {
-            int id = GeneralUtils.getModuleContext(basicParam.getContext()).getResources().getIdentifier("ic_" + 3, "id", BuildConfig.APPLICATION_ID);
-            NotificationCompat.Action action = actions.get(3);
-            remoteViews.setViewVisibility(id, View.VISIBLE);
-            remoteViews.setImageViewBitmap(id, BitmapFactory.decodeResource(basicParam.getContext().getResources(), extraActionIcon));
-            remoteViews.setOnClickPendingIntent(id, action.actionIntent);
-            remoteViews.setInt(id, "setColorFilter", textColor);
-            remoteViews.setInt(id, "setBackgroundResource", selectableItemBackground);
-        }
-        return remoteViews;
-    }
-
-    private Bitmap getBitmap(Drawable vectorDrawable) {
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        vectorDrawable.draw(canvas);
-        return bitmap;
     }
 
 }

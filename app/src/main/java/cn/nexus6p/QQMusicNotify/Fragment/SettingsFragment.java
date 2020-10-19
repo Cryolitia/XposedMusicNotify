@@ -2,11 +2,7 @@ package cn.nexus6p.QQMusicNotify.Fragment;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -36,11 +32,7 @@ import cn.nexus6p.QQMusicNotify.R;
 import cn.nexus6p.QQMusicNotify.Utils.HookStatue;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
 import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
-import de.psdev.licensesdialog.licenses.GnuGeneralPublicLicense30;
-import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
-import de.psdev.licensesdialog.licenses.License;
-import de.psdev.licensesdialog.licenses.MITLicense;
+import de.psdev.licensesdialog.licenses.*;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
@@ -341,6 +333,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                return true;
+            }
+        });
+
+        findPreference("playing").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out).replace(R.id.content_frame, new PlayingFragment(), "PlayingFragment").addToBackStack(PlayingFragment.class.getSimpleName()).commit();
                 return true;
             }
         });

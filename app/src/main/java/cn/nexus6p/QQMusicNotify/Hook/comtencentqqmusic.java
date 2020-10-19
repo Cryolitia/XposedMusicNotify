@@ -1,15 +1,13 @@
 package cn.nexus6p.QQMusicNotify.Hook;
 
-import android.content.Context;
-
 import androidx.annotation.Keep;
 
-import cn.nexus6p.QQMusicNotify.Base.HookInterface;
+import cn.nexus6p.QQMusicNotify.Base.BasicInit;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
 @Keep
-public class comtencentqqmusic implements HookInterface {
+public class comtencentqqmusic extends BasicInit {
 
     private ClassLoader mClassloader;
 
@@ -29,14 +27,4 @@ public class comtencentqqmusic implements HookInterface {
         });
     }
 
-    @Override
-    public HookInterface setClassLoader(ClassLoader classLoader) {
-        mClassloader = classLoader;
-        return this;
-    }
-
-    @Override
-    public HookInterface setContext(Context context) {
-        return this;
-    }
 }

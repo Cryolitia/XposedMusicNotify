@@ -57,32 +57,39 @@ class ContentProviderPreference private constructor() : BasePreference() {
         return jsonObject.toString(4)
     }
 
-    private fun getBundle(@ContentProvider.ContentProviderParams position: String, key: String?, context: Context): Bundle? {
-        try {
-            val contentResolver: ContentResolver = context.contentResolver
-            val uri = Uri.parse("content://cn.nexus6p.QQMusicNotify.provider/")
-            var result: Bundle? = null
+    companion object {
+
+        fun getBundle(@ContentProvider.ContentProviderParams position: String, key: String?, context: Context): Bundle? {
+            return getBundle(position,key,context,null)
+        }
+
+        fun getBundle(@ContentProvider.ContentProviderParams position: String, key: String?, context: Context, extras: Bundle?): Bundle? {
             try {
-                result = contentResolver.call(uri, position, key, null)
-            } catch (e: RuntimeException) {
+                val contentResolver: ContentResolver = context.contentResolver
+                val uri = Uri.parse("content://cn.nexus6p.QQMusicNotify.provider/")
+                var result: Bundle? = null
                 try {
-                    val intent = Intent()
-                    intent.setClassName(BuildConfig.APPLICATION_ID, BackgroundActivity::class.java.name)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
-                } catch (e1: Throwable) {
+                    result = contentResolver.call(uri, position, key, extras)
+                } catch (e: RuntimeException) {
+                    try {
+                        val intent = Intent()
+                        intent.setClassName(BuildConfig.APPLICATION_ID, BackgroundActivity::class.java.name)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(intent)
+                    } catch (e1: Throwable) {
+                        return null
+                    }
+                }
+                if (result == null) {
+                    result = contentResolver.call(uri, position, key, extras)
+                }
+                if (result == null) {
                     return null
                 }
-            }
-            if (result == null) {
-                result = contentResolver.call(uri, position, key, null)
-            }
-            if (result == null) {
+                return result
+            } catch (ignored: Throwable) {
                 return null
             }
-            return result
-        } catch (ignored: Throwable) {
-            return null
         }
     }
 

@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.core.view.ViewCompat;
-import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -24,14 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -100,68 +92,6 @@ final public class GeneralUtils {
         }
         return stringBuilder.toString();
     }
-
-    /*public static void jumpToLink(PreferenceFragmentCompat fragment, String preference, String link, boolean isCoolapk) {
-        fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
-            Intent intent = new Intent();
-            intent.setAction("android.intent.action.VIEW");
-            if (isCoolapk) {
-                intent.setData(Uri.parse(link));
-                try {
-                    intent.setData(Uri.parse("coolmarket://" + link));
-                    fragment.startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(fragment.getActivity(), "未安装酷安", Toast.LENGTH_SHORT).show();
-                    intent.setData(Uri.parse(PreferenceUtil.isGooglePlay ? "https://github.com/singleNeuron" : "http://www.coolapk.com/" + link));
-                    fragment.startActivity(intent);
-                    e.printStackTrace();
-                }
-            } else {
-                intent.setData(Uri.parse(link));
-                fragment.startActivity(intent);
-            }
-            return true;
-        });
-    }*/
-
-    public static void bindEditTextSummary(EditTextPreference preference) {
-        preference.setSummary(preference.getText());
-        preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-            preference.setSummary((CharSequence) newValue);
-            return true;
-        });
-    }
-
-    /*public static void jumpToAlipay(PreferenceFragmentCompat fragment, String preference, String link) {
-        fragment.findPreference(preference).setOnPreferenceClickListener(preference1 -> {
-            Intent localIntent = new Intent();
-            localIntent.setAction("android.intent.action.VIEW");
-            localIntent.setData(Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + "https://qr.alipay.com/" + link));
-            if (localIntent.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
-                fragment.startActivity(localIntent);
-                return true;
-            }
-            localIntent.setData(Uri.parse(("https://qr.alipay.com/" + link).toLowerCase()));
-            fragment.startActivity(localIntent);
-            return true;
-        });
-    }*/
-
-    /*public static void setWorldReadable(Context context) {
-        try {
-            File dataDir = new File(context.getApplicationInfo().dataDir);
-            File prefsDir = new File(dataDir, "shared_prefs");
-            File prefsFile = new File(prefsDir, BuildConfig.APPLICATION_ID + "_preferences.xml");
-            if (prefsFile.exists()) {
-                for (File file : new File[]{dataDir, prefsDir, prefsFile}) {
-                    file.setReadable(true, false);
-                    file.setExecutable(true, false);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     public static void editFile(File file, Context activity) {
         Intent intent = new Intent();

@@ -8,5 +8,5 @@
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:key="app"
-        android:title="在这里对每个播放器进行个性化设置" />
+        android:title="个性化设置" />
 </androidx.preference.PreferenceScreen>

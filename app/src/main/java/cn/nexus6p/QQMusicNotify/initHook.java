@@ -1,9 +1,12 @@
 package cn.nexus6p.QQMusicNotify;
 
 import android.app.ActivityManager;
+import android.app.AndroidAppHelper;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.media.session.MediaSession;
+import android.os.Bundle;
 
 import androidx.annotation.Keep;
 
@@ -16,11 +19,7 @@ import cn.nexus6p.QQMusicNotify.SharedPreferences.ContentProviderPreference;
 import cn.nexus6p.QQMusicNotify.Utils.GeneralUtils;
 import cn.nexus6p.QQMusicNotify.Utils.LogUtils;
 import cn.nexus6p.QQMusicNotify.Utils.PreferenceUtil;
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.qiwu.MusicNotification.NotificationHook;
 import name.mikanoshi.customiuizer.mods.System;
@@ -95,6 +94,8 @@ public class initHook implements IXposedHookLoadPackage {
                     return;
                 }
 
+                hookSession();
+
                 if (PreferenceUtil.getPreference(context).getBoolean("onlyForeground", false) && (!RunningForeground(context, lpparam.packageName)))
                     return;
 
@@ -102,7 +103,7 @@ public class initHook implements IXposedHookLoadPackage {
                     XposedBridge.log("XposedMusicNotify：加载包" + lpparam.packageName);
                     Class c = Class.forName("cn.nexus6p.QQMusicNotify.Hook." + lpparam.packageName.replace(".", ""));
                     HookInterface hookInterface = (HookInterface) c.newInstance();
-                    hookInterface.setClassLoader(classLoader).setContext(context).init();
+                    hookInterface.setClassLoader(classLoader).setContext(context).initBefore();
                     LogUtils.Companion.addLogByContentProvider(lpparam.packageName, "", context);
                 }
 
@@ -125,6 +126,18 @@ public class initHook implements IXposedHookLoadPackage {
             return false;
         }
         return (GeneralUtils.isStringInJSONArray(packageName, jsonArray) && (PreferenceUtil.getPreference(context).getBoolean(packageName + ".enabled", true)));
+    }
+
+    private void hookSession() {
+        XposedBridge.hookAllConstructors(MediaSession.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                MediaSession.Token token = ((MediaSession)param.thisObject).getSessionToken();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(ContentProvider.BUNDLE_KEY_MEDIA_SESSION_TOKEN,token);
+                ContentProviderPreference.Companion.getBundle(ContentProvider.PUSH_MEDIA_SESSION_TOKEN, AndroidAppHelper.currentPackageName(),AndroidAppHelper.currentApplication(),bundle);
+            }
+        });
     }
 
     private static boolean RunningForeground(Context context, String packageName) {
